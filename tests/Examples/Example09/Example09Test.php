@@ -1,6 +1,6 @@
 <?php
 
-namespace Expo\Dto\Tests\Examples\Example09;
+namespace Atlcom\Dto\Tests\Examples\Example09;
 
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -9,19 +9,19 @@ use PHPUnit\Framework\TestCase;
  * Примеры классов dto для теста
  */
 
-class MarkDto extends \Expo\Dto\DefaultDto
+class MarkDto extends \Atlcom\Dto\DefaultDto
 {
     public int $id;
     public string $markName;
 }
 
-class ModelDto extends \Expo\Dto\DefaultDto
+class ModelDto extends \Atlcom\Dto\DefaultDto
 {
     public int $id;
     public string $modelName;
 }
 
-class CarDto extends \Expo\Dto\DefaultDto
+class CarDto extends \Atlcom\Dto\DefaultDto
 {
     public MarkDto $markDto;
     public ModelDto $modelDto;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Expo\Dto\Tests\Examples\Example18;
+namespace Atlcom\Dto\Tests\Examples\Example18;
 
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -9,7 +9,7 @@ use PHPUnit\Framework\TestCase;
  * Примеры классов dto для теста
  */
 
-class CarDto extends \Expo\Dto\DefaultDto
+class CarDto extends \Atlcom\Dto\DefaultDto
 {
     public const AUTO_MAPPINGS_ENABLED = true;
 
