@@ -1,7 +1,7 @@
 {
     "name": "atlcom/dto",
     "type": "library",
-    "description": "Simple DTO library",
+    "description": "Atlcom DTO library",
     "require": {
         "php": "^8.1",
         "ext-mbstring": "*"
@@ -12,7 +12,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Atlcom\\Dto\\": "lib/Dto"
+            "Atlcom\\Dto\\": "src"
         }
     },
     "autoload-dev": {
