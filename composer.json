@@ -1,5 +1,5 @@
 {
-    "name": "avtoplatforma/dto",
+    "name": "atlcom/dto",
     "type": "library",
     "description": "Simple DTO library",
     "require": {
@@ -12,12 +12,12 @@
     },
     "autoload": {
         "psr-4": {
-            "Expo\\Dto\\": "lib/Dto"
+            "Atlcom\\Dto\\": "lib/Dto"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Expo\\Dto\\Tests\\": "tests"
+            "Atlcom\\Dto\\Tests\\": "tests"
         }
     },
     "archive": {

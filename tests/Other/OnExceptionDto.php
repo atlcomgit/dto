@@ -1,8 +1,8 @@
 <?php
 
-namespace Expo\Dto\Tests\Other;
+namespace Atlcom\Dto\Tests\Other;
 
-use Expo\Dto\DefaultDto;
+use Atlcom\Dto\DefaultDto;
 use Throwable;
 
 class OnExceptionDto extends DefaultDto

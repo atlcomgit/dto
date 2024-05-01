@@ -1,6 +1,6 @@
 <?php
 
-namespace Expo\Dto\Tests\Examples\Example20;
+namespace Atlcom\Dto\Tests\Examples\Example20;
 
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -15,7 +15,7 @@ enum CarTypeEnum: string
     case NEW = 'new';
 }
 
-class CarDto extends \Expo\Dto\DefaultDto
+class CarDto extends \Atlcom\Dto\DefaultDto
 {
     public const AUTO_CASTS_ENABLED = true;
     public const AUTO_SERIALIZE_ENABLED = true;

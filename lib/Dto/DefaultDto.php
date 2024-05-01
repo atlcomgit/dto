@@ -1,14 +1,14 @@
 <?php
 declare(strict_types=1);
 
-namespace Expo\Dto;
+namespace Atlcom\Dto;
 
 use DateTime;
 use DateTimeInterface;
 use Exception;
-use Expo\Dto\Interfaces\AttributeDtoInterface;
-use Expo\Dto\Traits\CastTrait;
-use Expo\Dto\Traits\StrTrait;
+use Atlcom\Dto\Interfaces\AttributeDtoInterface;
+use Atlcom\Dto\Traits\CastTrait;
+use Atlcom\Dto\Traits\StrTrait;
 use ReflectionException;
 use ReflectionNamedType;
 use ReflectionProperty;
@@ -18,22 +18,44 @@ use UnitEnum;
 /**
  * Абстрактный класс dto по умолчанию
  * @abstract
- * @version 2.42
+ * @version 2.43
  * 
- * @override (переопределяемые методы):
- * protected function defaults(): array { return []; } - Значения по умолчанию
- * protected function mappings(): array { return []; } - Маппинг имён свойств
- * protected function casts(): array { return []; } - Трансформация типов свойств
+ * @override protected function defaults(): array { return []; }
+ * Задает значения по умолчанию при создании dto
  * 
- * protected function onFilling(array &$array): void {} - Перед заполнением
- * protected function onFilled(array $array): void {} - После заполнения
- * protected function onMerging(array &$array): void {} - Перед объединением
- * protected function onMerged(array $array): void {} - После объединения
- * protected function onSerializing(array &$array): void {} - Перед сериализацией
- * protected function onSerialized(array &$array): void {} - После сериализации
- * protected function onException(Throwable $exception): void {} - Перед исключением
+ * @override protected function mappings(): array { return []; }
+ * Маппинг имён свойств в другие имена dto
  * 
- * @final
+ * @override protected function casts(): array { return []; }
+ * Трансформация типов свойств dto
+ * 
+ * @override protected function onFilling(array &$array): void {}
+ * Выполняется перед заполнением dto
+ * 
+ * @override protected function onFilled(array $array): void {}
+ * Выполняется после заполнения dto
+ * 
+ * @override protected function onMerging(array &$array): void {}
+ * Выполняется перед объединением dto
+ * 
+ * @override protected function onMerged(array $array): void {}
+ * Выполняется после объединения dto
+ * 
+ * @override protected function onSerializing(array &$array): void {}
+ * Выполняется перед сериализацией dto
+ * 
+ * @override protected function onSerialized(array &$array): void {}
+ * Выполняется после сериализации dto
+ * 
+ * @override protected function onAssigning(string $key, mixed $value): void
+ * Выполняется перед изменением значения свойства dto
+ * 
+ * @override protected function onAssigned(string $key): void
+ * Метод вызывается после изменения значения свойства dto
+ * 
+ * @override protected function onException(Throwable $exception): void {}
+ * Выполняется перед исключением dto
+ * 
  * @method autoCasts(bool $autoCasts = true)
  * @method autoMappings(bool $autoMappings = true)
  * @method onlyFilled(bool $onlyFilled = true)
@@ -43,6 +65,8 @@ use UnitEnum;
  * @method excludeKeys(string|array ...$data)
  * @method mappingKeys(string|array|object ...$data)
  * @method serializeKeys(string|array|object|bool ...$data)
+ * @method withProtectedKeys(string|array|bool ...$data)
+ * @method withPrivateKeys(string|array|bool ...$data)
  * @method for(object $object)
  * @method toArray(?bool $onlyFilled = null)
  * @method toJson($options = 0)
@@ -50,7 +74,7 @@ use UnitEnum;
  * @example
  * ExampleDto::fill([])->onlyKeys([])->excludeKeys([])->mappingKeys([])->serializeKeys(true)->toArray();
  * 
- * @see \Expo\Dto\Tests\DtoTest
+ * @see \Atlcom\Dto\Tests\DtoTest
  * @see ../../README.md
  */
 abstract class DefaultDto
@@ -66,6 +90,7 @@ abstract class DefaultDto
     /** Включает опцию авто сериализации объектов при заполнении dto или преобразовании в массив */
     public const AUTO_SERIALIZE_ENABLED = false;
 
+
     /**
      * construct
      * @version 2.30
@@ -77,6 +102,7 @@ abstract class DefaultDto
         is_null($data) ?: $this->fillFromArray(self::convertDataToArray($data));
     }
 
+
     /**
      * destruct
      * @version 2.30
@@ -86,13 +112,14 @@ abstract class DefaultDto
         $this->reset();
     }
 
-    /**
-     * Защищённые методы
-     */
+
+    //__________________________________________________________________________________________________________________
+    // Защищённые методы
+
 
     /**
      * Преобразование данных в массив
-     * @version 2.37
+     * @version 2.43
      *
      * @param mixed $data
      * @return array
@@ -101,6 +128,22 @@ abstract class DefaultDto
     {
         return match (true) {
             ($data instanceof self) => $data->toArray(),
+            (
+                is_object($data)
+                && $data::class === '\Illuminate\Database\Eloquent\Model'
+                && class_exists('\Illuminate\Support\Facades\Schema')
+            ) => $data->toArray() ?: array_diff_key(
+                array_fill_keys('\Illuminate\Support\Facades\Schema'::getColumnListing($data->getTable()), null),
+                array_fill_keys(is_array($data->getGuarded()) ? $data->getGuarded() : [], null),
+            ),
+            (
+                is_object($data)
+                && $data::class === '\Illuminate\Foundation\Http\FormRequest'
+            ) => $data->toArray(),
+            (
+                is_object($data)
+                && $data::class === '\Illuminate\Http\Request'
+            ) => $data->toArray(),
 
             is_object($data) && method_exists($data, 'toArray') => $data->toArray(),
             is_string($data) => self::jsonDecode($data),
@@ -110,6 +153,7 @@ abstract class DefaultDto
             default => [],
         };
     }
+
 
     /**
      * Преобразование данных из строки json в массив
@@ -131,9 +175,10 @@ abstract class DefaultDto
         return $array;
     }
 
+
     /**
      * Применение преобразований типов
-     * @version 2.41
+     * @version 2.43
      *
      * @param array $array
      * @return void
@@ -159,12 +204,12 @@ abstract class DefaultDto
 
             if ($autoMappings) {
                 $keyCamelCase = $this->toCamelCase($key);
-                $keySnakeCase = $this->toSnakeCase($key);
-                
                 if ($key !== $keyCamelCase && array_key_exists($keyCamelCase, $array)) {
                     $casted = $this->matchValue($key, $cast, $array[$keyCamelCase] ?? null);
                     $array[$keyCamelCase] = $casted;
                 }
+
+                $keySnakeCase = $this->toSnakeCase($key);
                 if ($key !== $keySnakeCase && array_key_exists($keySnakeCase, $array)) {
                     $casted = $this->matchValue($key, $cast, $array[$keySnakeCase] ?? null);
                     $array[$keySnakeCase] = $casted;
@@ -172,6 +217,7 @@ abstract class DefaultDto
             }
         }
     }
+
 
     /**
      * Сериализация массива
@@ -186,11 +232,7 @@ abstract class DefaultDto
         $casts = method_exists($this, 'casts') ? $this->casts() : [];
 
         foreach ($array as $key => $value) {
-            if (
-                is_null($serializeKeys)
-                || $serializeKeys === true
-                || (is_array($serializeKeys) && in_array($key, $serializeKeys, true))
-            ) {
+            if ($this->isOptionContainKey($serializeKeys, $key)) {
                 if (is_array($value)) {
                     array_walk_recursive(
                         $value,
@@ -204,9 +246,10 @@ abstract class DefaultDto
         }
     }
 
+    
     /**
      * Подготовка свойств по PSR (camelCase, snake_case)
-     * @version 2.33
+     * @version 2.43
      *
      * @param array $array
      * @param bool $forceMappings = false
@@ -219,14 +262,15 @@ abstract class DefaultDto
         if ($forceMappings || $autoMappings) {
             foreach ($array as $key => $value) {
                 $keyCamelCase = $this->toCamelCase($key);
-                $keySnakeCase = $this->toSnakeCase($key);
-    
                 isset($array[$keyCamelCase]) ?: $array[$keyCamelCase] = $value;
+                
+                $keySnakeCase = $this->toSnakeCase($key);
                 isset($array[$keySnakeCase]) ?: $array[$keySnakeCase] = $value;
             }
         }        
     }
 
+    
     /**
      * Получение значения маппинга
      * @version 2.39
@@ -256,6 +300,7 @@ abstract class DefaultDto
         return $this->getMappingValue($array[$key], $pathKey, $value);
     }
 
+    
     /**
      * Маппинг свойств
      * @version 2.40
@@ -292,12 +337,30 @@ abstract class DefaultDto
         }
     }
 
+
+    /**
+     * Проверка опции на содержание имени свойства
+     * @version 2.43
+     *
+     * @param mixed $option
+     * @param string $key
+     * @return bool
+     */
+    final protected function isOptionContainKey(mixed $option, string $key): bool
+    {
+        return is_null($option)
+            || ($option === true)
+            || (is_array($option) && in_array($key, $option, true))
+            || (is_string($option) && $option === $key);
+    }
+
+    
     /**
      * Магический метод присвоения свойствам
      * - При заданном массиве mappings происходит поиск свойства согласно маппингу
      * - При включенной опции autoMappings или AUTO_MAPPINGS_ENABLED, поиск подменяет стили переменной camel, snake
      * - При отсутствии свойства, будет выброшено исключение в методе onException
-     * @version 2.42
+     * @version 2.43
      *
      * @param mixed $name
      * @param mixed $value
@@ -311,7 +374,7 @@ abstract class DefaultDto
             $mappings = $this->mappings();
 
             if (property_exists($this, $name)) {
-                $this->$name = $value;
+                $this->assignValue($name, $value);
                 return;
             }
 
@@ -320,7 +383,7 @@ abstract class DefaultDto
                 && is_string($toName)
                 && property_exists($this, $toName)
             ) {
-                $this->$toName = $value;
+                $this->assignValue($toName, $value);
                 return;
             }
 
@@ -329,19 +392,19 @@ abstract class DefaultDto
                     && array_key_exists($name, $mappings)
                     && property_exists($this, $mappings[$name])
                 ) {
-                    $this->{$mappings[$name]} = $value;
+                    $this->assignValue($mappings[$name], $value);
                     return;
                 }
     
                 $keyCamelCase = $this->toCamelCase($name);
                 if ($name !== $keyCamelCase && property_exists($this, $keyCamelCase)) {
-                    $this->$keyCamelCase = $value;
+                    $this->assignValue($keyCamelCase, $value);
                     return;
                 }
     
                 $keySnakeCase = $this->toSnakeCase($name);
                 if ($name !== $keySnakeCase && property_exists($this, $keySnakeCase)) {
-                    $this->$keySnakeCase = $value;
+                    $this->assignValue($keySnakeCase, $value);
                     return;
                 }
             }
@@ -368,6 +431,7 @@ abstract class DefaultDto
         }
     }
 
+    
     /**
      * Магический метод обращения к свойствам
      * - При заданном массиве mappings происходит поиск свойства согласно маппингу
@@ -427,9 +491,10 @@ abstract class DefaultDto
         return null;
     }
 
+    
     /**
      * Присвоение значения свойству
-     * @version 2.41
+     * @version 2.43
      *
      * @param string $key
      * @param mixed $value
@@ -462,14 +527,19 @@ abstract class DefaultDto
                 };
             }
 
+            $this->onAssigning($key, $value);
+            $oldValue = $this->$key ?? null;
+
             $class = (new ReflectionProperty(get_class($this), $key))->getType();
-            if ($this->options()['autoCasts']
+            if (
+                $this->options()['autoCasts']
                 && $class instanceof ReflectionNamedType
                 && ($class = $class->getName()) && class_exists($class)
             ) {
                 switch (true) {
                     case $class === DateTime::class:
                     case $class === DateTimeInterface::class:
+                    case $class === 'Carbon\Carbon':
                         $this->$key = $value = $this->castToDateTime($value);
                         break;
 
@@ -509,6 +579,9 @@ abstract class DefaultDto
             } else {
                 $this->$key = $value ??= $defaultValue;
             }
+
+            !($oldValue !== $this->$key) ?: $this->onAssigned($key);
+
         } catch (Throwable $exception) {
             if (str_contains($exception->getMessage(), 'Cannot assign ')) {
                 $type = is_object($value) ? $this->toBasename(get_class($value)) : mb_strtoupper(gettype($value));
@@ -524,11 +597,12 @@ abstract class DefaultDto
         }
     }
 
-    /**
-     * Публичные методы
-     */
+    
+    //__________________________________________________________________________________________________________________
+    // Публичные методы
 
-    /**
+    
+     /**
      * Создает и заполняет dto
      * @version 2.30
      *
@@ -548,6 +622,7 @@ abstract class DefaultDto
         return static::fill($array);
     }
 
+    
     /**
      * Преобразование в другой dto
      * @version 2.34
@@ -566,6 +641,7 @@ abstract class DefaultDto
         return new $dtoClass($this);
     }
 
+    
     /**
      * Статический вызов создания объекта dto
      *
@@ -577,6 +653,7 @@ abstract class DefaultDto
         return new static($data);
     }
 
+    
     /**
      * Заполнение dto из объекта
      * @version 2.30
@@ -589,6 +666,7 @@ abstract class DefaultDto
         return $this->fillFromArray(self::convertDataToArray($data));
     }
 
+    
     /**
      * Заполнение dto из объекта
      *
@@ -600,6 +678,7 @@ abstract class DefaultDto
         return $this->fillFromData($data);
     }
 
+    
     /**
      * Заполнение dto из dto
      *
@@ -611,6 +690,7 @@ abstract class DefaultDto
         return $this->fillFromData($data);
     }
 
+    
     /**
      * Заполнение dto из json строки
      *
@@ -622,6 +702,7 @@ abstract class DefaultDto
         return $this->fillFromData($data);
     }
 
+    
     /**
      * Заполнение dto из массива
      * @version 2.41
@@ -654,6 +735,7 @@ abstract class DefaultDto
         return $this;
     }
 
+    
     /**
      * Объединить массив с dto
      * @version 2.30
@@ -697,6 +779,7 @@ abstract class DefaultDto
         return $this;
     }
 
+    
     /**
      * Преобразует массив или коллекцию данных в коллекцию из dto
      * @version 2.19
@@ -709,9 +792,14 @@ abstract class DefaultDto
         return array_map(static fn ($item) => static::fill($item), $items);
     }
 
+
+    //__________________________________________________________________________________________________________________
+    // Финальные методы
+
+    
     /**
      * Настройки для преобразования dto в массив
-     * @version 2.34
+     * @version 2.43
      *
      * @param bool|null $reset
      * @param bool|null $autoCasts
@@ -722,7 +810,9 @@ abstract class DefaultDto
      * @param array|null $includeArray
      * @param array|null $excludeKeys
      * @param array|null $mappingKeys
-     * @param array|bool|null $serializeKeys
+     * @param array|string|bool|null $serializeKeys
+     * @param array|string|bool|null $withProtectedKeys
+     * @param array|string|bool|null $withPrivateKeys
      * @return array
      */
     final protected function options(
@@ -736,6 +826,8 @@ abstract class DefaultDto
         ?array $excludeKeys = null,
         ?array $mappingKeys = null,
         array|bool|null $serializeKeys = null,
+        array|bool|null $withProtectedKeys = null,
+        array|bool|null $withPrivateKeys = null,
     ): array {
         static $options = [];
         $instance = md5(static::class . spl_object_id($this));
@@ -753,6 +845,8 @@ abstract class DefaultDto
         is_null($excludeKeys) ?: $options[$instance]['excludeKeys'] = $excludeKeys;
         is_null($mappingKeys) ?: $options[$instance]['mappingKeys'] = $mappingKeys;
         is_null($serializeKeys) ?: $options[$instance]['serializeKeys'] = $serializeKeys;
+        is_null($withProtectedKeys) ?: $options[$instance]['withProtectedKeys'] = $withProtectedKeys;
+        is_null($withPrivateKeys) ?: $options[$instance]['withPrivateKeys'] = $withPrivateKeys;
 
         return [
             'autoCasts' => $options[$instance]['autoCasts'] ?? static::AUTO_CASTS_ENABLED,
@@ -764,9 +858,12 @@ abstract class DefaultDto
             'excludeKeys' => $options[$instance]['excludeKeys'] ?? [],
             'mappingKeys' => $options[$instance]['mappingKeys'] ?? [],
             'serializeKeys' => $options[$instance]['serializeKeys'] ?? static::AUTO_SERIALIZE_ENABLED,
+            'withProtectedKeys' => $options[$instance]['withProtectedKeys'] ?? false,
+            'withPrivateKeys' => $options[$instance]['withPrivateKeys'] ?? false,
         ];
     }
 
+    
     /**
      * Устанавливает опции для преобразования dto в массив
      * @version 2.38
@@ -794,6 +891,7 @@ abstract class DefaultDto
         return $this;
     }
 
+    
     /**
      * Включает опцию при преобразовании в массив: автоматическое преобразование типов
      *
@@ -807,6 +905,7 @@ abstract class DefaultDto
         return $this;
     }
 
+    
     /**
      * Включает опцию при заполнении в свойств: автоматическое преобразование стиля свойств
      * @version 2.33
@@ -821,6 +920,7 @@ abstract class DefaultDto
         return $this;
     }
 
+    
     /**
      * Включает опцию при преобразовании в массив: только заполненные свойства
      *
@@ -834,6 +934,7 @@ abstract class DefaultDto
         return $this;
     }
 
+    
     /**
      * Включает опцию при преобразовании в массив: заполнить только указанными ключами
      * @version 2.30
@@ -861,6 +962,7 @@ abstract class DefaultDto
         return $this;
     }
 
+    
     /**
      * Включает опцию при преобразовании в массив: дополнить ключами в разных стилях
      *
@@ -874,6 +976,7 @@ abstract class DefaultDto
         return $this;
     }
 
+    
     /**
      * Включает опцию при преобразовании в массив: дополнить другим массивом
      *
@@ -896,6 +999,7 @@ abstract class DefaultDto
         return $this;
     }
 
+    
     /**
      * Включает опцию при преобразовании в массив: исключить из массива указанные ключи
      *
@@ -921,6 +1025,7 @@ abstract class DefaultDto
         return $this;
     }
 
+    
     /**
      * Включает опцию при преобразовании в массив: маппинг указанных ключей с новым именем
      *
@@ -943,9 +1048,10 @@ abstract class DefaultDto
         return $this;
     }
 
+    
     /**
      * Включает опцию при преобразовании в массив: преобразование вложенных свойств к массиву
-     * @version 2.36
+     * @version 2.43
      * 
      * @param string|array|object|bool ...$data
      * @return static
@@ -955,7 +1061,7 @@ abstract class DefaultDto
         $serializeKeys = $this->options()['serializeKeys'];
 
         foreach ($data as $key) {
-            if (is_bool($key)) {
+            if (is_bool($key) || is_string($key)) {
                 $serializeKeys = $key;
                 break;
             }
@@ -970,9 +1076,75 @@ abstract class DefaultDto
             ];
         }
         $this->options(serializeKeys: $serializeKeys);
+
         return $this;
     }
 
+    
+    /**
+     * Включает опцию при преобразовании в массив: преобразование protected свойств к массиву
+     * @version 2.43
+     * 
+     * @param string|array|object|bool ...$data
+     * @return static
+     */
+    final public function withProtectedKeys(string|array|object|bool ...$data): static
+    {
+        $withProtectedKeys = $this->options()['withProtectedKeys'];
+
+        foreach ($data as $key) {
+            if (is_bool($key) || is_string($key)) {
+                $withProtectedKeys = $key;
+                break;
+            }
+
+            !is_object($key) ?: $key = array_keys(self::convertDataToArray($key));
+            $withProtectedKeys = [
+                ...(is_array($withProtectedKeys) ? $withProtectedKeys : []),
+                ...(is_string($key)
+                    ? [$key]
+                    : (is_string(key($key)) ? [key($key)] : $key)
+                ),
+            ];
+        }
+        $this->options(withProtectedKeys: $withProtectedKeys);
+
+        return $this;
+    }
+
+    
+    /**
+     * Включает опцию при преобразовании в массив: преобразование private свойств к массиву
+     * @version 2.43
+     * 
+     * @param string|array|object|bool ...$data
+     * @return static
+     */
+    final public function withPrivateKeys(string|array|object|bool ...$data): static
+    {
+        $withPrivateKeys = $this->options()['withPrivateKeys'];
+
+        foreach ($data as $key) {
+            if (is_bool($key) || is_string($key)) {
+                $withPrivateKeys = $key;
+                break;
+            }
+
+            !is_object($key) ?: $key = array_keys(self::convertDataToArray($key));
+            $withPrivateKeys = [
+                ...(is_array($withPrivateKeys) ? $withPrivateKeys : []),
+                ...(is_string($key)
+                    ? [$key]
+                    : (is_string(key($key)) ? [key($key)] : $key)
+                ),
+            ];
+        }
+        $this->options(withPrivateKeys: $withPrivateKeys);
+
+        return $this;
+    }
+
+    
     /**
      * Включает опцию при преобразовании в массив: заполнить только свойствами из указанного объекта
      * @version 2.34
@@ -997,6 +1169,7 @@ abstract class DefaultDto
         return $this;
     }
 
+    
     /**
      * Сбрасывает все опции при преобразовании
      * @version 2.21
@@ -1010,9 +1183,10 @@ abstract class DefaultDto
         return $this;
     }
 
+    
     /**
      * Преобразование dto в массив
-     * @version 2.38
+     * @version 2.43
      *
      * @param bool|null $onlyFilled = false
      * @return array
@@ -1032,12 +1206,24 @@ abstract class DefaultDto
         $excludeKeys = $options['excludeKeys'];
         $mappingKeys = $options['mappingKeys'];
         $serializeKeys = $options['serializeKeys'];
+        $withProtectedKeys = $options['withProtectedKeys'];
+        $withPrivateKeys = $options['withPrivateKeys'];
         
-        $keys = array_filter(
-            (array)$this,
-            static fn ($key) => !in_array($key[0], ['_', '*', ' ', CHR(0)]),
-            ARRAY_FILTER_USE_KEY
-        );
+        $keys = [];
+        foreach ((array)$this as $key => $value) {
+            $keyParts = explode(CHR(0), $key);
+            $scope = $keyParts[1] ?? '';
+            $key = $keyParts[2] ?? $keyParts[0];
+
+            if (
+                ($scope === '')
+                || ($scope === '*' && $this->isOptionContainKey($withProtectedKeys, $key))
+                || ($scope !== '*' && $this->isOptionContainKey($withPrivateKeys, $key))
+            ) {
+                $keys[$key] = $value;
+            }
+        }
+
         !($includeStyles || $autoMappings) ?: $this->prepareStyles($keys, true);
 
         foreach ($keys as $key => $value) {
@@ -1060,6 +1246,7 @@ abstract class DefaultDto
         return $array;
     }
 
+    
     /**
      * Преобразование dto в json
      * @version 2.34
@@ -1072,6 +1259,7 @@ abstract class DefaultDto
         return json_encode($this->toArray(), $options ?: JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
     }
 
+    
     /**
      * Получение хеша dto
      * @version 2.34
@@ -1094,6 +1282,11 @@ abstract class DefaultDto
         );
     }
 
+    
+    //__________________________________________________________________________________________________________________
+    // Переопределяемые методы
+
+
     /**
      * @override
      * Возвращает массив значений по умолчанию
@@ -1105,6 +1298,7 @@ abstract class DefaultDto
         return [];
     }
 
+    
     /**
      * @override
      * Возвращает массив преобразований типов
@@ -1116,6 +1310,7 @@ abstract class DefaultDto
         return [];
     }
 
+    
     /**
      * @override
      * Возвращает массив преобразований свойств
@@ -1127,6 +1322,7 @@ abstract class DefaultDto
         return [];
     }
 
+    
     /**
      * @override
      * Метод вызывается до заполнения dto
@@ -1145,6 +1341,7 @@ abstract class DefaultDto
         ) ?: $array['id'] = (int)($array['id'] ?? 0);
     }
 
+    
     /**
      * @override
      * Метод вызывается после заполнения dto
@@ -1156,6 +1353,7 @@ abstract class DefaultDto
     {
     }
 
+    
     /**
      * @override
      * Метод вызывается до объединения с dto
@@ -1167,6 +1365,7 @@ abstract class DefaultDto
     {
     }
 
+    
     /**
      * @override
      * Метод вызывается после объединения с dto
@@ -1178,6 +1377,7 @@ abstract class DefaultDto
     {
     }
 
+    
     /**
      * @override
      * Метод вызывается до преобразования dto в массив
@@ -1189,6 +1389,7 @@ abstract class DefaultDto
     {
     }
 
+    
     /**
      * @override
      * Метод вызывается после преобразования dto в массив
@@ -1200,6 +1401,34 @@ abstract class DefaultDto
     {
     }
 
+
+    /**
+     * @override
+     * Метод вызывается перед изменением значения свойства dto
+     * @version 2.43
+     *
+     * @param string $key
+     * @param mixed $value
+     * @return void
+     */
+    protected function onAssigning(string $key, mixed $value): void
+    {
+    }
+
+    
+    /**
+     * @override
+     * Метод вызывается после изменения значения свойства dto
+     * @version 2.43
+     *
+     * @param string $key
+     * @return void
+     */
+    protected function onAssigned(string $key): void
+    {
+    }
+
+    
     /**
      * @override
      * Метод вызывается во время исключения при заполнении dto

@@ -1,6 +1,6 @@
 <?php
 
-namespace Expo\Dto\Traits;
+namespace Atlcom\Dto\Traits;
 
 trait StrTrait
 {
