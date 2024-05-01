@@ -6,8 +6,6 @@ use BackedEnum;
 use DateTime;
 use DateTimeInterface;
 use Exception;
-use JsonException;
-use ReflectionException;
 use ReflectionNamedType;
 use ReflectionProperty;
 use Throwable;
@@ -27,8 +25,7 @@ trait CastTrait
      * @param string|array|callable $type
      * @param mixed $value
      * @return mixed
-     * @throws Throwable
-     * @version 2.16
+     * @throws Exception
      */
     protected function matchValue(string $key, string|array|callable $type, mixed $value): mixed
     {
@@ -41,7 +38,7 @@ trait CastTrait
                 'array', 'arr' => $this->castToArray($value),
                 'datetime', 'date' => $this->castToDateTime($value),
                 'positive' => $this->castToPositive($value),
-                'carbon', '\carbon\carbon', '\illuminate\support\carbon' => '\Carbon\Carbon'::parse($value),
+                'carbon', 'carbon\carbon', 'illuminate\support\carbon' => 'Carbon\Carbon'::parse($value),
 
                 default => match (true) {
                         is_string($type) && class_exists($type) => $this->castToObject($key, $type, $value),
@@ -80,13 +77,13 @@ trait CastTrait
             $value instanceof BackedEnum => $value->value,
 
             mb_strtolower($type) === 'carbon',
-            mb_strtolower($type) === '\carbon\carbon',
-            mb_strtolower($type) === '\illuminate\support\carbon'
+            mb_strtolower($type) === 'carbon\carbon',
+            mb_strtolower($type) === 'illuminate\support\carbon'
             => $value->toDateTimeString(),
 
-            mb_strtolower($type) === '\libphonenumber\phonenumber'
-            => '\libphonenumber\PhoneNumberUtil'::getInstance()
-                ->format($value, '\libphonenumber\PhoneNumberFormat'::E164),
+            mb_strtolower($type) === 'libphonenumber\phonenumber'
+            => 'libphonenumber\PhoneNumberUtil'::getInstance()
+                ->format($value, 'libphonenumber\PhoneNumberFormat'::E164),
 
             is_array($value) => array_map(fn ($item) => $this->serializeValue($key, $type, $item), $value),
             is_object($value) && method_exists($value, 'toArray') => $value->toArray(),
@@ -104,7 +101,6 @@ trait CastTrait
      * @param string $class
      * @param mixed $value
      * @return mixed
-     * @throws ReflectionException
      * @throws Exception
      */
     protected function castToObject(string $key, string $class, mixed $value): mixed
@@ -217,7 +213,6 @@ trait CastTrait
      *
      * @param mixed $value
      * @return array|null
-     * @throws JsonException
      */
     protected function castToArray(mixed $value): array|null
     {
@@ -240,6 +235,7 @@ trait CastTrait
      * @param array|string $type
      * @param mixed $value
      * @return array
+     * @throws Exception
      */
     protected function castToArrayOfObjects(string $key, array|string $type, mixed $value): array
     {

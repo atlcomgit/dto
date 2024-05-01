@@ -11,8 +11,8 @@ use PHPUnit\Framework\TestCase;
 
 class SumDto extends \Atlcom\Dto\DefaultDto
 {
-    public int $x;
-    public int $y;
+    protected int $x;
+    protected int $y;
     protected int $sum = 0;
 
     protected function onAssigned(string $key): void
@@ -23,7 +23,7 @@ class SumDto extends \Atlcom\Dto\DefaultDto
 
 /**
  * Тест 32
- * Заполнение Dto с событием onChange (после изменения)
+ * Заполнение Dto с событием onAssigned (после изменения)
  */
 
 final class Example32Test extends TestCase
@@ -36,8 +36,23 @@ final class Example32Test extends TestCase
         $sum = $x + $y;
 
         $sumDto = SumDto::create(x: $x, y: $y);
-        var_dump($sumDto->toArray());
 
+        $this->assertObjectHasProperty('sum', $sumDto);
         $this->assertEquals($sum, $sumDto->sum);
+
+        $sumDto->x = $x = 2;
+        $sumDto->y = $y = 3;
+        $sum = $x + $y;
+        $this->assertEquals($sum, $sumDto->sum);
+
+        $sumDto->sum = 0;
+        $this->assertEquals($sum, $sumDto->sum);
+
+        $sumArray = $sumDto->toArray();
+        $this->assertArrayNotHasKey('sum', $sumArray);
+
+        $sumArray = $sumDto->withProtectedKeys(true)->toArray();
+        $this->assertArrayHasKey('sum', $sumArray);
+        $this->assertEquals($sum, $sumArray['sum']);
     }
 }

@@ -65,6 +65,8 @@ use UnitEnum;
  * @method excludeKeys(string|array ...$data)
  * @method mappingKeys(string|array|object ...$data)
  * @method serializeKeys(string|array|object|bool ...$data)
+ * @method withProtectedKeys(string|array|bool ...$data)
+ * @method withPrivateKeys(string|array|bool ...$data)
  * @method for(object $object)
  * @method toArray(?bool $onlyFilled = null)
  * @method toJson($options = 0)
@@ -230,11 +232,7 @@ abstract class DefaultDto
         $casts = method_exists($this, 'casts') ? $this->casts() : [];
 
         foreach ($array as $key => $value) {
-            if (
-                is_null($serializeKeys)
-                || $serializeKeys === true
-                || (is_array($serializeKeys) && in_array($key, $serializeKeys, true))
-            ) {
+            if ($this->isOptionContainKey($serializeKeys, $key)) {
                 if (is_array($value)) {
                     array_walk_recursive(
                         $value,
@@ -337,6 +335,23 @@ abstract class DefaultDto
                 continue;
             }
         }
+    }
+
+
+    /**
+     * Проверка опции на содержание имени свойства
+     * @version 2.43
+     *
+     * @param mixed $option
+     * @param string $key
+     * @return bool
+     */
+    final protected function isOptionContainKey(mixed $option, string $key): bool
+    {
+        return is_null($option)
+            || ($option === true)
+            || (is_array($option) && in_array($key, $option, true))
+            || (is_string($option) && $option === $key);
     }
 
     
@@ -524,7 +539,7 @@ abstract class DefaultDto
                 switch (true) {
                     case $class === DateTime::class:
                     case $class === DateTimeInterface::class:
-                    case $class === '\Carbon\Carbon':
+                    case $class === 'Carbon\Carbon':
                         $this->$key = $value = $this->castToDateTime($value);
                         break;
 
@@ -784,7 +799,7 @@ abstract class DefaultDto
     
     /**
      * Настройки для преобразования dto в массив
-     * @version 2.34
+     * @version 2.43
      *
      * @param bool|null $reset
      * @param bool|null $autoCasts
@@ -795,7 +810,9 @@ abstract class DefaultDto
      * @param array|null $includeArray
      * @param array|null $excludeKeys
      * @param array|null $mappingKeys
-     * @param array|bool|null $serializeKeys
+     * @param array|string|bool|null $serializeKeys
+     * @param array|string|bool|null $withProtectedKeys
+     * @param array|string|bool|null $withPrivateKeys
      * @return array
      */
     final protected function options(
@@ -809,6 +826,8 @@ abstract class DefaultDto
         ?array $excludeKeys = null,
         ?array $mappingKeys = null,
         array|bool|null $serializeKeys = null,
+        array|bool|null $withProtectedKeys = null,
+        array|bool|null $withPrivateKeys = null,
     ): array {
         static $options = [];
         $instance = md5(static::class . spl_object_id($this));
@@ -826,6 +845,8 @@ abstract class DefaultDto
         is_null($excludeKeys) ?: $options[$instance]['excludeKeys'] = $excludeKeys;
         is_null($mappingKeys) ?: $options[$instance]['mappingKeys'] = $mappingKeys;
         is_null($serializeKeys) ?: $options[$instance]['serializeKeys'] = $serializeKeys;
+        is_null($withProtectedKeys) ?: $options[$instance]['withProtectedKeys'] = $withProtectedKeys;
+        is_null($withPrivateKeys) ?: $options[$instance]['withPrivateKeys'] = $withPrivateKeys;
 
         return [
             'autoCasts' => $options[$instance]['autoCasts'] ?? static::AUTO_CASTS_ENABLED,
@@ -837,6 +858,8 @@ abstract class DefaultDto
             'excludeKeys' => $options[$instance]['excludeKeys'] ?? [],
             'mappingKeys' => $options[$instance]['mappingKeys'] ?? [],
             'serializeKeys' => $options[$instance]['serializeKeys'] ?? static::AUTO_SERIALIZE_ENABLED,
+            'withProtectedKeys' => $options[$instance]['withProtectedKeys'] ?? false,
+            'withPrivateKeys' => $options[$instance]['withPrivateKeys'] ?? false,
         ];
     }
 
@@ -1028,7 +1051,7 @@ abstract class DefaultDto
     
     /**
      * Включает опцию при преобразовании в массив: преобразование вложенных свойств к массиву
-     * @version 2.36
+     * @version 2.43
      * 
      * @param string|array|object|bool ...$data
      * @return static
@@ -1038,7 +1061,7 @@ abstract class DefaultDto
         $serializeKeys = $this->options()['serializeKeys'];
 
         foreach ($data as $key) {
-            if (is_bool($key)) {
+            if (is_bool($key) || is_string($key)) {
                 $serializeKeys = $key;
                 break;
             }
@@ -1053,6 +1076,70 @@ abstract class DefaultDto
             ];
         }
         $this->options(serializeKeys: $serializeKeys);
+
+        return $this;
+    }
+
+    
+    /**
+     * Включает опцию при преобразовании в массив: преобразование protected свойств к массиву
+     * @version 2.43
+     * 
+     * @param string|array|object|bool ...$data
+     * @return static
+     */
+    final public function withProtectedKeys(string|array|object|bool ...$data): static
+    {
+        $withProtectedKeys = $this->options()['withProtectedKeys'];
+
+        foreach ($data as $key) {
+            if (is_bool($key) || is_string($key)) {
+                $withProtectedKeys = $key;
+                break;
+            }
+
+            !is_object($key) ?: $key = array_keys(self::convertDataToArray($key));
+            $withProtectedKeys = [
+                ...(is_array($withProtectedKeys) ? $withProtectedKeys : []),
+                ...(is_string($key)
+                    ? [$key]
+                    : (is_string(key($key)) ? [key($key)] : $key)
+                ),
+            ];
+        }
+        $this->options(withProtectedKeys: $withProtectedKeys);
+
+        return $this;
+    }
+
+    
+    /**
+     * Включает опцию при преобразовании в массив: преобразование private свойств к массиву
+     * @version 2.43
+     * 
+     * @param string|array|object|bool ...$data
+     * @return static
+     */
+    final public function withPrivateKeys(string|array|object|bool ...$data): static
+    {
+        $withPrivateKeys = $this->options()['withPrivateKeys'];
+
+        foreach ($data as $key) {
+            if (is_bool($key) || is_string($key)) {
+                $withPrivateKeys = $key;
+                break;
+            }
+
+            !is_object($key) ?: $key = array_keys(self::convertDataToArray($key));
+            $withPrivateKeys = [
+                ...(is_array($withPrivateKeys) ? $withPrivateKeys : []),
+                ...(is_string($key)
+                    ? [$key]
+                    : (is_string(key($key)) ? [key($key)] : $key)
+                ),
+            ];
+        }
+        $this->options(withPrivateKeys: $withPrivateKeys);
 
         return $this;
     }
@@ -1099,7 +1186,7 @@ abstract class DefaultDto
     
     /**
      * Преобразование dto в массив
-     * @version 2.38
+     * @version 2.43
      *
      * @param bool|null $onlyFilled = false
      * @return array
@@ -1119,12 +1206,24 @@ abstract class DefaultDto
         $excludeKeys = $options['excludeKeys'];
         $mappingKeys = $options['mappingKeys'];
         $serializeKeys = $options['serializeKeys'];
+        $withProtectedKeys = $options['withProtectedKeys'];
+        $withPrivateKeys = $options['withPrivateKeys'];
         
-        $keys = array_filter(
-            (array)$this,
-            static fn ($key) => !in_array($key[0], ['_', '*', ' ', CHR(0)]),
-            ARRAY_FILTER_USE_KEY
-        );
+        $keys = [];
+        foreach ((array)$this as $key => $value) {
+            $keyParts = explode(CHR(0), $key);
+            $scope = $keyParts[1] ?? '';
+            $key = $keyParts[2] ?? $keyParts[0];
+
+            if (
+                ($scope === '')
+                || ($scope === '*' && $this->isOptionContainKey($withProtectedKeys, $key))
+                || ($scope !== '*' && $this->isOptionContainKey($withPrivateKeys, $key))
+            ) {
+                $keys[$key] = $value;
+            }
+        }
+
         !($includeStyles || $autoMappings) ?: $this->prepareStyles($keys, true);
 
         foreach ($keys as $key => $value) {
