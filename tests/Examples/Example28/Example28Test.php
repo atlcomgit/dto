@@ -1,6 +1,6 @@
 <?php
 
-namespace Atlcom\Dto\Tests\Examples\Example28;
+namespace Atlcom\Tests\Examples\Example28;
 
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -9,19 +9,19 @@ use PHPUnit\Framework\TestCase;
  * Примеры классов dto для теста
  */
 
-class MarkDto extends \Atlcom\Dto\DefaultDto
+class MarkDto extends \Atlcom\Dto
 {
     public int $id;
     public string $markName;
 }
 
-class ModelDto extends \Atlcom\Dto\DefaultDto
+class ModelDto extends \Atlcom\Dto
 {
     public int $id;
     public string $modelName;
 }
 
-class CarDto extends \Atlcom\Dto\DefaultDto
+class CarDto extends \Atlcom\Dto
 {
     public MarkDto $markDto;
     public ModelDto $modelDto;

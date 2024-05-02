@@ -1,14 +1,14 @@
 <?php
 declare(strict_types=1);
 
-namespace Atlcom\Dto;
+namespace Atlcom;
 
 use DateTime;
 use DateTimeInterface;
 use Exception;
-use Atlcom\Dto\Interfaces\AttributeDtoInterface;
-use Atlcom\Dto\Traits\CastTrait;
-use Atlcom\Dto\Traits\StrTrait;
+use Atlcom\Interfaces\AttributeDtoInterface;
+use Atlcom\Traits\CastTrait;
+use Atlcom\Traits\StrTrait;
 use ReflectionException;
 use ReflectionNamedType;
 use ReflectionProperty;
@@ -18,7 +18,7 @@ use UnitEnum;
 /**
  * Абстрактный класс dto по умолчанию
  * @abstract
- * @version 2.43
+ * @version 2.44
  * 
  * @override protected function defaults(): array { return []; }
  * Задает значения по умолчанию при создании dto
@@ -74,10 +74,10 @@ use UnitEnum;
  * @example
  * ExampleDto::fill([])->onlyKeys([])->excludeKeys([])->mappingKeys([])->serializeKeys(true)->toArray();
  * 
- * @see \Atlcom\Dto\Tests\DtoTest
+ * @see \Atlcom\Tests\DtoTest
  * @see ../../README.md
  */
-abstract class DefaultDto
+abstract class Dto
 {
     use CastTrait;
     use StrTrait;

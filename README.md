@@ -1,13 +1,16 @@
 # Data Transfer Object (dto)
 
 Dto используется для передачи типизированных данных между методами/сервисами, подготовки данных для сохранения в БД или отправки http запросов, с трансформацией в нужный формат.\
-Класс DefaultDto расширяет класс Dto для реализации возможности управления объектом и его данными:\
+Класс Dto расширяет класс Dto для реализации возможности управления объектом и его данными:\
     - Управление преобразованием типов;\
     - Управление дефолтными значениями;\
     - Управление маппингом свойств при заполнении;\
     - Управление сериализацией объекта в массив или json.\
 
-> Для реализации функционала работы с Dto необходимо расширить объект с публичными свойствами от класса **\Atlcom\Dto\DefaultDto**.
+> Для реализации функционала работы с Dto необходимо расширить объект с публичными свойствами от класса **\Atlcom\Dto**.
+
+*Версия 2.44*
+- Класс DefaultDto переименован в Dto
 
 *Версия 2.43*
 - Добавлены методы onAssigning, onAssigned
@@ -181,13 +184,13 @@ $exampleArray = $exampleDto->for(CarEntity::class)->toArray(true);
 [Открыть тест](tests/Examples/Example01/Example01Test.php)
 
 ```php
-class IdDto extends \Atlcom\Dto\DefaultDto
+class IdDto extends \Atlcom\Dto
 {
     public int $markId;
     public int $modelId;
 }
 
-class CarDto extends \Atlcom\Dto\DefaultDto
+class CarDto extends \Atlcom\Dto
 {
     public string $markName;
     public string $modelName;
@@ -241,7 +244,7 @@ print_r($carDto->toArray());
 [Открыть тест](tests/Examples/Example02/Example02Test.php)
 
 ```php
-class CarDto extends \Atlcom\Dto\DefaultDto
+class CarDto extends \Atlcom\Dto
 {
     public string $markName;
     public string $modelName;
@@ -276,7 +279,7 @@ print_r($carDto->toArray());
 [Открыть тест](tests/Examples/Example03/Example03Test.php)
 
 ```php
-class CarDto extends \Atlcom\Dto\DefaultDto
+class CarDto extends \Atlcom\Dto
 {
     public string $markName;
     public string $modelName;
@@ -311,7 +314,7 @@ print_r($carDto2->toArray());
 [Открыть тест](tests/Examples/Example04/Example04Test.php)
 
 ```php
-class CarDto extends \Atlcom\Dto\DefaultDto
+class CarDto extends \Atlcom\Dto
 {
     public string $markName;
     public string $modelName;
@@ -342,7 +345,7 @@ print_r($carDto->toArray());
 [Открыть тест](tests/Examples/Example05/Example05Test.php)
 
 ```php
-class CarDto extends \Atlcom\Dto\DefaultDto
+class CarDto extends \Atlcom\Dto
 {
     public string $markName = 'Lexus';
     public string $modelName;
@@ -379,7 +382,7 @@ print_r($carDto->toArray());
 [Открыть тест](tests/Examples/Example06/Example06Test.php)
 
 ```php
-class CarDto extends \Atlcom\Dto\DefaultDto
+class CarDto extends \Atlcom\Dto
 {
     public string $markName;
     public string $modelName;
@@ -420,7 +423,7 @@ print_r($carDto->toArray());
 [Открыть тест](tests/Examples/Example07/Example07Test.php)
 
 ```php
-class CarDto extends \Atlcom\Dto\DefaultDto
+class CarDto extends \Atlcom\Dto
 {
     public string $markName;
     public string $modelName;
@@ -473,7 +476,7 @@ enum CarTypeEnum: string
 }
 
 #[\Attribute(\Attribute::TARGET_PROPERTY)]
-class YearCast implements \Atlcom\Dto\Interfaces\AttributeDtoInterface
+class YearCast implements \Atlcom\Interfaces\AttributeDtoInterface
 {
     public function __construct(private ?bool $enabled = null)
     {
@@ -485,7 +488,7 @@ class YearCast implements \Atlcom\Dto\Interfaces\AttributeDtoInterface
     }
 }
 
-class CarDto extends \Atlcom\Dto\DefaultDto
+class CarDto extends \Atlcom\Dto
 {
     public int $id;
     public CarTypeEnum $type;
@@ -534,19 +537,19 @@ print_r($carDto->toArray());
 [Открыть тест](tests/Examples/Example09/Example09Test.php)
 
 ```php
-class MarkDto extends \Atlcom\Dto\DefaultDto
+class MarkDto extends \Atlcom\Dto
 {
     public int $id;
     public string $markName;
 }
 
-class ModelDto extends \Atlcom\Dto\DefaultDto
+class ModelDto extends \Atlcom\Dto
 {
     public int $id;
     public string $modelName;
 }
 
-class CarDto extends \Atlcom\Dto\DefaultDto
+class CarDto extends \Atlcom\Dto
 {
     public MarkDto $markDto;
     public ModelDto $modelDto;
@@ -592,7 +595,7 @@ print_r($carDto->toArray());
 [Открыть тест](tests/Examples/Example10/Example10Test.php)
 
 ```php
-class MarkDto extends \Atlcom\Dto\DefaultDto
+class MarkDto extends \Atlcom\Dto
 {
     public int $id;
     public string $markName;
@@ -604,7 +607,7 @@ class MarkDto extends \Atlcom\Dto\DefaultDto
     }
 }
 
-class ModelDto extends \Atlcom\Dto\DefaultDto
+class ModelDto extends \Atlcom\Dto
 {
     public int $id;
     public string $modelName;
@@ -616,7 +619,7 @@ class ModelDto extends \Atlcom\Dto\DefaultDto
     }
 }
 
-class CarDto extends \Atlcom\Dto\DefaultDto
+class CarDto extends \Atlcom\Dto
 {
     public MarkDto $markDto;
     public ModelDto $modelDto;
@@ -675,7 +678,7 @@ print_r($carDto->serializeKeys()->toArray());
 [Открыть тест](tests/Examples/Example11/Example11Test.php)
 
 ```php
-class CarDto extends \Atlcom\Dto\DefaultDto
+class CarDto extends \Atlcom\Dto
 {
     public string $markName;
     public string $modelName;
@@ -711,7 +714,7 @@ print_r($carDto->toArray());
 [Открыть тест](tests/Examples/Example12/Example12Test.php)
 
 ```php
-class CarDto extends \Atlcom\Dto\DefaultDto
+class CarDto extends \Atlcom\Dto
 {
     public ?string $markName;
     public ?string $modelName;
@@ -747,7 +750,7 @@ print_r($carDto->toArray());
 [Открыть тест](tests/Examples/Example13/Example13Test.php)
 
 ```php
-class CarDto extends \Atlcom\Dto\DefaultDto
+class CarDto extends \Atlcom\Dto
 {
     public string $markName;
     public ?string $modelName;
@@ -795,7 +798,7 @@ print_r($carDto->toArray());
 [Открыть тест](tests/Examples/Example14/Example14Test.php)
 
 ```php
-class CarDto extends \Atlcom\Dto\DefaultDto
+class CarDto extends \Atlcom\Dto
 {
     public string $markName;
     public ?string $modelName;
@@ -843,7 +846,7 @@ print_r($carDto->toArray());
 [Открыть тест](tests/Examples/Example15/Example15Test.php)
 
 ```php
-class CarDto extends \Atlcom\Dto\DefaultDto
+class CarDto extends \Atlcom\Dto
 {
     public string $markName = 'Lexus';
 
@@ -877,7 +880,7 @@ print_r($carArray);
 [Открыть тест](tests/Examples/Example16/Example16Test.php)
 
 ```php
-class CarDto extends \Atlcom\Dto\DefaultDto
+class CarDto extends \Atlcom\Dto
 {
     public string $markName = 'Lexus';
     public string $modelName = '';
@@ -912,7 +915,7 @@ print_r($carArray);
 [Открыть тест](tests/Examples/Example17/Example17Test.php)
 
 ```php
-class CarDto extends \Atlcom\Dto\DefaultDto
+class CarDto extends \Atlcom\Dto
 {
     public string $markName;
     public string $modelName;
@@ -942,7 +945,7 @@ $carDto = CarDto::create();
 [Открыть тест](tests/Examples/Example18/Example18Test.php)
 
 ```php
-class CarDto extends \Atlcom\Dto\DefaultDto
+class CarDto extends \Atlcom\Dto
 {
     public const AUTO_MAPPINGS_ENABLED = true;
 
@@ -973,7 +976,7 @@ print_r($carDto->toArray());
 ###### Пример 19
 **Заполнение Dto с автоматическим преобразованием типов.**\
 Создание объекта Dto и заполнение его свойств с автоматическим преобразованием типов значений в передаваемом массиве.\
-Поддерживаются: DefaultDto, DateTime, Enum, string, integer, float, bool, null.\
+Поддерживаются: Dto, DateTime, Enum, string, integer, float, bool, null.\
 
 [Открыть тест](tests/Examples/Example19/Example19Test.php)
 
@@ -984,7 +987,7 @@ enum CarTypeEnum: string
     case NEW = 'new';
 }
 
-class CarDto extends \Atlcom\Dto\DefaultDto
+class CarDto extends \Atlcom\Dto
 {
     public const AUTO_CASTS_ENABLED = true;
 
@@ -1018,7 +1021,7 @@ print_r($carDto->toArray());
 ###### Пример 20
 **Сериализация Dto в массив с автоматическим преобразованием к скалярным типам.**\
 Преобразование свойств объекта Dto к массиву с автоматическим преобразованием типов к скалярному.\
-Поддерживаются: DefaultDto, DateTime, Enum, object, array.\
+Поддерживаются: Dto, DateTime, Enum, object, array.\
 
 [Открыть тест](tests/Examples/Example20/Example20Test.php)
 
@@ -1029,7 +1032,7 @@ class CarTypeEnum
     case NEW = 'new';
 }
 
-class CarDto extends \Atlcom\Dto\DefaultDto
+class CarDto extends \Atlcom\Dto
 {
     public const AUTO_CASTS_ENABLED = true;
     public const AUTO_SERIALIZE_ENABLED = true;
@@ -1068,7 +1071,7 @@ print_r($carDto->toArray());
 [Открыть тест](tests/Examples/Example21/Example21Test.php)
 
 ```php
-class CarDto extends \Atlcom\Dto\DefaultDto
+class CarDto extends \Atlcom\Dto
 {
     public string $markName = 'Lexus';
     public string $modelName = 'RX500';
@@ -1101,7 +1104,7 @@ print_r($carDto->toArray());
 [Открыть тест](tests/Examples/Example22/Example22Test.php)
 
 ```php
-class CarDto extends \Atlcom\Dto\DefaultDto
+class CarDto extends \Atlcom\Dto
 {
     public string $markName = 'Lexus';
     public ?string $modelName = null;
@@ -1130,7 +1133,7 @@ print_r($carDto->onlyFilled()->toArray());
 [Открыть тест](tests/Examples/Example23/Example23Test.php)
 
 ```php
-class CarDto extends \Atlcom\Dto\DefaultDto
+class CarDto extends \Atlcom\Dto
 {
     public string $markName = 'Lexus';
     public string $modelName = 'RX500';
@@ -1159,7 +1162,7 @@ print_r($carDto->onlyKeys(['markName'])->toArray());
 [Открыть тест](tests/Examples/Example24/Example24Test.php)
 
 ```php
-class CarDto extends \Atlcom\Dto\DefaultDto
+class CarDto extends \Atlcom\Dto
 {
     public string $markName = 'Lexus';
     public string $modelName = 'RX500';
@@ -1191,7 +1194,7 @@ print_r($carDto->includeStyles()->toArray());
 [Открыть тест](tests/Examples/Example25/Example25Test.php)
 
 ```php
-class CarDto extends \Atlcom\Dto\DefaultDto
+class CarDto extends \Atlcom\Dto
 {
     public string $markName = 'Lexus';
 }
@@ -1220,7 +1223,7 @@ print_r($carDto->includeArray(['modelName' => 'RX500'])->toArray());
 [Открыть тест](tests/Examples/Example26/Example26Test.php)
 
 ```php
-class CarDto extends \Atlcom\Dto\DefaultDto
+class CarDto extends \Atlcom\Dto
 {
     public string $markName = 'Lexus';
     public string $modelName = 'RX500';
@@ -1249,7 +1252,7 @@ print_r($carDto->excludeKeys(['modelName'])->toArray());
 [Открыть тест](tests/Examples/Example27/Example27Test.php)
 
 ```php
-class CarDto extends \Atlcom\Dto\DefaultDto
+class CarDto extends \Atlcom\Dto
 {
     public string $markName = 'Lexus';
     public string $modelName = 'RX500';
@@ -1279,19 +1282,19 @@ print_r($carDto->mappingKeys(['markName' => 'mark_name'])->toArray());
 [Открыть тест](tests/Examples/Example28/Example28Test.php)
 
 ```php
-class MarkDto extends \Atlcom\Dto\DefaultDto
+class MarkDto extends \Atlcom\Dto
 {
     public int $id;
     public string $markName;
 }
 
-class ModelDto extends \Atlcom\Dto\DefaultDto
+class ModelDto extends \Atlcom\Dto
 {
     public int $id;
     public string $modelName;
 }
 
-class CarDto extends \Atlcom\Dto\DefaultDto
+class CarDto extends \Atlcom\Dto
 {
     public MarkDto $markDto;
     public ModelDto $modelDto;
@@ -1340,7 +1343,7 @@ print_r($carDto->serializeKeys(true)->toArray());
 [Открыть тест](tests/Examples/Example29/Example29Test.php)
 
 ```php
-class CarDto extends \Atlcom\Dto\DefaultDto
+class CarDto extends \Atlcom\Dto
 {
     public string $markName = 'Lexus';
     public string $modelName = 'RX500';
@@ -1368,7 +1371,7 @@ print_r(CarDto::create()->toArray());
 [Открыть тест](tests/Examples/Example30/Example30Test.php)
 
 ```php
-class CarDto extends \Atlcom\Dto\DefaultDto
+class CarDto extends \Atlcom\Dto
 {
     public string $markName = 'Lexus';
     public string $modelName = 'RX500';
@@ -1394,25 +1397,25 @@ echo CarDto::create()->toJson();
 [Открыть тест](tests/Examples/Example31/Example31Test.php)
 
 ```php
-class MarkDto extends \Atlcom\Dto\DefaultDto
+class MarkDto extends \Atlcom\Dto
 {
     public int $id;
     public string $markName;
 }
 
-class ModelDto extends \Atlcom\Dto\DefaultDto
+class ModelDto extends \Atlcom\Dto
 {
     public int $id;
     public string $modelName;
 }
 
-class CarDto extends \Atlcom\Dto\DefaultDto
+class CarDto extends \Atlcom\Dto
 {
     /** @var array<MarkDto> */
     public array $markNames;
 
     /** @var array<ModelDto> */
-    #[\Atlcom\Dto\Attributes\Collection(ModelDto::class)]
+    #[\Atlcom\Attributes\Collection(ModelDto::class)]
     public array $modelNames;
 
     protected function casts(): array
@@ -1461,10 +1464,10 @@ print_r($carDto->toArray());
 **Заполнение Dto с событием onAssigned (после изменения).**\
 Создание объекта Dto и обработка события изменения его свойств.\
 
-[Открыть тест](tests/Examples/Example31/Example31Test.php)
+[Открыть тест](tests/Examples/Example32/Example32Test.php)
 
 ```php
-class SumDto extends \Atlcom\Dto\DefaultDto
+class SumDto extends \Atlcom\Dto
 {
     protected int $x;
     protected int $y;

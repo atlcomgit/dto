@@ -1,10 +1,10 @@
 <?php
 
-namespace Atlcom\Dto\Tests\Other;
+namespace Atlcom\Tests\Other;
 
-use Atlcom\Dto\DefaultDto;
+use Atlcom\Dto;
 
-class OnFilledDto extends DefaultDto
+class OnFilledDto extends Dto
 {
     public string $name;
     public int $value;

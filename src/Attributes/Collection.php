@@ -1,9 +1,9 @@
 <?php
 
-namespace Atlcom\Dto\Attributes;
+namespace Atlcom\Attributes;
 
 use Attribute;
-use Atlcom\Dto\Interfaces\AttributeDtoInterface;
+use Atlcom\Interfaces\AttributeDtoInterface;
 
 /**
  * Атрибут указывает, что поле содержит коллекцию объектов

@@ -1,8 +1,8 @@
 <?php
 
-namespace Atlcom\Dto\Tests\Examples\Example08;
+namespace Atlcom\Tests\Examples\Example08;
 
-use Atlcom\Dto\Interfaces\AttributeDtoInterface;
+use Atlcom\Interfaces\AttributeDtoInterface;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
@@ -29,7 +29,7 @@ class YearCast implements AttributeDtoInterface
     }
 }
 
-class CarDto extends \Atlcom\Dto\DefaultDto
+class CarDto extends \Atlcom\Dto
 {
     public int $id;
     public CarTypeEnum $type;

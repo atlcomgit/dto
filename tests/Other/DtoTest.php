@@ -1,6 +1,6 @@
 <?php
 
-namespace Atlcom\Dto\Tests\Other;
+namespace Atlcom\Tests\Other;
 
 use Faker\Factory;
 use Faker\Generator;

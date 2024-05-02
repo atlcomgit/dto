@@ -1,11 +1,11 @@
 <?php
 
-namespace Atlcom\Dto\Tests\Other;
+namespace Atlcom\Tests\Other;
 
-use Atlcom\Dto\DefaultDto;
+use Atlcom\Dto;
 use Throwable;
 
-class OnExceptionDto extends DefaultDto
+class OnExceptionDto extends Dto
 {
     public string $name;
     public int $value;

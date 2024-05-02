@@ -1,6 +1,6 @@
 <?php
 
-namespace Atlcom\Dto\Tests\Examples\Example32;
+namespace Atlcom\Tests\Examples\Example32;
 
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -9,7 +9,7 @@ use PHPUnit\Framework\TestCase;
  * Примеры классов dto для теста
  */
 
-class SumDto extends \Atlcom\Dto\DefaultDto
+class SumDto extends \Atlcom\Dto
 {
     protected int $x;
     protected int $y;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Atlcom\Dto\Interfaces;
+namespace Atlcom\Interfaces;
 
 interface AttributeDtoInterface
 {
