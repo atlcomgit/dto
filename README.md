@@ -1519,17 +1519,20 @@ class CarDto extends \Atlcom\Dto
     }
 }
 
-$carDto = CarDto::create();
+try {
+    $carDto = CarDto::create();
+} catch (Exception $e) {
+    $exceptionMessage = $e->getMessage();
+}
 
 /* Вывод результата */
-print_r($carDto->toArray());
+print_r([$exceptionMessage]);
 ```
 
 Результат:
 
 ```text
 [
-    'mark_name' => 'Lexus',
-    'modelName' => 'RX500',
+    'Текст ошибки',
 ]
 ```
