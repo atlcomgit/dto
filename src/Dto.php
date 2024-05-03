@@ -29,6 +29,9 @@ use UnitEnum;
  * @override protected function casts(): array { return []; }
  * Трансформация типов свойств dto
  * 
+ * @override protected function exceptions(string $messageCode, array $messageItems): string {}
+ * Сообщения ошибок dto
+ * 
  * @override protected function onFilling(array &$array): void {}
  * Выполняется перед заполнением dto
  * 
@@ -410,7 +413,7 @@ abstract class Dto
             }
 
             throw new Exception(
-                $this->toBasename($this) . '->' . mb_strtoupper($name) . ': свойство не найдено',
+                $this->exceptions('PropertyNotFound', ['property' => $name]),
                 500
             );
 
@@ -420,8 +423,7 @@ abstract class Dto
 
                 $this->onException(
                     new Exception(
-                        $this->toBasename($this) . '->' . mb_strtoupper($name)
-                        . ": невозможно присвоить свойству тип {$type}",
+                        $this->exceptions('PropertyAssignType', ['property' => $name, 'type' => $type]),
                         500
                     )
                 );
@@ -481,7 +483,7 @@ abstract class Dto
             }
     
             throw new Exception(
-                $this->toBasename($this) . '->' . mb_strtoupper($name) . ': свойство не найдено',
+                $this->exceptions('PropertyNotFound', ['property' => $name]),
                 500
             );
         } catch (Throwable $exception) {
@@ -510,15 +512,28 @@ abstract class Dto
                 $attributeClass = $attribute->getName();
                 match (true) {
                     !class_exists($attributeClass)
-                    => $this->onException(new Exception("Класс аттрибута не найден: {$attributeClass}", 500)),
+                    => $this->onException(
+                        new Exception(
+                            $this->exceptions('AttributeClassNotFound', ['class' => $attributeClass]),
+                            500
+                        )
+                    ),
 
                     !in_array(AttributeDtoInterface::class, class_implements($attributeClass) ?: [])
                     => $this->onException(
-                        new Exception('Аттрибут не реализован от ' . AttributeDtoInterface::class, 500)
+                        new Exception(
+                            $this->exceptions('AttributeNotImplementsBy', ['class' => AttributeDtoInterface::class]),
+                            500
+                        )
                     ),
 
                     !method_exists($attributeClass, 'handle')
-                    => $this->onException(new Exception("Метод аттрибута не найден: {$attributeClass}::handle", 500)),
+                    => $this->onException(
+                        new Exception(
+                            $this->exceptions('AttributeMethodNotFound', ['method' => "{$attributeClass}::handle"]),
+                            500
+                        )
+                    ),
 
                     default
                     => (static function () use (&$key, &$value, $defaultValue, $attribute) {
@@ -587,8 +602,7 @@ abstract class Dto
                 $type = is_object($value) ? $this->toBasename(get_class($value)) : mb_strtoupper(gettype($value));
 
                 throw new Exception(
-                    $this->toBasename($this) . '->' . mb_strtoupper($key)
-                    . ": невозможно присвоить свойству тип {$type}",
+                    $this->exceptions('PropertyAssignType', ['property' => $key, 'type' => $type]),
                     500
                 );
             }
@@ -633,7 +647,12 @@ abstract class Dto
     final public function transformToDto(string $dtoClass): mixed
     {
         if (!class_exists($dtoClass)) {
-            $this->onException(new Exception("Класс не найден: {$dtoClass}", 500));
+            $this->onException(
+                new Exception(
+                    $this->exceptions('ClassNotFound', ['class' => $dtoClass]),
+                    500
+                )
+            );
 
             return $this;
         }
@@ -765,7 +784,7 @@ abstract class Dto
                 $reflection = new ReflectionProperty($class, $key);
                 if (!$reflection->isInitialized($this)) {
                     throw new Exception(
-                        $this->toBasename($this) . '->' . mb_strtoupper($key) . ': свойство не инициализировано',
+                        $this->exceptions('PropertyNotInitialized', ['property' => $key]),
                         500
                     );
                 }
@@ -1156,7 +1175,12 @@ abstract class Dto
     {
         if (is_string($object)) {
             if (!class_exists($object)) {
-                $this->onException(new Exception("Класс не найден: {$object}", 500));
+                $this->onException(
+                    new Exception(
+                        $this->exceptions('ClassNotFound', ['class' => $object]),
+                        500
+                    )
+                );
 
                 return $this;
             }
@@ -1320,6 +1344,52 @@ abstract class Dto
     protected function mappings(): array
     {
         return [];
+    }
+
+
+    /**
+     * Сообщения ошибок dto
+     * @version 2.44
+     *
+     * @param string $message
+     * @param array $values
+     * @return string
+     */
+    protected function exceptions(string $messageCode, array $messageItems): string
+    {
+        return match ($messageCode) {
+            'PropertyNotFound' => sprintf(
+                $this->toBasename($this) . '->%s: property not found',
+                mb_strtoupper($messageItems['property']),
+            ),
+            'PropertyAssignType' => sprintf(
+                $this->toBasename($this) . '->%s' . ": cannot assign property type %s",
+                mb_strtoupper($messageItems['property']),
+                $messageItems['type'],
+            ),
+            'AttributeClassNotFound' => sprintf(
+                "Attribute class not found: %s",
+                $messageItems['class'],
+            ),
+            'AttributeNotImplementsBy' => sprintf(
+                "Attribute class not implements by: %s",
+                $messageItems['class'],
+            ),
+            'AttributeMethodNotFound' => sprintf(
+                "Attribute method not found: %s",
+                $messageItems['method'],
+            ),
+            'ClassNotFound' => sprintf(
+                "Class not found: %s",
+                $messageItems['class'],
+            ),
+            'PropertyNotInitialized' => sprintf(
+                $this->toBasename($this) . '->%s: property not initialized',
+                mb_strtoupper($messageItems['property']),
+            ),
+
+            default => 'Unknown message code',
+        };
     }
 
     
