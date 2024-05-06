@@ -496,7 +496,7 @@ abstract class Dto
     
     /**
      * Присвоение значения свойству
-     * @version 2.43
+     * @version 2.44
      *
      * @param string $key
      * @param mixed $value
@@ -511,29 +511,29 @@ abstract class Dto
             foreach ($attributes as $attribute) {
                 $attributeClass = $attribute->getName();
                 match (true) {
-                    !class_exists($attributeClass)
-                    => $this->onException(
-                        new Exception(
-                            $this->exceptions('AttributeClassNotFound', ['class' => $attributeClass]),
-                            500
-                        )
-                    ),
+                    !class_exists($attributeClass) => false,
+                    // => $this->onException(
+                    //     new Exception(
+                    //         $this->exceptions('AttributeClassNotFound', ['class' => $attributeClass]),
+                    //         500
+                    //     )
+                    // ),
 
-                    !in_array(AttributeDtoInterface::class, class_implements($attributeClass) ?: [])
-                    => $this->onException(
-                        new Exception(
-                            $this->exceptions('AttributeNotImplementsBy', ['class' => AttributeDtoInterface::class]),
-                            500
-                        )
-                    ),
+                    !in_array(AttributeDtoInterface::class, class_implements($attributeClass) ?: []) => false,
+                    // => $this->onException(
+                    //     new Exception(
+                    //         $this->exceptions('AttributeNotImplementsBy', ['class' => AttributeDtoInterface::class]),
+                    //         500
+                    //     )
+                    // ),
 
-                    !method_exists($attributeClass, 'handle')
-                    => $this->onException(
-                        new Exception(
-                            $this->exceptions('AttributeMethodNotFound', ['method' => "{$attributeClass}::handle"]),
-                            500
-                        )
-                    ),
+                    !method_exists($attributeClass, 'handle') => false,
+                    // => $this->onException(
+                    //     new Exception(
+                    //         $this->exceptions('AttributeMethodNotFound', ['method' => "{$attributeClass}::handle"]),
+                    //         500
+                    //     )
+                    // ),
 
                     default
                     => (static function () use (&$key, &$value, $defaultValue, $attribute) {
@@ -1348,8 +1348,8 @@ abstract class Dto
 
 
     /**
+     * @override
      * Сообщения ошибок dto
-     * @version 2.44
      *
      * @param string $message
      * @param array $values
