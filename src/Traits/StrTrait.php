@@ -31,7 +31,7 @@ trait StrTrait
     {
         return lcfirst(str_replace(' ', '', ucwords(str_replace('_', ' ', $string))));
     }
-    
+
 
     /**
      * Перевод строки в snake_case

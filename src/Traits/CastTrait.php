@@ -71,7 +71,14 @@ trait CastTrait
         return match (true) {
             $value instanceof self => $value->setOptions(
                 $this->options(),
-                onlyOptions: ['autoCasts', 'autoMappings', 'onlyFilled', 'includeStyles', 'serializeKeys']
+                onlyOptions: [
+                    'autoCasts',
+                    'autoMappings',
+                    'onlyFilled',
+                    'onlyNotNull',
+                    'includeStyles',
+                    'serializeKeys',
+                ]
             )->toArray(),
             $value instanceof DateTimeInterface => $value->getTimestamp(),
             $value instanceof BackedEnum => $value->value,
@@ -124,22 +131,22 @@ trait CastTrait
                     };
 
                 default:
-                if (class_exists($class)) {
-                    $object = new $class();
-                    if ($object instanceof self && method_exists($object, 'fillFromArray')) {
-                        $value = (is_object($value) && $value instanceof self)
-                            ? $value->serializeKeys(true)->toArray()
-                            : (is_array($value) ? $value : null);
-                        !is_null($value) ? $object->fillFromArray($value) : $object = $value;
+                    if (class_exists($class)) {
+                        $object = new $class();
+                        if ($object instanceof self && method_exists($object, 'fillFromArray')) {
+                            $value = (is_object($value) && $value instanceof self)
+                                ? $value->serializeKeys(true)->toArray()
+                                : (is_array($value) ? $value : null);
+                            !is_null($value) ? $object->fillFromArray($value) : $object = $value;
+                        } else {
+                            $object = $value;
+                        }
                     } else {
                         $object = $value;
                     }
-                } else {
-                    $object = $value;
-                }
 
-                return $object;
-        }
+                    return $object;
+            }
         }
 
         throw new Exception(
@@ -287,12 +294,12 @@ trait CastTrait
             is_int($value) => DateTime::createFromFormat('U', $value),
             is_float($value) => DateTime::createFromFormat('U.u', $value),
             is_string($value) => DateTime::createFromFormat('Y-m-d H:i:s', $value)
-                ?: DateTime::createFromFormat('Y-m-d/TH:i:s', $value)
-                ?: DateTime::createFromFormat('Y.m.d H:i:s', $value)
-                ?: DateTime::createFromFormat('Y.m.d\TH:i:s', $value)
-                ?: DateTime::createFromFormat('Y-m-d', $value)
-                ?: DateTime::createFromFormat('Y.m.d', $value)
-                ?: null,
+            ?: DateTime::createFromFormat('Y-m-d/TH:i:s', $value)
+            ?: DateTime::createFromFormat('Y.m.d H:i:s', $value)
+            ?: DateTime::createFromFormat('Y.m.d\TH:i:s', $value)
+            ?: DateTime::createFromFormat('Y-m-d', $value)
+            ?: DateTime::createFromFormat('Y.m.d', $value)
+            ?: null,
             $value instanceof DateTimeInterface => DateTime::createFromInterface($value),
             empty($value) => null,
             default => $value,
@@ -311,10 +318,10 @@ trait CastTrait
         return match (true) {
             is_null($value) => null,
             is_integer($value) => filter_var($value, FILTER_VALIDATE_INT, [
-                'options' => ['min_range' => 0]
+                'options' => ['min_range' => 0],
             ]),
             is_float($value) => filter_var($value, FILTER_VALIDATE_FLOAT, [
-                'options' => ['min_range' => 0]
+                'options' => ['min_range' => 0],
             ]),
             is_bool($value) => (int)$this->castToBoolean($value),
 

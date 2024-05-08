@@ -10,17 +10,17 @@ use PHPUnit\Framework\TestCase;
  * Примеры классов dto для теста
  */
 
- class CarDto extends \Atlcom\Dto
- {
-     public string $markName;
-     public string $modelName;
- 
-     protected function exceptions(string $messageCode, array $messageItems): string
-     {
-         return 'Текст ошибки';
-     }
- }
- 
+class CarDto extends \Atlcom\Dto
+{
+    public string $markName;
+    public string $modelName;
+
+    protected function exceptions(string $messageCode, array $messageItems): string
+    {
+        return 'Текст ошибки';
+    }
+}
+
 /**
  * Тест 33
  * Заполнение Dto с событием onAssigned (после изменения)

@@ -11,6 +11,7 @@ Dto используется для передачи типизированны�
 
 *Версия 2.45*
 - Добавлен метод onlyNotNull
+- Обновлен метод transformToDto
 
 *Версия 2.44*
 - Класс DefaultDto переименован в Dto
@@ -53,8 +54,8 @@ Dto используется для передачи типизированны�
 * @method public **[merge](#пример-13)**(object $data)\
     *Объединяет объект Dto с переданным ассоциативным массивом.*\
 
-* @method public **transformToDto**(string $dtoClass)\
-    *Трансформирует объект Dto в объект другого класса Dto.*\
+* @method public **[transformToDto](#пример-34)**(string $dtoClass, array $array = [])\
+    *Трансформирует объект Dto в объект другого класса Dto и дополняет данными из массива.*\
 
 ##### Методы сериализации (приведение к массиву/json):
 
@@ -1511,7 +1512,7 @@ print_r($sumDto->withProtectedKeys(true)->toArray());
 **Сообщения об ошибке при работе с Dto.**\
 Позволяет при ошибке сформировать собственное сообщение.\
 
-[Открыть тест](tests/Examples/Example32/Example32Test.php)
+[Открыть тест](tests/Examples/Example33/Example33Test.php)
 
 ```php
 class CarDto extends \Atlcom\Dto
@@ -1540,5 +1541,47 @@ print_r([$exceptionMessage]);
 ```text
 [
     'Текст ошибки',
+]
+```
+
+---
+
+###### Пример 34
+**Трансформация Dto в другое Dto с дополнением данными из массива.**\
+Позволяет при ошибке сформировать собственное сообщение.\
+
+[Открыть тест](tests/Examples/Example34/Example34Test.php)
+
+```php
+class CarFirstDto extends \Atlcom\Dto
+{
+    public string $markName;
+    public string $modelName;
+}
+
+class CarSecondDto extends \Atlcom\Dto
+{
+    public string $markName;
+    public string $modelName;
+    public int $year;
+}
+
+$carFirstDto = CarFirstDto::create([
+    'markName' => 'Lexus',
+    'modelName' => 'RX500',
+]);
+$carSecondDto = $carFirstDto->transformToDto(CarSecondDto::class, ['year' => 2024]);
+
+/* Вывод результата */
+print_r($carSecondDto->toArray());
+```
+
+Результат:
+
+```text
+[
+    'markName' => 'Lexus',
+    'modelName' => 'RX500',
+    'year' => 2024,
 ]
 ```

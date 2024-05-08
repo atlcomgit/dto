@@ -9,7 +9,6 @@ use Exception;
 use Atlcom\Interfaces\AttributeDtoInterface;
 use Atlcom\Traits\CastTrait;
 use Atlcom\Traits\StrTrait;
-use ReflectionException;
 use ReflectionNamedType;
 use ReflectionProperty;
 use Throwable;
@@ -20,14 +19,14 @@ use UnitEnum;
  * @abstract
  * @version 2.45
  * 
- * @override protected function defaults(): array { return []; }
- * Задает значения по умолчанию при создании dto
- * 
  * @override protected function mappings(): array { return []; }
  * Маппинг имён свойств в другие имена dto
  * 
  * @override protected function casts(): array { return []; }
  * Трансформация типов свойств dto
+ * 
+ * @override protected function defaults(): array { return []; }
+ * Задает значения по умолчанию при создании dto
  * 
  * @override protected function exceptions(string $messageCode, array $messageItems): string {}
  * Сообщения ошибок dto
@@ -250,7 +249,7 @@ abstract class Dto
         }
     }
 
-    
+
     /**
      * Подготовка свойств по PSR (camelCase, snake_case)
      * @version 2.43
@@ -267,14 +266,14 @@ abstract class Dto
             foreach ($array as $key => $value) {
                 $keyCamelCase = $this->toCamelCase($key);
                 isset($array[$keyCamelCase]) ?: $array[$keyCamelCase] = $value;
-                
+
                 $keySnakeCase = $this->toSnakeCase($key);
                 isset($array[$keySnakeCase]) ?: $array[$keySnakeCase] = $value;
             }
-        }        
+        }
     }
 
-    
+
     /**
      * Получение значения маппинга
      * @version 2.39
@@ -304,7 +303,7 @@ abstract class Dto
         return $this->getMappingValue($array[$key], $pathKey, $value);
     }
 
-    
+
     /**
      * Маппинг свойств
      * @version 2.40
@@ -319,7 +318,8 @@ abstract class Dto
 
         foreach ($mappings as $mapFrom => $mapTo) {
             $value = null;
-            if ($mapFrom
+            if (
+                $mapFrom
                 && is_string($mapFrom)
                 && $this->getMappingValue($array, explode('.', $mapTo), $value)
                 && property_exists($this, $mapFrom)
@@ -329,7 +329,8 @@ abstract class Dto
             }
 
             $value = null;
-            if ($mapTo
+            if (
+                $mapTo
                 && $autoMappings
                 && is_string($mapTo)
                 && $this->getMappingValue($array, explode('.', $mapFrom), $value)
@@ -358,7 +359,7 @@ abstract class Dto
             || (is_string($option) && $option === $key);
     }
 
-    
+
     /**
      * Магический метод присвоения свойствам
      * - При заданном массиве mappings происходит поиск свойства согласно маппингу
@@ -382,7 +383,8 @@ abstract class Dto
                 return;
             }
 
-            if ($mappings
+            if (
+                $mappings
                 && ($toName = array_search($name, $mappings, true))
                 && is_string($toName)
                 && property_exists($this, $toName)
@@ -392,20 +394,21 @@ abstract class Dto
             }
 
             if ($autoMappings) {
-                if ($mappings
+                if (
+                    $mappings
                     && array_key_exists($name, $mappings)
                     && property_exists($this, $mappings[$name])
                 ) {
                     $this->assignValue($mappings[$name], $value);
                     return;
                 }
-    
+
                 $keyCamelCase = $this->toCamelCase($name);
                 if ($name !== $keyCamelCase && property_exists($this, $keyCamelCase)) {
                     $this->assignValue($keyCamelCase, $value);
                     return;
                 }
-    
+
                 $keySnakeCase = $this->toSnakeCase($name);
                 if ($name !== $keySnakeCase && property_exists($this, $keySnakeCase)) {
                     $this->assignValue($keySnakeCase, $value);
@@ -434,7 +437,7 @@ abstract class Dto
         }
     }
 
-    
+
     /**
      * Магический метод обращения к свойствам
      * - При заданном массиве mappings происходит поиск свойства согласно маппингу
@@ -452,37 +455,39 @@ abstract class Dto
             if (property_exists($this, $name)) {
                 return $this->$name;
             }
-    
+
             $autoMappings = $this->options()['autoMappings'];
             $mappings = $this->mappings();
-    
-            if ($mappings
+
+            if (
+                $mappings
                 && ($toName = array_search($name, $mappings, true))
                 && is_string($toName)
                 && property_exists($this, $toName)
             ) {
                 return $this->$toName;
             }
-    
+
             if ($autoMappings) {
-                if ($mappings
+                if (
+                    $mappings
                     && array_key_exists($name, $mappings)
                     && property_exists($this, $mappings[$name])
                 ) {
                     return $this->{$mappings[$name]};
                 }
-    
+
                 $keyCamelCase = $this->toCamelCase($name);
                 if ($keyCamelCase && property_exists($this, $keyCamelCase)) {
                     return $this->$keyCamelCase;
                 }
-    
+
                 $keySnakeCase = $this->toSnakeCase($name);
                 if ($keySnakeCase && property_exists($this, $keySnakeCase)) {
                     return $this->$keySnakeCase;
                 }
             }
-    
+
             throw new Exception(
                 $this->exceptions('PropertyNotFound', ['property' => $name]),
                 500
@@ -494,7 +499,7 @@ abstract class Dto
         return null;
     }
 
-    
+
     /**
      * Присвоение значения свойству
      * @version 2.44
@@ -538,8 +543,8 @@ abstract class Dto
 
                     default
                     => (static function () use (&$key, &$value, $defaultValue, $attribute) {
-                        ($attribute->newInstance())->handle($key, $value, $defaultValue, static::class);
-                    })(),
+                            ($attribute->newInstance())->handle($key, $value, $defaultValue, static::class);
+                        })(),
                 };
             }
 
@@ -612,12 +617,12 @@ abstract class Dto
         }
     }
 
-    
+
     //__________________________________________________________________________________________________________________
     // Публичные методы
 
-    
-     /**
+
+    /**
      * Создает и заполняет dto
      * @version 2.30
      *
@@ -637,15 +642,16 @@ abstract class Dto
         return static::fill($array);
     }
 
-    
+
     /**
      * Преобразование в другой dto
-     * @version 2.34
+     * @version 2.45
      *
-     * @param string $dtoClass
+     * @param class-string $dtoClass
+     * @param array $array = []
      * @return mixed
      */
-    final public function transformToDto(string $dtoClass): mixed
+    final public function transformToDto(string $dtoClass, array $array = []): mixed
     {
         if (!class_exists($dtoClass)) {
             $this->onException(
@@ -658,10 +664,10 @@ abstract class Dto
             return $this;
         }
 
-        return new $dtoClass($this);
+        return $dtoClass::create($this, $array);
     }
 
-    
+
     /**
      * Статический вызов создания объекта dto
      *
@@ -673,7 +679,7 @@ abstract class Dto
         return new static($data);
     }
 
-    
+
     /**
      * Заполнение dto из объекта
      * @version 2.30
@@ -686,7 +692,7 @@ abstract class Dto
         return $this->fillFromArray(self::convertDataToArray($data));
     }
 
-    
+
     /**
      * Заполнение dto из объекта
      *
@@ -698,7 +704,7 @@ abstract class Dto
         return $this->fillFromData($data);
     }
 
-    
+
     /**
      * Заполнение dto из dto
      *
@@ -710,7 +716,7 @@ abstract class Dto
         return $this->fillFromData($data);
     }
 
-    
+
     /**
      * Заполнение dto из json строки
      *
@@ -722,7 +728,7 @@ abstract class Dto
         return $this->fillFromData($data);
     }
 
-    
+
     /**
      * Заполнение dto из массива
      * @version 2.41
@@ -755,7 +761,7 @@ abstract class Dto
         return $this;
     }
 
-    
+
     /**
      * Объединить массив с dto
      * @version 2.30
@@ -799,7 +805,7 @@ abstract class Dto
         return $this;
     }
 
-    
+
     /**
      * Преобразует массив или коллекцию данных в коллекцию из dto
      * @version 2.19
@@ -816,7 +822,7 @@ abstract class Dto
     //__________________________________________________________________________________________________________________
     // Финальные методы
 
-    
+
     /**
      * Настройки для преобразования dto в массив
      * @version 2.45
@@ -887,7 +893,7 @@ abstract class Dto
         ];
     }
 
-    
+
     /**
      * Устанавливает опции для преобразования dto в массив
      * @version 2.38
@@ -915,7 +921,7 @@ abstract class Dto
         return $this;
     }
 
-    
+
     /**
      * Включает опцию при преобразовании в массив: автоматическое преобразование типов
      *
@@ -929,7 +935,7 @@ abstract class Dto
         return $this;
     }
 
-    
+
     /**
      * Включает опцию при заполнении в свойств: автоматическое преобразование стиля свойств
      * @version 2.33
@@ -944,7 +950,7 @@ abstract class Dto
         return $this;
     }
 
-    
+
     /**
      * Включает опцию при преобразовании в массив: только заполненные свойства
      *
@@ -958,7 +964,7 @@ abstract class Dto
         return $this;
     }
 
-    
+
     /**
      * Включает опцию при преобразовании в массив: только не null
      * @version 2.45
@@ -972,7 +978,7 @@ abstract class Dto
         return $this;
     }
 
-    
+
     /**
      * Включает опцию при преобразовании в массив: заполнить только указанными ключами
      * @version 2.30
@@ -1000,7 +1006,7 @@ abstract class Dto
         return $this;
     }
 
-    
+
     /**
      * Включает опцию при преобразовании в массив: дополнить ключами в разных стилях
      *
@@ -1014,7 +1020,7 @@ abstract class Dto
         return $this;
     }
 
-    
+
     /**
      * Включает опцию при преобразовании в массив: дополнить другим массивом
      *
@@ -1037,7 +1043,7 @@ abstract class Dto
         return $this;
     }
 
-    
+
     /**
      * Включает опцию при преобразовании в массив: исключить из массива указанные ключи
      *
@@ -1063,7 +1069,7 @@ abstract class Dto
         return $this;
     }
 
-    
+
     /**
      * Включает опцию при преобразовании в массив: маппинг указанных ключей с новым именем
      *
@@ -1086,7 +1092,7 @@ abstract class Dto
         return $this;
     }
 
-    
+
     /**
      * Включает опцию при преобразовании в массив: преобразование вложенных свойств к массиву
      * @version 2.43
@@ -1118,7 +1124,7 @@ abstract class Dto
         return $this;
     }
 
-    
+
     /**
      * Включает опцию при преобразовании в массив: преобразование protected свойств к массиву
      * @version 2.43
@@ -1150,7 +1156,7 @@ abstract class Dto
         return $this;
     }
 
-    
+
     /**
      * Включает опцию при преобразовании в массив: преобразование private свойств к массиву
      * @version 2.43
@@ -1182,7 +1188,7 @@ abstract class Dto
         return $this;
     }
 
-    
+
     /**
      * Включает опцию при преобразовании в массив: заполнить только свойствами из указанного объекта
      * @version 2.34
@@ -1212,7 +1218,7 @@ abstract class Dto
         return $this;
     }
 
-    
+
     /**
      * Сбрасывает все опции при преобразовании
      * @version 2.21
@@ -1226,7 +1232,7 @@ abstract class Dto
         return $this;
     }
 
-    
+
     /**
      * Преобразование dto в массив
      * @version 2.43
@@ -1252,7 +1258,7 @@ abstract class Dto
         $serializeKeys = $options['serializeKeys'];
         $withProtectedKeys = $options['withProtectedKeys'];
         $withPrivateKeys = $options['withPrivateKeys'];
-        
+
         $keys = [];
         foreach ((array)$this as $key => $value) {
             $keyParts = explode(CHR(0), $key);
@@ -1291,7 +1297,7 @@ abstract class Dto
         return $array;
     }
 
-    
+
     /**
      * Преобразование dto в json
      * @version 2.34
@@ -1304,7 +1310,7 @@ abstract class Dto
         return json_encode($this->toArray(), $options ?: JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
     }
 
-    
+
     /**
      * Получение хеша dto
      * @version 2.34
@@ -1327,23 +1333,23 @@ abstract class Dto
         );
     }
 
-    
+
     //__________________________________________________________________________________________________________________
     // Переопределяемые методы
 
 
     /**
      * @override
-     * Возвращает массив значений по умолчанию
+     * Возвращает массив преобразований свойств
      *
      * @return array
      */
-    protected function defaults(): array
+    protected function mappings(): array
     {
         return [];
     }
 
-    
+
     /**
      * @override
      * Возвращает массив преобразований типов
@@ -1355,14 +1361,14 @@ abstract class Dto
         return [];
     }
 
-    
+
     /**
      * @override
-     * Возвращает массив преобразований свойств
+     * Возвращает массив значений по умолчанию
      *
      * @return array
      */
-    protected function mappings(): array
+    protected function defaults(): array
     {
         return [];
     }
@@ -1413,14 +1419,13 @@ abstract class Dto
         };
     }
 
-    
+
     /**
      * @override
      * Метод вызывается до заполнения dto
      *
      * @param array $array
      * @return void
-     * @throws ReflectionException
      */
     protected function onFilling(array &$array): void
     {
@@ -1432,7 +1437,7 @@ abstract class Dto
         ) ?: $array['id'] = (int)($array['id'] ?? 0);
     }
 
-    
+
     /**
      * @override
      * Метод вызывается после заполнения dto
@@ -1444,7 +1449,7 @@ abstract class Dto
     {
     }
 
-    
+
     /**
      * @override
      * Метод вызывается до объединения с dto
@@ -1456,7 +1461,7 @@ abstract class Dto
     {
     }
 
-    
+
     /**
      * @override
      * Метод вызывается после объединения с dto
@@ -1468,7 +1473,7 @@ abstract class Dto
     {
     }
 
-    
+
     /**
      * @override
      * Метод вызывается до преобразования dto в массив
@@ -1480,7 +1485,7 @@ abstract class Dto
     {
     }
 
-    
+
     /**
      * @override
      * Метод вызывается после преобразования dto в массив
@@ -1506,7 +1511,7 @@ abstract class Dto
     {
     }
 
-    
+
     /**
      * @override
      * Метод вызывается после изменения значения свойства dto
@@ -1519,7 +1524,7 @@ abstract class Dto
     {
     }
 
-    
+
     /**
      * @override
      * Метод вызывается во время исключения при заполнении dto
