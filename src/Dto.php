@@ -18,7 +18,7 @@ use UnitEnum;
 /**
  * Абстрактный класс dto по умолчанию
  * @abstract
- * @version 2.44
+ * @version 2.45
  * 
  * @override protected function defaults(): array { return []; }
  * Задает значения по умолчанию при создании dto
@@ -50,7 +50,7 @@ use UnitEnum;
  * @override protected function onSerialized(array &$array): void {}
  * Выполняется после сериализации dto
  * 
- * @override protected function onAssigning(string $key, mixed $value): void
+ * @override protected function onAssigning(string $key, mixed $value): void {}
  * Выполняется перед изменением значения свойства dto
  * 
  * @override protected function onAssigned(string $key): void
@@ -62,6 +62,7 @@ use UnitEnum;
  * @method autoCasts(bool $autoCasts = true)
  * @method autoMappings(bool $autoMappings = true)
  * @method onlyFilled(bool $onlyFilled = true)
+ * @method onlyNotNull()
  * @method onlyKeys(string|array|object ...$data)
  * @method includeStyles(bool $includeStyles = true)
  * @method includeArray(string|array ...$data)
@@ -818,12 +819,13 @@ abstract class Dto
     
     /**
      * Настройки для преобразования dto в массив
-     * @version 2.43
+     * @version 2.45
      *
      * @param bool|null $reset
      * @param bool|null $autoCasts
      * @param bool|null $autoMappings
      * @param bool|null $onlyFilled
+     * @param bool|null $onlyNotNull
      * @param array|null $onlyKeys
      * @param bool|null $includeStyles
      * @param array|null $includeArray
@@ -839,6 +841,7 @@ abstract class Dto
         ?bool $autoCasts = null,
         ?bool $autoMappings = null,
         ?bool $onlyFilled = null,
+        ?bool $onlyNotNull = null,
         ?array $onlyKeys = null,
         ?bool $includeStyles = null,
         ?array $includeArray = null,
@@ -858,6 +861,7 @@ abstract class Dto
         is_null($autoCasts) ?: $options[$instance]['autoCasts'] = $autoCasts;
         is_null($autoMappings) ?: $options[$instance]['autoMappings'] = $autoMappings;
         is_null($onlyFilled) ?: $options[$instance]['onlyFilled'] = $onlyFilled;
+        is_null($onlyNotNull) ?: $options[$instance]['onlyNotNull'] = $onlyNotNull;
         is_null($onlyKeys) ?: $options[$instance]['onlyKeys'] = $onlyKeys;
         is_null($includeStyles) ?: $options[$instance]['includeStyles'] = $includeStyles;
         is_null($includeArray) ?: $options[$instance]['includeArray'] = $includeArray;
@@ -871,6 +875,7 @@ abstract class Dto
             'autoCasts' => $options[$instance]['autoCasts'] ?? static::AUTO_CASTS_ENABLED,
             'autoMappings' => $options[$instance]['autoMappings'] ?? static::AUTO_MAPPINGS_ENABLED,
             'onlyFilled' => $options[$instance]['onlyFilled'] ?? false,
+            'onlyNotNull' => $options[$instance]['onlyNotNull'] ?? false,
             'onlyKeys' => $options[$instance]['onlyKeys'] ?? [],
             'includeStyles' => $options[$instance]['includeStyles'] ?? false,
             'includeArray' => $options[$instance]['includeArray'] ?? [],
@@ -949,6 +954,20 @@ abstract class Dto
     final public function onlyFilled(bool $onlyFilled = true): static
     {
         $this->options(onlyFilled: $onlyFilled);
+
+        return $this;
+    }
+
+    
+    /**
+     * Включает опцию при преобразовании в массив: только не null
+     * @version 2.45
+     *
+     * @return static
+     */
+    final public function onlyNotNull(): static
+    {
+        $this->options(onlyNotNull: true);
 
         return $this;
     }
@@ -1224,6 +1243,7 @@ abstract class Dto
         $autoCasts = $options['autoCasts'];
         $autoMappings = $options['autoMappings'];
         $onlyFilled ??= $options['onlyFilled'];
+        $onlyNotNull = $options['onlyNotNull'];
         $onlyKeys = $options['onlyKeys'];
         $includeStyles = $options['includeStyles'];
         $includeArray = $options['includeArray'];
@@ -1254,6 +1274,7 @@ abstract class Dto
             if (
                 $key
                 && (!$onlyFilled || !empty($value))
+                && (!$onlyNotNull || !is_null($value))
                 && (empty($onlyKeys) || in_array($key, $onlyKeys, true))
                 && (empty($excludeKeys) || !in_array($key, $excludeKeys, true))
             ) {
