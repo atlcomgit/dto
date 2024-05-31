@@ -3,6 +3,7 @@
 namespace Atlcom\Traits;
 
 use BackedEnum;
+use Carbon\Carbon;
 use DateTime;
 use DateTimeInterface;
 use Exception;
@@ -13,13 +14,13 @@ use UnitEnum;
 
 /**
  * Трейт преобразования типов
- * @version 2.35
+ * @version 2.36
  */
 trait CastTrait
 {
     /**
      * Проверяет значение на соответствие типу
-     * @version 2.35
+     * @version 2.36
      *
      * @param string $key
      * @param string|array|callable $type
@@ -38,7 +39,9 @@ trait CastTrait
                 'array', 'arr' => $this->castToArray($value),
                 'datetime', 'date' => $this->castToDateTime($value),
                 'positive' => $this->castToPositive($value),
-                'carbon', 'carbon\carbon', 'illuminate\support\carbon' => 'Carbon\Carbon'::parse($value),
+                mb_strtolower(DateTime::class) => new DateTime($value),
+                mb_strtolower(Carbon::class) => Carbon::parse($value),
+                mb_strtolower(DateTimeInterface::class) => $this->castToDateTime($value),
 
                 default => match (true) {
                         is_string($type) && class_exists($type) => $this->castToObject($key, $type, $value),
@@ -83,9 +86,7 @@ trait CastTrait
             $value instanceof DateTimeInterface => $value->getTimestamp(),
             $value instanceof BackedEnum => $value->value,
 
-            mb_strtolower($type) === 'carbon',
-            mb_strtolower($type) === 'carbon\carbon',
-            mb_strtolower($type) === 'illuminate\support\carbon'
+            mb_strtolower($type) === Carbon::class,
             => $value->toDateTimeString(),
 
             mb_strtolower($type) === 'libphonenumber\phonenumber'
@@ -282,26 +283,62 @@ trait CastTrait
     }
 
     /**
-     * Преобразование значения к типу: datetime
-     * @version 2.31
+     * Преобразование значения к типу: DateTime|Carbon
+     * @version 2.36
      *
      * @param mixed $value
-     * @return DateTime|null
+     * @return DateTime|Carbon:null
      */
-    protected function castToDateTime(mixed $value): DateTime|null
+    protected function castToDateTime(mixed $value): mixed
     {
         return match (true) {
-            is_int($value) => DateTime::createFromFormat('U', $value),
-            is_float($value) => DateTime::createFromFormat('U.u', $value),
-            is_string($value) => DateTime::createFromFormat('Y-m-d H:i:s', $value)
-            ?: DateTime::createFromFormat('Y-m-d/TH:i:s', $value)
-            ?: DateTime::createFromFormat('Y.m.d H:i:s', $value)
-            ?: DateTime::createFromFormat('Y.m.d\TH:i:s', $value)
-            ?: DateTime::createFromFormat('Y-m-d', $value)
-            ?: DateTime::createFromFormat('Y.m.d', $value)
-            ?: null,
-            $value instanceof DateTimeInterface => DateTime::createFromInterface($value),
-            empty($value) => null,
+            is_integer($value) => match (static::AUTO_DATETIME_CLASS) {
+                Carbon::class => Carbon::createFromTimestamp($value),
+                DateTime::class, DateTimeInterface::class => (new DateTime())->setTimestamp($value),
+
+                default => $value,
+            },
+            
+            is_float($value) => match (static::AUTO_DATETIME_CLASS) {
+                Carbon::class => Carbon::createFromTimestamp($value),
+                DateTime::class, DateTimeInterface::class => $value,
+
+                default => $value,
+            },
+
+            is_string($value) => match (static::AUTO_DATETIME_CLASS) {
+                Carbon::class => Carbon::parse($value),
+
+                DateTime::class, DateTimeInterface::class => DateTime::createFromFormat('Y-m-d H:i:s', $value)
+                ?: DateTime::createFromFormat('Y-m-d/TH:i:s', $value)
+                ?: DateTime::createFromFormat('Y.m.d H:i:s', $value)
+                ?: DateTime::createFromFormat('Y.m.d\TH:i:s', $value)
+                ?: DateTime::createFromFormat('Y-m-d', $value)
+                ?: DateTime::createFromFormat('Y.m.d', $value)
+                ?: DateTime::createFromFormat('U.u', $value)
+                ?: DateTime::createFromFormat('U', $value)
+                ?: (new DateTime())->setTimestamp(strtotime($value))
+                ?: $value,
+
+                default => $value,
+            },
+            
+            $value instanceof Carbon => match (static::AUTO_DATETIME_CLASS) {
+                Carbon::class => $value,
+                DateTime::class, DateTimeInterface::class => $value->toDateTime(),
+
+                default => $value,
+            },
+            
+            $value instanceof DateTimeInterface => match (static::AUTO_DATETIME_CLASS) {
+                Carbon::class => Carbon::instance($value),
+                DateTime::class, DateTimeInterface::class => DateTime::createFromInterface($value),
+
+                default => $value,
+            },
+
+            empty($value) || $value == '-' => null,
+
             default => $value,
         };
     }

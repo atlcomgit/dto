@@ -9,6 +9,13 @@ Dto используется для передачи типизированны�
 
 > Для реализации функционала работы с Dto необходимо расширить объект с публичными свойствами от класса **\Atlcom\Dto**.
 
+*Версия 2.46*
+- Обновлен метод for
+- Добавлена константа AUTO_DATETIME_CLASS
+- Добавлена поддержка Carbon
+- Обновлен метод matchValue
+- Обновлен метод castToDateTime
+
 *Версия 2.45*
 - Добавлен метод onlyNotNull
 - Обновлен метод transformToDto
@@ -1583,5 +1590,86 @@ print_r($carSecondDto->toArray());
     'markName' => 'Lexus',
     'modelName' => 'RX500',
     'year' => 2024,
+]
+```
+
+---
+
+###### Пример 34
+**Работа со свойствами даты и времени.**\
+Позволяет преобразовывать типы даты и времени к одному типу, указанному в константе AUTO_DATETIME_CLASS.\
+
+[Открыть тест](tests/Examples/Example35/Example35Test.php)
+
+```php
+class CarbonDto extends \Atlcom\Dto
+{
+    public const AUTO_DATETIME_CLASS = \Carbon\Carbon::class;
+
+    public \Carbon\Carbon $date1;
+    public \DateTime $date2;
+    public \Carbon\Carbon|\DateTime $date3;
+
+    protected function casts(): array
+    {
+        return [
+            'date1' => \Carbon\Carbon::class,
+            'date2' => \DateTime::class,
+            'date3' => 'datetime',
+        ];
+    }
+}
+
+class DateTimeDto extends \Atlcom\Dto
+{
+    public const AUTO_DATETIME_CLASS = \DateTime::class;
+
+    public \Carbon\Carbon $date1;
+    public \DateTime $date2;
+    public \Carbon\Carbon|\DateTime $date3;
+
+    protected function casts(): array
+    {
+        return [
+            'date1' => \Carbon\Carbon::class,
+            'date2' => \DateTime::class,
+            'date3' => 'datetime',
+        ];
+    }
+}
+
+$date1 = '2024-01-01 00:00:00';
+$date2 = '2024-01-02 00:00:00';
+$date3 = '2024-01-03 00:00:00';
+
+$carbonDto = CarbonDto::create([
+    'date1' => $date1,
+    'date2' => $date2,
+    'date3' => $date3,
+]);
+
+$dateTimeDto = DateTimeDto::create([
+    'date1' => $date1,
+    'date2' => $date2,
+    'date3' => $date3,
+]);
+
+/* Вывод результата */
+print_r($carbonDto->toArray());
+print_r($dateTimeDto->toArray());
+```
+
+Результат:
+
+```text
+[
+    'date1' => object \Carbon\Carbon {value: '2024-01-01 00:00:00'},
+    'date2' => object \DateTime {value: '2024-01-02 00:00:00'},
+    'date3' => object \Carbon\Carbon {value: '2024-01-03 00:00:00'},
+]
+[
+    'date1' => object \Carbon\Carbon {value: '2024-01-01 00:00:00'},
+    'date2' => object \DateTime {value: '2024-01-02 00:00:00'},
+    'date3' => object \DateTime {value: '2024-01-03 00:00:00'},
 ]
 ```

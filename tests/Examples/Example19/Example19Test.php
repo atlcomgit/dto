@@ -21,7 +21,8 @@ class CarDto extends \Atlcom\Dto
 
     public string $markName;
     public CarTypeEnum $type;
-    public \DateTime $date;
+    public \Carbon\Carbon $date1;
+    public \DateTime $date2;
 }
 
 /**
@@ -37,16 +38,20 @@ final class Example19Test extends TestCase
         $carDto = CarDto::create([
             'markName' => 'Lexus',
             'type' => 'new',
-            'date' => '2024-01-01',
+            'date1' => '2024-01-01 00:00:00',
+            'date2' => '2024-01-02 00:00:00',
         ]);
 
         $this->assertObjectHasProperty('markName', $carDto);
         $this->assertObjectHasProperty('type', $carDto);
-        $this->assertObjectHasProperty('date', $carDto);
+        $this->assertObjectHasProperty('date1', $carDto);
+        $this->assertObjectHasProperty('date2', $carDto);
         $this->assertInstanceOf(CarTypeEnum::class, $carDto->type);
-        $this->assertInstanceOf(\DateTime::class, $carDto->date);
+        $this->assertInstanceOf(\Carbon\Carbon::class, $carDto->date1);
+        $this->assertInstanceOf(\DateTime::class, $carDto->date2);
         $this->assertEquals('Lexus', $carDto->markName);
         $this->assertEquals(CarTypeEnum::NEW , $carDto->type);
-        $this->assertEquals(\DateTime::createFromFormat('Y-m-d', '2024-01-01'), $carDto->date);
+        $this->assertEquals(\Carbon\Carbon::parse('2024-01-01  00:00:00'), $carDto->date1);
+        $this->assertEquals(\DateTime::createFromFormat('Y-m-d H:i:s', '2024-01-02  00:00:00'), $carDto->date2);
     }
 }

@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Atlcom;
 
+use Carbon\Carbon;
 use DateTime;
 use DateTimeInterface;
 use Exception;
@@ -17,16 +18,16 @@ use UnitEnum;
 /**
  * Абстрактный класс dto по умолчанию
  * @abstract
- * @version 2.45
+ * @version 2.46
  * 
  * @override protected function mappings(): array { return []; }
  * Маппинг имён свойств в другие имена dto
  * 
- * @override protected function casts(): array { return []; }
- * Трансформация типов свойств dto
- * 
  * @override protected function defaults(): array { return []; }
  * Задает значения по умолчанию при создании dto
+ * 
+ * @override protected function casts(): array { return []; }
+ * Трансформация типов свойств dto
  * 
  * @override protected function exceptions(string $messageCode, array $messageItems): string {}
  * Сообщения ошибок dto
@@ -92,6 +93,8 @@ abstract class Dto
     public const AUTO_MAPPINGS_ENABLED = false;
     /** Включает опцию авто сериализации объектов при заполнении dto или преобразовании в массив */
     public const AUTO_SERIALIZE_ENABLED = false;
+    /** Указывает класс для работы с датой и временем по умолчанию */
+    public const AUTO_DATETIME_CLASS = Carbon::class;
 
 
     /**
@@ -560,7 +563,7 @@ abstract class Dto
                 switch (true) {
                     case $class === DateTime::class:
                     case $class === DateTimeInterface::class:
-                    case $class === 'Carbon\Carbon':
+                    case $class === Carbon::class:
                         $this->$key = $value = $this->castToDateTime($value);
                         break;
 
@@ -1191,7 +1194,7 @@ abstract class Dto
 
     /**
      * Включает опцию при преобразовании в массив: заполнить только свойствами из указанного объекта
-     * @version 2.34
+     * @version 2.46
      *
      * @param object|string $object
      * @return static
@@ -1213,7 +1216,7 @@ abstract class Dto
             $object = new $object();
         }
 
-        $this->includeStyles(true)->serializeKeys()->onlyKeys($object);
+        $this->includeStyles(true)->mappingKeys($this->mappings())->onlyKeys($object);
 
         return $this;
     }
@@ -1352,18 +1355,6 @@ abstract class Dto
 
     /**
      * @override
-     * Возвращает массив преобразований типов
-     *
-     * @return array
-     */
-    protected function casts(): array
-    {
-        return [];
-    }
-
-
-    /**
-     * @override
      * Возвращает массив значений по умолчанию
      *
      * @return array
@@ -1376,47 +1367,13 @@ abstract class Dto
 
     /**
      * @override
-     * Сообщения ошибок dto
+     * Возвращает массив преобразований типов
      *
-     * @param string $message
-     * @param array $values
-     * @return string
+     * @return array
      */
-    protected function exceptions(string $messageCode, array $messageItems): string
+    protected function casts(): array
     {
-        return match ($messageCode) {
-            'PropertyNotFound' => sprintf(
-                $this->toBasename($this) . '->%s: property not found',
-                mb_strtoupper($messageItems['property']),
-            ),
-            'PropertyAssignType' => sprintf(
-                $this->toBasename($this) . '->%s' . ": cannot assign property type %s",
-                mb_strtoupper($messageItems['property']),
-                $messageItems['type'],
-            ),
-            'AttributeClassNotFound' => sprintf(
-                "Attribute class not found: %s",
-                $messageItems['class'],
-            ),
-            'AttributeNotImplementsBy' => sprintf(
-                "Attribute class not implements by: %s",
-                $messageItems['class'],
-            ),
-            'AttributeMethodNotFound' => sprintf(
-                "Attribute method not found: %s",
-                $messageItems['method'],
-            ),
-            'ClassNotFound' => sprintf(
-                "Class not found: %s",
-                $messageItems['class'],
-            ),
-            'PropertyNotInitialized' => sprintf(
-                $this->toBasename($this) . '->%s: property not initialized',
-                mb_strtoupper($messageItems['property']),
-            ),
-
-            default => 'Unknown message code',
-        };
+        return [];
     }
 
 
@@ -1476,30 +1433,6 @@ abstract class Dto
 
     /**
      * @override
-     * Метод вызывается до преобразования dto в массив
-     *
-     * @param array $array
-     * @return void
-     */
-    protected function onSerializing(array &$array): void
-    {
-    }
-
-
-    /**
-     * @override
-     * Метод вызывается после преобразования dto в массив
-     *
-     * @param array $array
-     * @return void
-     */
-    protected function onSerialized(array &$array): void
-    {
-    }
-
-
-    /**
-     * @override
      * Метод вызывается перед изменением значения свойства dto
      * @version 2.43
      *
@@ -1527,6 +1460,30 @@ abstract class Dto
 
     /**
      * @override
+     * Метод вызывается до преобразования dto в массив
+     *
+     * @param array $array
+     * @return void
+     */
+    protected function onSerializing(array &$array): void
+    {
+    }
+
+
+    /**
+     * @override
+     * Метод вызывается после преобразования dto в массив
+     *
+     * @param array $array
+     * @return void
+     */
+    protected function onSerialized(array &$array): void
+    {
+    }
+
+
+    /**
+     * @override
      * Метод вызывается во время исключения при заполнении dto
      *
      * @param Throwable $exception
@@ -1536,5 +1493,51 @@ abstract class Dto
     protected function onException(Throwable $exception): void
     {
         throw $exception;
+    }
+
+
+    /**
+     * @override
+     * Сообщения ошибок dto
+     *
+     * @param string $message
+     * @param array $values
+     * @return string
+     */
+    protected function exceptions(string $messageCode, array $messageItems): string
+    {
+        return match ($messageCode) {
+            'PropertyNotFound' => sprintf(
+                $this->toBasename($this) . '->%s: property not found',
+                $messageItems['property'],
+            ),
+            'PropertyAssignType' => sprintf(
+                $this->toBasename($this) . '->%s' . ": cannot assign property type %s",
+                $messageItems['property'],
+                $messageItems['type'],
+            ),
+            'AttributeClassNotFound' => sprintf(
+                "Attribute class not found: %s",
+                $messageItems['class'],
+            ),
+            'AttributeNotImplementsBy' => sprintf(
+                "Attribute class not implements by: %s",
+                $messageItems['class'],
+            ),
+            'AttributeMethodNotFound' => sprintf(
+                "Attribute method not found: %s",
+                $messageItems['method'],
+            ),
+            'ClassNotFound' => sprintf(
+                "Class not found: %s",
+                $messageItems['class'],
+            ),
+            'PropertyNotInitialized' => sprintf(
+                $this->toBasename($this) . '->%s: property not initialized',
+                $messageItems['property'],
+            ),
+
+            default => 'Unknown message code',
+        };
     }
 }
