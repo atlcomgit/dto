@@ -9,6 +9,10 @@ Dto используется для передачи типизированны�
 
 > Для реализации функционала работы с Dto необходимо расширить объект с публичными свойствами от класса **\Atlcom\Dto**.
 
+*Версия 2.47*
+- Обновлен метод for
+- Обновлен метод toArray
+
 *Версия 2.46*
 - Обновлен метод for
 - Добавлена константа AUTO_DATETIME_CLASS
@@ -150,7 +154,7 @@ Dto используется для передачи типизированны�
 * @method public **[withPrivateKeys](#пример-32)**(string|array|object|bool ...$data)\
     *Добавление опции сериализации в массив для добавления private свойств.*\
 
-* @method public **[for](#примеры)**(object $object)\
+* @method public **[for](#пример-26)**(object $object)\
     *Добавление опции сериализации в массив для подготовки свойств к заданному объекту/сущности.*\
 
 > ${\textsf{\color{red}WARNING}}$\
@@ -1245,12 +1249,40 @@ class CarDto extends \Atlcom\Dto
 {
     public string $markName = 'Lexus';
     public string $modelName = 'RX500';
+
+    protected function mappings(): array {
+        return [
+            'modelName' => 'model_name',
+        ];
+    }
 }
 
-$carDto = CarDto::create();
+class ModelDto extends \Atlcom\Dto
+{
+    public string $modelName = 'RX500';
+    
+    protected function mappings(): array {
+        return [
+            'modelName' => 'model_name',
+        ];
+    }
+
+    protected function onSerializing(array &$array): void
+    {
+        $this->mappingKeys($this->mappings());
+    }
+}
+
+class Entity
+{
+    public string $model_name;
+}
 
 /* Вывод результата */
-print_r($carDto->excludeKeys(['modelName'])->toArray());
+print_r(CarDto::create()->excludeKeys(['modelName'])->toArray());
+print_r(ModelDto::create()->includeStyles()->onlyKeys(['model_name'])->excludeKeys(['model_name'])->toArray());
+print_r(CarDto::create()->for(Entity::class)->toArray());
+print_r(ModelDto::create()->toArray());
 ```
 
 Результат:
@@ -1258,6 +1290,15 @@ print_r($carDto->excludeKeys(['modelName'])->toArray());
 ```text
 [
     'markName' => 'Lexus',
+]
+[
+
+]
+[
+    'model_name' => 'RX500',
+]
+[
+    'model_name' => 'RX500',
 ]
 ```
 

@@ -18,7 +18,7 @@ use UnitEnum;
 /**
  * Абстрактный класс dto по умолчанию
  * @abstract
- * @version 2.46
+ * @version 2.47
  * 
  * @override protected function mappings(): array { return []; }
  * Маппинг имён свойств в другие имена dto
@@ -1194,7 +1194,7 @@ abstract class Dto
 
     /**
      * Включает опцию при преобразовании в массив: заполнить только свойствами из указанного объекта
-     * @version 2.46
+     * @version 2.47
      *
      * @param object|string $object
      * @return static
@@ -1216,7 +1216,15 @@ abstract class Dto
             $object = new $object();
         }
 
-        $this->includeStyles(true)->mappingKeys($this->mappings())->onlyKeys($object);
+        $this
+            ->includeStyles(true)
+            ->mappingKeys($this->mappings())
+            ->onlyKeys(
+                array_keys(self::convertDataToArray($object))
+                    ?: get_class_vars(get_class($object))
+                    ?: $object
+            )
+        ;
 
         return $this;
     }
@@ -1238,7 +1246,7 @@ abstract class Dto
 
     /**
      * Преобразование dto в массив
-     * @version 2.43
+     * @version 2.47
      *
      * @param bool|null $onlyFilled = false
      * @return array
@@ -1277,9 +1285,10 @@ abstract class Dto
             }
         }
 
-        !($includeStyles || $autoMappings) ?: $this->prepareStyles($keys, true);
+        !($includeStyles || $autoMappings) ?:$this->prepareStyles($keys, true);
 
         foreach ($keys as $key => $value) {
+            $key = $mappingKeys[$key] ?? $key;
             if (
                 $key
                 && (!$onlyFilled || !empty($value))
@@ -1287,7 +1296,7 @@ abstract class Dto
                 && (empty($onlyKeys) || in_array($key, $onlyKeys, true))
                 && (empty($excludeKeys) || !in_array($key, $excludeKeys, true))
             ) {
-                $array[$mappingKeys[$key] ?? $key] = $value;
+                $array[$key] = $value;
             }
         }
 
