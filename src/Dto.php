@@ -1287,16 +1287,28 @@ abstract class Dto
 
         !($includeStyles || $autoMappings) ?:$this->prepareStyles($keys, true);
 
+        $mappingKeysFlip = array_flip($mappingKeys);
         foreach ($keys as $key => $value) {
-            $key = $mappingKeys[$key] ?? $key;
             if (
                 $key
                 && (!$onlyFilled || !empty($value))
                 && (!$onlyNotNull || !is_null($value))
-                && (empty($onlyKeys) || in_array($key, $onlyKeys, true))
-                && (empty($excludeKeys) || !in_array($key, $excludeKeys, true))
+                && (
+                    empty($onlyKeys)
+                    || in_array($mappingKeys[$key] ?? null, $onlyKeys, true)
+                    || in_array($mappingKeysFlip[$key] ?? null, $onlyKeys, true)
+                    || in_array($key, $onlyKeys, true)
+                )
+                && (
+                    empty($excludeKeys)
+                    || !(
+                        in_array($mappingKeys[$key] ?? null, $excludeKeys, true)
+                        || in_array($mappingKeysFlip[$key] ?? null, $excludeKeys, true)
+                        || in_array($key, $excludeKeys, true)
+                    )
+                )
             ) {
-                $array[$key] = $value;
+                $array[$mappingKeys[$key] ?? $key] = $value;
             }
         }
 

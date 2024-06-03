@@ -80,6 +80,18 @@ final class Example26Test extends TestCase
 
         $this->assertArrayNotHasKey('modelName', $modelArray);
         $this->assertArrayHasKey('model_name', $modelArray);
-        $this->assertEquals('RX500', $carArray['model_name']);
+        $this->assertEquals('RX500', $modelArray['model_name']);
+
+        $carArray = CarDto::create()->includeStyles(true)->excludeKeys(['modelName'])->toArray();
+
+        $this->assertArrayHasKey('markName', $carArray);
+        $this->assertArrayHasKey('mark_name', $carArray);
+        $this->assertArrayNotHasKey('modelName', $carArray);
+        $this->assertArrayHasKey('model_name', $carArray);
+
+        $modelArray = ModelDto::create()->includeStyles(true)->excludeKeys(['modelName'])->toArray();
+
+        $this->assertArrayNotHasKey('modelName', $modelArray);
+        $this->assertArrayNotHasKey('model_name', $modelArray);
     }
 }
