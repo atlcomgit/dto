@@ -1,6 +1,6 @@
 <?php
 
-namespace Atlcom\Tests\Examples\Example34;
+namespace Atlcom\Tests\Examples\Example35;
 
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;

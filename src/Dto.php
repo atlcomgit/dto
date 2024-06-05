@@ -18,7 +18,7 @@ use UnitEnum;
 /**
  * Абстрактный класс dto по умолчанию
  * @abstract
- * @version 2.48
+ * @version 2.49
  * 
  * @override protected function mappings(): array { return []; }
  * Маппинг имён свойств в другие имена dto
@@ -71,6 +71,7 @@ use UnitEnum;
  * @method serializeKeys(string|array|object|bool ...$data)
  * @method withProtectedKeys(string|array|bool ...$data)
  * @method withPrivateKeys(string|array|bool ...$data)
+ * @method withoutOptions()
  * @method for(object $object)
  * @method toArray(?bool $onlyFilled = null)
  * @method toJson($options = 0)
@@ -121,27 +122,6 @@ abstract class Dto
 
     //__________________________________________________________________________________________________________________
     // Защищённые методы
-
-
-    /**
-     * Преобразование данных в массив
-     * @version 2.48
-     *
-     * @param mixed $data
-     * @return array
-     */
-    protected static function convertDataToArray(mixed $data = null): array
-    {
-        return match (true) {
-            ($data instanceof self) => $data->toArray(),
-            is_object($data) && method_exists($data, 'toArray') => $data->toArray(),
-            is_string($data) => self::jsonDecode($data),
-            is_array($data) => $data,
-            is_object($data) => (array)$data ?: get_class_vars(get_class($data)),
-
-            default => [],
-        };
-    }
 
 
     /**
@@ -631,7 +611,7 @@ abstract class Dto
 
     /**
      * Преобразование в другой dto
-     * @version 2.45
+     * @version 2.49
      *
      * @param class-string $dtoClass
      * @param array $array = []
@@ -826,6 +806,7 @@ abstract class Dto
      * @param array|string|bool|null $serializeKeys
      * @param array|string|bool|null $withProtectedKeys
      * @param array|string|bool|null $withPrivateKeys
+     * @param bool|null $withoutOptions
      * @return array
      */
     final protected function options(
@@ -842,40 +823,52 @@ abstract class Dto
         array|bool|null $serializeKeys = null,
         array|bool|null $withProtectedKeys = null,
         array|bool|null $withPrivateKeys = null,
+        bool|null $withoutOptions = null,
     ): array {
         static $options = [];
         $instance = md5(static::class . spl_object_id($this));
 
         if ($reset) {
+            $result = [];
             unset($options[$instance]);
+        } else {
+            $result = $options[$instance];
         }
 
-        is_null($autoCasts) ?: $options[$instance]['autoCasts'] = $autoCasts;
-        is_null($autoMappings) ?: $options[$instance]['autoMappings'] = $autoMappings;
-        is_null($onlyFilled) ?: $options[$instance]['onlyFilled'] = $onlyFilled;
-        is_null($onlyNotNull) ?: $options[$instance]['onlyNotNull'] = $onlyNotNull;
-        is_null($onlyKeys) ?: $options[$instance]['onlyKeys'] = $onlyKeys;
-        is_null($includeStyles) ?: $options[$instance]['includeStyles'] = $includeStyles;
-        is_null($includeArray) ?: $options[$instance]['includeArray'] = $includeArray;
-        is_null($excludeKeys) ?: $options[$instance]['excludeKeys'] = $excludeKeys;
-        is_null($mappingKeys) ?: $options[$instance]['mappingKeys'] = $mappingKeys;
-        is_null($serializeKeys) ?: $options[$instance]['serializeKeys'] = $serializeKeys;
-        is_null($withProtectedKeys) ?: $options[$instance]['withProtectedKeys'] = $withProtectedKeys;
-        is_null($withPrivateKeys) ?: $options[$instance]['withPrivateKeys'] = $withPrivateKeys;
+        is_null($autoCasts) ?: $result['autoCasts'] = $autoCasts;
+        is_null($autoMappings) ?: $result['autoMappings'] = $autoMappings;
+        is_null($onlyFilled) ?: $result['onlyFilled'] = $onlyFilled;
+        is_null($onlyNotNull) ?: $result['onlyNotNull'] = $onlyNotNull;
+        is_null($onlyKeys) ?: $result['onlyKeys'] = $onlyKeys;
+        is_null($includeStyles) ?: $result['includeStyles'] = $includeStyles;
+        is_null($includeArray) ?: $result['includeArray'] = $includeArray;
+        is_null($excludeKeys) ?: $result['excludeKeys'] = $excludeKeys;
+        is_null($mappingKeys) ?: $result['mappingKeys'] = $mappingKeys;
+        is_null($serializeKeys) ?: $result['serializeKeys'] = $serializeKeys;
+        is_null($withProtectedKeys) ?: $result['withProtectedKeys'] = $withProtectedKeys;
+        is_null($withPrivateKeys) ?: $result['withPrivateKeys'] = $withPrivateKeys;
+        is_null($withoutOptions) ?: $result['withoutOptions'] = $withoutOptions;
+
+        $options[$instance] = $result;
+
+        if ($result['withoutOptions'] ?? false) {
+            $result = [];
+        }
 
         return [
-            'autoCasts' => $options[$instance]['autoCasts'] ?? static::AUTO_CASTS_ENABLED,
-            'autoMappings' => $options[$instance]['autoMappings'] ?? static::AUTO_MAPPINGS_ENABLED,
-            'onlyFilled' => $options[$instance]['onlyFilled'] ?? false,
-            'onlyNotNull' => $options[$instance]['onlyNotNull'] ?? false,
-            'onlyKeys' => $options[$instance]['onlyKeys'] ?? [],
-            'includeStyles' => $options[$instance]['includeStyles'] ?? false,
-            'includeArray' => $options[$instance]['includeArray'] ?? [],
-            'excludeKeys' => $options[$instance]['excludeKeys'] ?? [],
-            'mappingKeys' => $options[$instance]['mappingKeys'] ?? [],
-            'serializeKeys' => $options[$instance]['serializeKeys'] ?? static::AUTO_SERIALIZE_ENABLED,
-            'withProtectedKeys' => $options[$instance]['withProtectedKeys'] ?? false,
-            'withPrivateKeys' => $options[$instance]['withPrivateKeys'] ?? false,
+            'autoCasts' => $result['autoCasts'] ?? static::AUTO_CASTS_ENABLED,
+            'autoMappings' => $result['autoMappings'] ?? static::AUTO_MAPPINGS_ENABLED,
+            'onlyFilled' => $result['onlyFilled'] ?? false,
+            'onlyNotNull' => $result['onlyNotNull'] ?? false,
+            'onlyKeys' => $result['onlyKeys'] ?? [],
+            'includeStyles' => $result['includeStyles'] ?? false,
+            'includeArray' => $result['includeArray'] ?? [],
+            'excludeKeys' => $result['excludeKeys'] ?? [],
+            'mappingKeys' => $result['mappingKeys'] ?? [],
+            'serializeKeys' => $result['serializeKeys'] ?? static::AUTO_SERIALIZE_ENABLED,
+            'withProtectedKeys' => $result['withProtectedKeys'] ?? false,
+            'withPrivateKeys' => $result['withPrivateKeys'] ?? false,
+            'withoutOptions' => $result['withoutOptions'] ?? false,
         ];
     }
 
@@ -1176,6 +1169,20 @@ abstract class Dto
 
 
     /**
+     * Включает опцию при преобразовании в массив: только не null
+     * @version 2.49
+     *
+     * @return static
+     */
+    final public function withoutOptions(): static
+    {
+        $this->options(withoutOptions: true);
+
+        return $this;
+    }
+
+
+    /**
      * Включает опцию при преобразовании в массив: заполнить только свойствами из указанного объекта
      * @version 2.48
      *
@@ -1339,6 +1346,27 @@ abstract class Dto
 
     //__________________________________________________________________________________________________________________
     // Переопределяемые методы
+
+
+    /**
+     * @override
+     * Преобразование данных в массив перед заполнением dto
+     *
+     * @param mixed $data
+     * @return array
+     */
+    protected static function convertDataToArray(mixed $data = null): array
+    {
+        return match (true) {
+            $data instanceof self => $data->withoutOptions()->toArray(),
+            is_object($data) && method_exists($data, 'toArray') => $data->toArray(),
+            is_string($data) => self::jsonDecode($data),
+            is_array($data) => $data,
+            is_object($data) => (array)$data ?: get_class_vars(get_class($data)),
+
+            default => [],
+        };
+    }
 
 
     /**

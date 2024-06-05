@@ -9,6 +9,10 @@ Dto используется для передачи типизированны�
 
 > Для реализации функционала работы с Dto необходимо расширить объект с публичными свойствами от класса **\Atlcom\Dto**.
 
+*Версия 2.49*
+- Обновлен метод transformToDto
+- Добавлен метод withoutOptions
+
 *Версия 2.48*
 - Обновлен метод convertDataToArray
 - Обновлен метод for
@@ -157,6 +161,9 @@ Dto используется для передачи типизированны�
 
 * @method public **[withPrivateKeys](#пример-32)**(string|array|object|bool ...$data)\
     *Добавление опции сериализации в массив для добавления private свойств.*\
+
+* @method public **[withoutOptions](#пример-36)**(string|array|object|bool ...$data)\
+    *Добавление опции отключения всех ранее установленных опций.*\
 
 * @method public **[for](#пример-26)**(object $object)\
     *Добавление опции сериализации в массив для подготовки свойств к заданному объекту/сущности.*\
@@ -1609,6 +1616,13 @@ class CarFirstDto extends \Atlcom\Dto
 {
     public string $markName;
     public string $modelName;
+
+    protected function mappings(): array
+    {
+        return [
+            'modelName' => 'model_name',
+        ];
+    }
 }
 
 class CarSecondDto extends \Atlcom\Dto
@@ -1618,13 +1632,41 @@ class CarSecondDto extends \Atlcom\Dto
     public int $year;
 }
 
+class CarThirdDto extends \Atlcom\Dto
+{
+    public string $markName;
+    public string $modelName;
+    public int $year;
+
+    protected function mappings(): array
+    {
+        return [
+            'markName' => 'mark_name',
+        ];
+    }
+
+    protected function onSerializing(array &$array): void
+    {
+        $this->onlyKeys(['year']);
+    }
+}
+
 $carFirstDto = CarFirstDto::create([
     'markName' => 'Lexus',
     'modelName' => 'RX500',
 ]);
 $carSecondDto = $carFirstDto->transformToDto(CarSecondDto::class, ['year' => 2024]);
 
+$carThirdDto = CarThirdDto::create([
+    'markName' => 'Lexus',
+    'modelName' => 'RX500',
+    'year' => 2024,
+]);
+
+$carFirstDto = $carThirdDto->transformToDto(CarFirstDto::class);
+
 /* Вывод результата */
+print_r($carFirstDto->toArray());
 print_r($carSecondDto->toArray());
 ```
 
@@ -1634,13 +1676,17 @@ print_r($carSecondDto->toArray());
 [
     'markName' => 'Lexus',
     'modelName' => 'RX500',
+]
+[
+    'markName' => 'Lexus',
+    'modelName' => 'RX500',
     'year' => 2024,
 ]
 ```
 
 ---
 
-###### Пример 34
+###### Пример 35
 **Работа со свойствами даты и времени.**\
 Позволяет преобразовывать типы даты и времени к одному типу, указанному в константе AUTO_DATETIME_CLASS.\
 
@@ -1716,5 +1762,40 @@ print_r($dateTimeDto->toArray());
     'date1' => object \Carbon\Carbon {value: '2024-01-01 00:00:00'},
     'date2' => object \DateTime {value: '2024-01-02 00:00:00'},
     'date3' => object \DateTime {value: '2024-01-03 00:00:00'},
+]
+```
+
+---
+
+###### Пример 36
+**Сериализация Dto в массив с использованием withoutOptions.**\
+Преобразование свойств объекта Dto к массиву с включением опции отключения ранее установленных опций.\
+
+[Открыть тест](tests/Examples/Example36/Example36Test.php)
+
+```php
+class CarDto extends \Atlcom\Dto
+{
+    public string $markName = 'Lexus';
+    public string $modelName = 'RX500';
+
+    protected function onSerializing(array &$array): void
+    {
+        $this->onlyKeys('markName');
+    }
+}
+
+$carDto = CarDto::create();
+
+/* Вывод результата */
+print_r($carDto->withoutOptions()->toArray());
+```
+
+Результат:
+
+```text
+[
+    'markName' => 'Lexus',
+    'modelName' => 'RX500',
 ]
 ```
