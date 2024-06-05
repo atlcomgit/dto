@@ -832,7 +832,7 @@ abstract class Dto
             $result = [];
             unset($options[$instance]);
         } else {
-            $result = $options[$instance];
+            $result = $options[$instance] ?? [];
         }
 
         is_null($autoCasts) ?: $result['autoCasts'] = $autoCasts;
