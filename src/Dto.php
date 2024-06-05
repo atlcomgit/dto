@@ -18,7 +18,7 @@ use UnitEnum;
 /**
  * Абстрактный класс dto по умолчанию
  * @abstract
- * @version 2.47
+ * @version 2.48
  * 
  * @override protected function mappings(): array { return []; }
  * Маппинг имён свойств в другие имена dto
@@ -105,7 +105,7 @@ abstract class Dto
      */
     public function __construct(array|object|string|null $data = null)
     {
-        is_null($data) ?: $this->fillFromArray(self::convertDataToArray($data));
+        is_null($data) ?: $this->fillFromArray(static::convertDataToArray($data));
     }
 
 
@@ -125,36 +125,19 @@ abstract class Dto
 
     /**
      * Преобразование данных в массив
-     * @version 2.43
+     * @version 2.48
      *
      * @param mixed $data
      * @return array
      */
-    final protected static function convertDataToArray(mixed $data = null): array
+    protected static function convertDataToArray(mixed $data = null): array
     {
         return match (true) {
             ($data instanceof self) => $data->toArray(),
-            (
-                is_object($data)
-                && $data::class === '\Illuminate\Database\Eloquent\Model'
-                && class_exists('\Illuminate\Support\Facades\Schema')
-            ) => $data->toArray() ?: array_diff_key(
-                array_fill_keys('\Illuminate\Support\Facades\Schema'::getColumnListing($data->getTable()), null),
-                array_fill_keys(is_array($data->getGuarded()) ? $data->getGuarded() : [], null),
-            ),
-            (
-                is_object($data)
-                && $data::class === '\Illuminate\Foundation\Http\FormRequest'
-            ) => $data->toArray(),
-            (
-                is_object($data)
-                && $data::class === '\Illuminate\Http\Request'
-            ) => $data->toArray(),
-
             is_object($data) && method_exists($data, 'toArray') => $data->toArray(),
             is_string($data) => self::jsonDecode($data),
             is_array($data) => $data,
-            is_object($data) => (array)$data,
+            is_object($data) => (array)$data ?: get_class_vars(get_class($data)),
 
             default => [],
         };
@@ -638,7 +621,7 @@ abstract class Dto
         foreach ($data as $key => $value) {
             $array = [
                 ...$array,
-                ...(is_string($key) ? [$key => $value] : self::convertDataToArray($value)),
+                ...(is_string($key) ? [$key => $value] : static::convertDataToArray($value)),
             ];
         }
 
@@ -692,7 +675,7 @@ abstract class Dto
      */
     final public function fillFromData(mixed $data): static
     {
-        return $this->fillFromArray(self::convertDataToArray($data));
+        return $this->fillFromArray(static::convertDataToArray($data));
     }
 
 
@@ -776,7 +759,7 @@ abstract class Dto
     final public function merge(array|object|string|null $data): static
     {
         try {
-            $array = self::convertDataToArray($data);
+            $array = static::convertDataToArray($data);
 
             $this->onMerging($array);
 
@@ -994,7 +977,7 @@ abstract class Dto
         $onlyKeys = $this->options()['onlyKeys'];
 
         foreach ($data as $key) {
-            !is_object($key) ?: $key = array_keys(self::convertDataToArray($key));
+            !is_object($key) ?: $key = array_keys(static::convertDataToArray($key));
             $onlyKeys = [
                 ...$onlyKeys,
                 ...(is_string($key)
@@ -1113,7 +1096,7 @@ abstract class Dto
                 break;
             }
 
-            !is_object($key) ?: $key = array_keys(self::convertDataToArray($key));
+            !is_object($key) ?: $key = array_keys(static::convertDataToArray($key));
             $serializeKeys = [
                 ...(is_array($serializeKeys) ? $serializeKeys : []),
                 ...(is_string($key)
@@ -1145,7 +1128,7 @@ abstract class Dto
                 break;
             }
 
-            !is_object($key) ?: $key = array_keys(self::convertDataToArray($key));
+            !is_object($key) ?: $key = array_keys(static::convertDataToArray($key));
             $withProtectedKeys = [
                 ...(is_array($withProtectedKeys) ? $withProtectedKeys : []),
                 ...(is_string($key)
@@ -1177,7 +1160,7 @@ abstract class Dto
                 break;
             }
 
-            !is_object($key) ?: $key = array_keys(self::convertDataToArray($key));
+            !is_object($key) ?: $key = array_keys(static::convertDataToArray($key));
             $withPrivateKeys = [
                 ...(is_array($withPrivateKeys) ? $withPrivateKeys : []),
                 ...(is_string($key)
@@ -1194,7 +1177,7 @@ abstract class Dto
 
     /**
      * Включает опцию при преобразовании в массив: заполнить только свойствами из указанного объекта
-     * @version 2.47
+     * @version 2.48
      *
      * @param object|string $object
      * @return static
@@ -1219,11 +1202,7 @@ abstract class Dto
         $this
             ->includeStyles(true)
             ->mappingKeys($this->mappings())
-            ->onlyKeys(
-                array_keys(self::convertDataToArray($object))
-                    ?: get_class_vars(get_class($object))
-                    ?: $object
-            )
+            ->onlyKeys($object)
         ;
 
         return $this;
