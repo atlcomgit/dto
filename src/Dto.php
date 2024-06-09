@@ -18,7 +18,7 @@ use UnitEnum;
 /**
  * Абстрактный класс dto по умолчанию
  * @abstract
- * @version 2.49
+ * @version 2.50
  * 
  * @override protected function mappings(): array { return []; }
  * Маппинг имён свойств в другие имена dto
@@ -824,6 +824,7 @@ abstract class Dto
         array|bool|null $withProtectedKeys = null,
         array|bool|null $withPrivateKeys = null,
         bool|null $withoutOptions = null,
+        array|null $customOptions = null,
     ): array {
         static $options = [];
         $instance = md5(static::class . spl_object_id($this));
@@ -848,6 +849,7 @@ abstract class Dto
         is_null($withProtectedKeys) ?: $result['withProtectedKeys'] = $withProtectedKeys;
         is_null($withPrivateKeys) ?: $result['withPrivateKeys'] = $withPrivateKeys;
         is_null($withoutOptions) ?: $result['withoutOptions'] = $withoutOptions;
+        is_null($customOptions) ?: $result['customOptions'] = $customOptions;
 
         $options[$instance] = $result;
 
@@ -869,6 +871,7 @@ abstract class Dto
             'withProtectedKeys' => $result['withProtectedKeys'] ?? false,
             'withPrivateKeys' => $result['withPrivateKeys'] ?? false,
             'withoutOptions' => $result['withoutOptions'] ?? false,
+            'customOptions' => $result['customOptions'] ?? [],
         ];
     }
 
@@ -898,6 +901,18 @@ abstract class Dto
         $this->options(...$options);
 
         return $this;
+    }
+
+
+    /**
+     * Возвращает опции dto
+     * @version 2.50
+     * 
+     * @return array
+     */
+    final public function getOption(string $optionName): array
+    {
+        return $this->options()[$optionName] ?? null;
     }
 
 
@@ -1177,6 +1192,22 @@ abstract class Dto
     final public function withoutOptions(): static
     {
         $this->options(withoutOptions: true);
+
+        return $this;
+    }
+
+
+    /**
+     * Добавляет свои опции в dto
+     * @version 2.50
+     *
+     * @return static
+     */
+    final public function customOptions(array $options): static
+    {
+        $customOptions = $this->options()['customOptions'] ?? [];
+        
+        $this->options(customOptions: [...$customOptions, ...$options]);
 
         return $this;
     }
