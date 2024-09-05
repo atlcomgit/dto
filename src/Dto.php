@@ -18,45 +18,58 @@ use UnitEnum;
 /**
  * Абстрактный класс dto по умолчанию
  * @abstract
- * @version 2.50
+ * @version 2.51
  * 
  * @override protected function mappings(): array { return []; }
+ * @see self::mappings()
  * Маппинг имён свойств в другие имена dto
  * 
  * @override protected function defaults(): array { return []; }
+ * @see self::defaults()
  * Задает значения по умолчанию при создании dto
  * 
  * @override protected function casts(): array { return []; }
+ * @see self::casts()
  * Трансформация типов свойств dto
  * 
  * @override protected function exceptions(string $messageCode, array $messageItems): string {}
+ * @see self::exceptions()
  * Сообщения ошибок dto
  * 
  * @override protected function onFilling(array &$array): void {}
+ * @see self::onFilling()
  * Выполняется перед заполнением dto
  * 
  * @override protected function onFilled(array $array): void {}
+ * @see self::onFilled()
  * Выполняется после заполнения dto
  * 
  * @override protected function onMerging(array &$array): void {}
+ * @see self::onMerging()
  * Выполняется перед объединением dto
  * 
  * @override protected function onMerged(array $array): void {}
+ * @see self::onMerged()
  * Выполняется после объединения dto
  * 
  * @override protected function onSerializing(array &$array): void {}
+ * @see self::onSerializing()
  * Выполняется перед сериализацией dto
  * 
  * @override protected function onSerialized(array &$array): void {}
+ * @see self::onSerialized()
  * Выполняется после сериализации dto
  * 
  * @override protected function onAssigning(string $key, mixed $value): void {}
+ * @see self::onAssigning()
  * Выполняется перед изменением значения свойства dto
  * 
  * @override protected function onAssigned(string $key): void
+ * @see self::onAssigned()
  * Метод вызывается после изменения значения свойства dto
  * 
  * @override protected function onException(Throwable $exception): void {}
+ * @see self::onException()
  * Выполняется перед исключением dto
  * 
  * @method autoCasts(bool $autoCasts = true)
@@ -469,7 +482,7 @@ abstract class Dto
     /**
      * Присвоение значения свойству
      * @version 2.44
-     *
+     *toArray
      * @param string $key
      * @param mixed $value
      * @param mixed|null $defaultValue
@@ -1263,13 +1276,22 @@ abstract class Dto
 
     /**
      * Преобразование dto в массив
-     * @version 2.47
+     * @version 2.51
      *
      * @param bool|null $onlyFilled = false
+     * @param bool|null $onlyNotNull
+     * @param array|null $onlyKeys
+     * @param array|null $excludeKeys
+     * @param array|null $mappingKeys
      * @return array
      */
-    final public function toArray(?bool $onlyFilled = null): array
-    {
+    final public function toArray(
+        ?bool $onlyFilled = null,
+        ?bool $onlyNotNull = null,
+        ?array $onlyKeys = null,
+        ?array $excludeKeys = null,
+        ?array $mappingKeys = null,
+    ): array {
         $array = [];
         $this->onSerializing($array);
 
@@ -1277,12 +1299,12 @@ abstract class Dto
         $autoCasts = $options['autoCasts'];
         $autoMappings = $options['autoMappings'];
         $onlyFilled ??= $options['onlyFilled'];
-        $onlyNotNull = $options['onlyNotNull'];
-        $onlyKeys = $options['onlyKeys'];
+        $onlyNotNull ??= $options['onlyNotNull'];
+        $onlyKeys ??= $options['onlyKeys'];
         $includeStyles = $options['includeStyles'];
         $includeArray = $options['includeArray'];
-        $excludeKeys = $options['excludeKeys'];
-        $mappingKeys = $options['mappingKeys'];
+        $excludeKeys ??= $options['excludeKeys'];
+        $mappingKeys ??= $options['mappingKeys'];
         $serializeKeys = $options['serializeKeys'];
         $withProtectedKeys = $options['withProtectedKeys'];
         $withPrivateKeys = $options['withPrivateKeys'];
@@ -1302,7 +1324,7 @@ abstract class Dto
             }
         }
 
-        !($includeStyles || $autoMappings) ?:$this->prepareStyles($keys, true);
+        !($includeStyles || $autoMappings) ?: $this->prepareStyles($keys, true);
 
         $mappingKeysFlip = array_flip($mappingKeys);
         foreach ($keys as $key => $value) {
@@ -1402,7 +1424,7 @@ abstract class Dto
 
     /**
      * @override
-     * Возвращает массив преобразований свойств
+     * Возвращает массив маппинга свойств
      *
      * @return array
      */
@@ -1593,6 +1615,31 @@ abstract class Dto
             ),
             'PropertyNotInitialized' => sprintf(
                 $this->toBasename($this) . '->%s: property not initialized',
+                $messageItems['property'],
+            ),
+            'EnumValueNotSupported' => sprintf(
+                $this->toBasename($this) . '->%s: value "%s" not supported',
+                $messageItems['property'],
+                $messageItems['value'],
+            ),
+            'ClassCanNotBeCasted' => sprintf(
+                "Class can not be casted: %s",
+                $messageItems['class'],
+            ),
+            'TypeForCastNotFound' => sprintf(
+                "Type for cast not found: %s",
+                $messageItems['type'],
+            ),
+            'ScalarForCastNeed' => sprintf(
+                $this->toBasename($this) . '->%s: for cast need SCALAR',
+                $messageItems['property'],
+            ),
+            'ArrayForCastNeed' => sprintf(
+                $this->toBasename($this) . '->%s: for cast need ARRAY',
+                $messageItems['property'],
+            ),
+            'TypeForCastNotSpecified' => sprintf(
+                $this->toBasename($this) . '->%s: type for cast not specified',
                 $messageItems['property'],
             ),
 

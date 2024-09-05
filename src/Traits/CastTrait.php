@@ -14,7 +14,7 @@ use UnitEnum;
 
 /**
  * Трейт преобразования типов
- * @version 2.36
+ * @version 2.38
  */
 trait CastTrait
 {
@@ -52,7 +52,10 @@ trait CastTrait
 
                         is_callable($type) => $type($value, $key),
 
-                        default => throw new Exception("Тип для преобразования не найден: {$type}", 409),
+                        default => throw new Exception(
+                            $this->exceptions('TypeForCastNotFound', ['type' => $type]),
+                            409
+                        ),
                     },
             };
         } catch (Throwable $e) {
@@ -86,7 +89,7 @@ trait CastTrait
             $value instanceof DateTimeInterface => $value->getTimestamp(),
             $value instanceof BackedEnum => $value->value,
 
-            mb_strtolower($type) === Carbon::class,
+            mb_strtolower($type) === Carbon::class
             => $value->toDateTimeString(),
 
             mb_strtolower($type) === 'libphonenumber\phonenumber'
@@ -103,7 +106,7 @@ trait CastTrait
 
     /**
      * Преобразование значения к типу: object
-     * @version 2.33
+     * @version 2.38
      *
      * @param string $key
      * @param string $class
@@ -127,8 +130,26 @@ trait CastTrait
                     return match (true) {
                         $value instanceof UnitEnum => $value,
                         is_string($value) && defined("$class::$value") => constant("$class::$value"),
+                        is_scalar($value) => (function ($class, $key, $value) {
+                                try {
+                                    return $class::from($value);
+                                } catch (Throwable $e) {
+                                    $this->onException(
+                                    new Exception(
+                                        $this->exceptions(
+                                            'EnumValueNotSupported',
+                                            ['class' => $class, 'property' => $key, 'value' => $value]
+                                        ),
+                                        409
+                                    )
+                                    );
+                                }
+                            })($class, $key, $value),
 
-                        default => $class::from($value),
+                        default => throw new Exception(
+                            $this->exceptions('ScalarForCastNeed', ['property' => $key]),
+                            409
+                        ),
                     };
 
                 default:
@@ -151,8 +172,7 @@ trait CastTrait
         }
 
         throw new Exception(
-            basename($this) . ': ' . 'класс для преобразования ' .
-            basename($class) . ' не поддерживается в CastTrait',
+            $this->exceptions('ClassCanNotBeCasted', ['class' => $class]),
             409
         );
     }
@@ -253,7 +273,7 @@ trait CastTrait
 
         if (!is_array($value)) {
             throw new Exception(
-                basename($this::class) . '->' . mb_strtoupper($key) . ': для преобразования требуется ARRAYABLE',
+                $this->exceptions('ArrayForCastNeed', ['property' => $key]),
                 409
             );
         }
@@ -265,7 +285,7 @@ trait CastTrait
         if ($class) {
             if (!class_exists($class)) {
                 throw new Exception(
-                    basename($this::class) . '->' . mb_strtoupper($key) . ": не найден класс для преобразования {$class}",
+                    $this->exceptions('ClassNotFound', ['class' => $class]),
                     409
                 );
             }
@@ -276,7 +296,7 @@ trait CastTrait
 
         } else {
             throw new Exception(
-                basename($this::class) . '->' . mb_strtoupper($key) . ': не указан тип для преобразования',
+                $this->exceptions('TypeForCastNotSpecified', ['property' => $key]),
                 409
             );
         }
@@ -293,49 +313,49 @@ trait CastTrait
     {
         return match (true) {
             is_integer($value) => match (static::AUTO_DATETIME_CLASS) {
-                Carbon::class => Carbon::createFromTimestamp($value),
-                DateTime::class, DateTimeInterface::class => (new DateTime())->setTimestamp($value),
+                    Carbon::class => Carbon::createFromTimestamp($value),
+                    DateTime::class, DateTimeInterface::class => (new DateTime())->setTimestamp($value),
 
-                default => $value,
-            },
-            
+                    default => $value,
+                },
+
             is_float($value) => match (static::AUTO_DATETIME_CLASS) {
-                Carbon::class => Carbon::createFromTimestamp($value),
-                DateTime::class, DateTimeInterface::class => $value,
+                    Carbon::class => Carbon::createFromTimestamp($value),
+                    DateTime::class, DateTimeInterface::class => $value,
 
-                default => $value,
-            },
+                    default => $value,
+                },
 
             is_string($value) => match (static::AUTO_DATETIME_CLASS) {
-                Carbon::class => Carbon::parse($value),
+                    Carbon::class => Carbon::parse($value),
 
-                DateTime::class, DateTimeInterface::class => DateTime::createFromFormat('Y-m-d H:i:s', $value)
-                ?: DateTime::createFromFormat('Y-m-d/TH:i:s', $value)
-                ?: DateTime::createFromFormat('Y.m.d H:i:s', $value)
-                ?: DateTime::createFromFormat('Y.m.d\TH:i:s', $value)
-                ?: DateTime::createFromFormat('Y-m-d', $value)
-                ?: DateTime::createFromFormat('Y.m.d', $value)
-                ?: DateTime::createFromFormat('U.u', $value)
-                ?: DateTime::createFromFormat('U', $value)
-                ?: (new DateTime())->setTimestamp(strtotime($value))
-                ?: $value,
+                    DateTime::class, DateTimeInterface::class => DateTime::createFromFormat('Y-m-d H:i:s', $value)
+                    ?: DateTime::createFromFormat('Y-m-d/TH:i:s', $value)
+                    ?: DateTime::createFromFormat('Y.m.d H:i:s', $value)
+                    ?: DateTime::createFromFormat('Y.m.d\TH:i:s', $value)
+                    ?: DateTime::createFromFormat('Y-m-d', $value)
+                    ?: DateTime::createFromFormat('Y.m.d', $value)
+                    ?: DateTime::createFromFormat('U.u', $value)
+                    ?: DateTime::createFromFormat('U', $value)
+                    ?: (new DateTime())->setTimestamp(strtotime($value))
+                    ?: $value,
 
-                default => $value,
-            },
-            
+                    default => $value,
+                },
+
             $value instanceof Carbon => match (static::AUTO_DATETIME_CLASS) {
-                Carbon::class => $value,
-                DateTime::class, DateTimeInterface::class => $value->toDateTime(),
+                    Carbon::class => $value,
+                    DateTime::class, DateTimeInterface::class => $value->toDateTime(),
 
-                default => $value,
-            },
-            
+                    default => $value,
+                },
+
             $value instanceof DateTimeInterface => match (static::AUTO_DATETIME_CLASS) {
-                Carbon::class => Carbon::instance($value),
-                DateTime::class, DateTimeInterface::class => DateTime::createFromInterface($value),
+                    Carbon::class => Carbon::instance($value),
+                    DateTime::class, DateTimeInterface::class => DateTime::createFromInterface($value),
 
-                default => $value,
-            },
+                    default => $value,
+                },
 
             empty($value) || $value == '-' => null,
 
