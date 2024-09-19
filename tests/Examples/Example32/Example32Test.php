@@ -2,6 +2,7 @@
 
 namespace Atlcom\Tests\Examples\Example32;
 
+use Atlcom\Attributes\Hidden;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
@@ -11,9 +12,11 @@ use PHPUnit\Framework\TestCase;
 
 class SumDto extends \Atlcom\Dto
 {
-    protected int $x;
-    protected int $y;
-    protected int $sum = 0;
+    #[Hidden]
+    public int $x;
+    #[Hidden]
+    public int $y;
+    public int $sum = 0;
 
     protected function onAssigned(string $key): void
     {
@@ -40,16 +43,18 @@ final class Example32Test extends TestCase
         $this->assertObjectHasProperty('sum', $sumDto);
         $this->assertEquals($sum, $sumDto->sum);
 
-        $sumDto->x = $x = 2;
-        $sumDto->y = $y = 3;
+        $x = $sumDto->x(2);
+        $y = $sumDto->y(3);
         $sum = $x + $y;
         $this->assertEquals($sum, $sumDto->sum);
 
-        $sumDto->sum = 0;
-        $this->assertEquals($sum, $sumDto->sum);
+        // $sumDto->sum = 0;
+        // $this->assertEquals($sum, $sumDto->sum);
 
         $sumArray = $sumDto->toArray();
-        $this->assertArrayNotHasKey('sum', $sumArray);
+        $this->assertArrayNotHasKey('x', $sumArray);
+        $this->assertArrayNotHasKey('y', $sumArray);
+        $this->assertArrayHasKey('sum', $sumArray);
 
         $sumArray = $sumDto->withProtectedKeys(true)->toArray();
         $this->assertArrayHasKey('sum', $sumArray);

@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Atlcom;
 
+use Atlcom\Attributes\Hidden;
 use Carbon\Carbon;
 use DateTime;
 use DateTimeInterface;
@@ -18,7 +19,7 @@ use UnitEnum;
 /**
  * Абстрактный класс dto по умолчанию
  * @abstract
- * @version 2.51
+ * @version 2.52
  * 
  * @override protected function mappings(): array { return []; }
  * @see self::mappings()
@@ -480,6 +481,26 @@ abstract class Dto
 
 
     /**
+     * Магический метод обращения к свойствам как к методам
+     * - При заданном массиве mappings происходит поиск свойства согласно маппингу
+     * - При включенной опции autoMappings или AUTO_MAPPINGS_ENABLED, поиск подменяет стили переменной camel, snake
+     * - При отсутствии свойства, будет выброшено исключение в методе onException
+     * @version 2.52
+     *
+     * @param mixed $name
+     * @return mixed
+     */
+    public function __call(string $name, array $arguments): mixed
+    {
+        if ($arguments && isset($arguments[0])) {
+            $this->__set($name, $arguments[0]);
+        }
+
+        return $this->__get($name);
+    }
+
+
+    /**
      * Присвоение значения свойству
      * @version 2.44
      *toArray
@@ -804,7 +825,7 @@ abstract class Dto
 
     /**
      * Настройки для преобразования dto в массив
-     * @version 2.45
+     * @version 2.52
      *
      * @param bool|null $reset
      * @param bool|null $autoCasts
@@ -843,6 +864,7 @@ abstract class Dto
         $instance = md5(static::class . spl_object_id($this));
 
         if ($reset) {
+            $customOptions ??= $options[$instance]['customOptions'] ?? [];
             $result = [];
             unset($options[$instance]);
         } else {
@@ -1261,6 +1283,26 @@ abstract class Dto
 
 
     /**
+     * Возвращает список классов аттрибутов у свойства
+     * @version 2.52
+     *
+     * @param string $key
+     * @return array
+     */
+    final public function getKeyAttributes(string $key): array
+    {
+        $result = [];
+        $attributes = (new ReflectionProperty(get_class($this), $key))->getAttributes();
+
+        foreach ($attributes as $attribute) {
+            !class_exists($attributeClass = $attribute->getName()) ?: $result[] = $attributeClass;
+        }
+
+        return $result;
+    }
+
+
+    /**
      * Сбрасывает все опции при преобразовании
      * @version 2.21
      *
@@ -1276,7 +1318,7 @@ abstract class Dto
 
     /**
      * Преобразование dto в массив
-     * @version 2.51
+     * @version 2.52
      *
      * @param bool|null $onlyFilled = false
      * @param bool|null $onlyNotNull
@@ -1347,7 +1389,15 @@ abstract class Dto
                     )
                 )
             ) {
-                $array[$mappingKeys[$key] ?? $key] = $value;
+                $key = $mappingKeys[$key] ?? $key;
+                $attributes = property_exists($this, $key)
+                    ? $this->getKeyAttributes($key)
+                    : (
+                        (isset($mappingKeys[$key]) && property_exists($this, $mappingKeys[$key]))
+                            ? $this->getKeyAttributes($mappingKeys[$key])
+                            : []
+                    );
+                in_array(Hidden::class, $attributes) ?: $array[$key] = $value;
             }
         }
 
