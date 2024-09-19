@@ -14,7 +14,7 @@ use UnitEnum;
 
 /**
  * Трейт преобразования типов
- * @version 2.38
+ * @version 2.39
  */
 trait CastTrait
 {
@@ -65,7 +65,7 @@ trait CastTrait
 
     /**
      * Сериализация значения для массива
-     * @version 2.35
+     * @version 2.39
      *
      * @param string $key
      * @param string|array|callable|null $type
@@ -88,6 +88,8 @@ trait CastTrait
             )->toArray(),
             $value instanceof DateTimeInterface => $value->getTimestamp(),
             $value instanceof BackedEnum => $value->value,
+
+            is_callable($type) => $type($value, $key),
 
             mb_strtolower($type) === Carbon::class
             => $value->toDateTimeString(),
