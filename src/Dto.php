@@ -19,7 +19,7 @@ use UnitEnum;
 /**
  * Абстрактный класс dto по умолчанию
  * @abstract
- * @version 2.53
+ * @version 2.54
  * 
  * @override protected function mappings(): array { return []; }
  * @see self::mappings()
@@ -1444,6 +1444,24 @@ abstract class Dto
             . ':' . hash('sha256', $keyPrefix . $class . json_encode($array)),
             ':'
         );
+    }
+
+
+    /**
+     * Проверяет dto на заполнение хотя бы одного свойства
+     * @version 2.54
+     *
+     * @return bool
+     */
+    final public function isEmpty(): bool
+    {
+        foreach (get_class_vars(get_class($this)) as $key => $value) {
+            if (!empty($this->$key)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
 
