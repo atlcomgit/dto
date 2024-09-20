@@ -1456,7 +1456,18 @@ abstract class Dto
     final public function isEmpty(): bool
     {
         foreach (get_class_vars(get_class($this)) as $key => $value) {
-            if (!empty($this->$key)) {
+            $value = $this->$key ?? null;
+            $isEmpty = match (true) {
+                is_callable($value) => false,
+                $value instanceof self => $value->isEmpty(),
+                is_object($value) => empty((array)$value),
+                is_array($value) => empty($value),
+                is_scalar($value) => empty($value),
+
+                default => true,
+            };
+
+            if (!$isEmpty) {
                 return false;
             }
         }
