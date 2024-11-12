@@ -19,7 +19,7 @@ use UnitEnum;
 /**
  * Абстрактный класс dto по умолчанию
  * @abstract
- * @version 2.54
+ * @version 2.55
  * 
  * @override protected function mappings(): array { return []; }
  * @see self::mappings()

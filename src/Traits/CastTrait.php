@@ -14,7 +14,7 @@ use UnitEnum;
 
 /**
  * Трейт преобразования типов
- * @version 2.39
+ * @version 2.40
  */
 trait CastTrait
 {
@@ -65,7 +65,7 @@ trait CastTrait
 
     /**
      * Сериализация значения для массива
-     * @version 2.39
+     * @version 2.40
      *
      * @param string $key
      * @param string|array|callable|null $type
@@ -74,7 +74,7 @@ trait CastTrait
      */
     protected function serializeValue(string $key, string|array|callable|null $type, mixed $value): mixed
     {
-        return match (true) {
+        $a = match (true) {
             $value instanceof self => $value->setOptions(
                 $this->options(),
                 onlyOptions: [
@@ -88,6 +88,8 @@ trait CastTrait
             )->toArray(),
             $value instanceof DateTimeInterface => $value->getTimestamp(),
             $value instanceof BackedEnum => $value->value,
+
+            is_null($type) => $value,
 
             is_callable($type) => $type($value, $key),
 
@@ -103,6 +105,8 @@ trait CastTrait
 
             default => $value,
         };
+
+        return $a;
     }
 
 
