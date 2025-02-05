@@ -9,18 +9,17 @@ use DateTimeInterface;
 use Exception;
 use ReflectionNamedType;
 use ReflectionProperty;
+use stdClass;
 use Throwable;
 use UnitEnum;
 
 /**
  * Трейт преобразования типов
- * @version 2.40
  */
-trait CastTrait
+trait DtoCastsTrait
 {
     /**
      * Проверяет значение на соответствие типу
-     * @version 2.36
      *
      * @param string $key
      * @param string|array|callable $type
@@ -37,6 +36,7 @@ trait CastTrait
                 'integer', 'int' => $this->castToInt($value),
                 'float', 'numeric' => $this->castToFloat($value),
                 'array', 'arr' => $this->castToArray($value),
+                'object', 'obj' => $this->castToObject($key, stdClass::class, $value),
                 'datetime', 'date' => $this->castToDateTime($value),
                 'positive' => $this->castToPositive($value),
                 mb_strtolower(DateTime::class) => new DateTime($value),
@@ -65,7 +65,6 @@ trait CastTrait
 
     /**
      * Сериализация значения для массива
-     * @version 2.40
      *
      * @param string $key
      * @param string|array|callable|null $type
@@ -74,7 +73,7 @@ trait CastTrait
      */
     protected function serializeValue(string $key, string|array|callable|null $type, mixed $value): mixed
     {
-        $a = match (true) {
+        return match (true) {
             $value instanceof self => $value->setOptions(
                 $this->options(),
                 onlyOptions: [
@@ -105,14 +104,11 @@ trait CastTrait
 
             default => $value,
         };
-
-        return $a;
     }
 
 
     /**
      * Преобразование значения к типу: object
-     * @version 2.38
      *
      * @param string $key
      * @param string $class
@@ -196,7 +192,6 @@ trait CastTrait
 
     /**
      * Преобразование значения к типу: string
-     * @version 2.29
      *
      * @param mixed $value
      * @return string|null
@@ -243,7 +238,6 @@ trait CastTrait
 
     /**
      * Преобразование значения к типу: array
-     * @version 2.32
      *
      * @param mixed $value
      * @return array|null
@@ -263,7 +257,6 @@ trait CastTrait
 
     /**
      * Преобразование значения к типу: array<type>
-     * @version 2.33
      * 
      * @param string $key
      * @param array|string $type
@@ -310,7 +303,6 @@ trait CastTrait
 
     /**
      * Преобразование значения к типу: DateTime|Carbon
-     * @version 2.36
      *
      * @param mixed $value
      * @return DateTime|Carbon:null
@@ -371,7 +363,6 @@ trait CastTrait
 
     /**
      * Преобразование значения к типу с положительным значением: float|int
-     * @version 2.29
      *
      * @param mixed $value
      * @return float|null
@@ -390,5 +381,16 @@ trait CastTrait
 
             default => (int)$value,
         };
+    }
+
+
+    /**
+     * Возвращает массив всех свойств dto с его первым типом
+     *
+     * @return array
+     */
+    public function getCasts(): array
+    {
+        return static::getPropertiesWithFirstType();
     }
 }

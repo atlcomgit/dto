@@ -8,7 +8,7 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Тест создания Dto
+ * Тест заполнения Dto
  */
 final class DtoTest extends TestCase
 {
@@ -16,6 +16,8 @@ final class DtoTest extends TestCase
 
     public function setUp(): void
     {
+        parent::setUp();
+
         $this->faker = Factory::create('ru_RU');
     }
 
@@ -89,7 +91,7 @@ final class DtoTest extends TestCase
     public function onException(): void
     {
         $name = 'default';
-        $value = $this->faker->randomFloat(5);
+        $value = null;
 
         $dto = OnExceptionDto::fill([
             'name'  => $name,

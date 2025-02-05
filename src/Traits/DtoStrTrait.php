@@ -2,7 +2,10 @@
 
 namespace Atlcom\Traits;
 
-trait StrTrait
+/**
+ * Трейт работы со строками
+ */
+trait DtoStrTrait
 {
     /**
      * Определение имени класса
@@ -10,7 +13,7 @@ trait StrTrait
      * @param object|string $class
      * @return string
      */
-    final protected function toBasename(object|string $class): string
+    protected function toBasename(object|string $class): string
     {
         return basename(
             str_replace(
@@ -27,7 +30,7 @@ trait StrTrait
      * @param string $string
      * @return string
      */
-    final protected function toCamelCase(string $string): string
+    protected function toCamelCase(string $string): string
     {
         return lcfirst(str_replace(' ', '', ucwords(str_replace('_', ' ', $string))));
     }
@@ -39,7 +42,7 @@ trait StrTrait
      * @param string $string
      * @return string
      */
-    final protected function toSnakeCase(string $string): string
+    protected function toSnakeCase(string $string): string
     {
         return strtolower(ltrim(preg_replace('/(?<!^)[A-Z]/', '_$0', $string), '_'));
     }
