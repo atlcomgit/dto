@@ -20,7 +20,7 @@ use Carbon\Carbon;
 /**
  * Абстрактный класс dto по умолчанию
  * @abstract
- * @version 2.56
+ * @version 2.57
  * 
  * @override @see self::mappings()
  * @override @see self::defaults()

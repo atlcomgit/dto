@@ -43,7 +43,7 @@ trait DtoPropertiesTrait
     final public static function getPropertiesWithFirstType(bool|array|null $useCasts = [], bool|array|null $useMappings = false): array
     {
         return array_map(
-            static fn (array &$v) => mb_strtolower($v[0]) === 'null' ? ($v[1] ?? $v[0]) : $v[0],
+            static fn (array $v) => mb_strtolower($v[0]) === 'null' ? ($v[1] ?? $v[0]) : $v[0],
             static::getPropertiesWithAllTypes($useCasts, $useMappings),
         );
     }
