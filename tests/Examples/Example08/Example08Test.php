@@ -19,9 +19,8 @@ enum CarTypeEnum: string
 #[\Attribute(\Attribute::TARGET_PROPERTY)]
 class YearCast implements AttributeDtoInterface
 {
-    public function __construct(private ?bool $enabled = null)
-    {
-    }
+    public function __construct(private ?bool $enabled = null) {}
+
 
     public function handle(string &$key, mixed &$value, mixed $default, string $class): void
     {
@@ -43,6 +42,18 @@ class CarDto extends \Atlcom\Dto
             'id' => 'integer',
             'type' => CarTypeEnum::class,
             'comment' => static fn ($value) => mb_substr($value, 0, 6),
+        ];
+    }
+}
+
+class CarDto2 extends \Atlcom\Dto
+{
+    public int $id;
+
+    protected function casts(): array
+    {
+        return [
+            'id' => 'integer',
         ];
     }
 }
@@ -72,5 +83,14 @@ final class Example08Test extends TestCase
         $this->assertEquals(CarTypeEnum::NEW , $carDto->type);
         $this->assertEquals('Пример', $carDto->comment);
         $this->assertEquals(2024, $carDto->year);
+
+        try {
+            $carDto2 = CarDto2::create(id: '123abc');
+            $result = false;
+        } catch (\Throwable $exception) {
+            $result = true;
+        }
+
+        $this->assertTrue($result);
     }
 }

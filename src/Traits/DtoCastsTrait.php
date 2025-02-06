@@ -63,6 +63,7 @@ trait DtoCastsTrait
         }
     }
 
+
     /**
      * Сериализация значения для массива
      *
@@ -137,13 +138,13 @@ trait DtoCastsTrait
                                     return $class::from($value);
                                 } catch (Throwable $e) {
                                     $this->onException(
-                                    new Exception(
-                                        $this->exceptions(
-                                            'EnumValueNotSupported',
-                                            ['class' => $class, 'property' => $key, 'value' => $value]
-                                        ),
-                                        409
-                                    )
+                                        new Exception(
+                                            $this->exceptions(
+                                                'EnumValueNotSupported',
+                                                ['class' => $class, 'property' => $key, 'value' => $value],
+                                            ),
+                                            409
+                                        )
                                     );
                                 }
                             })($class, $key, $value),
@@ -179,24 +180,26 @@ trait DtoCastsTrait
         );
     }
 
+
     /**
      * Преобразование значения к типу: boolean
      *
      * @param mixed $value
-     * @return bool|null
+     * @return mixed
      */
-    protected function castToBoolean(mixed $value): ?bool
+    protected function castToBoolean(mixed $value): mixed
     {
-        return !is_null($value) ? filter_var($value, FILTER_VALIDATE_BOOLEAN) : null;
+        return !is_null($value) ? filter_var($value, FILTER_VALIDATE_BOOLEAN) : $value;
     }
+
 
     /**
      * Преобразование значения к типу: string
      *
      * @param mixed $value
-     * @return string|null
+     * @return mixed
      */
-    protected function castToString(mixed $value): ?string
+    protected function castToString(mixed $value): mixed
     {
         return match (true) {
             is_null($value) => null,
@@ -214,27 +217,30 @@ trait DtoCastsTrait
         };
     }
 
+
     /**
      * Преобразование значения к типу: integer
      *
      * @param mixed $value
-     * @return int|null
+     * @return mixed
      */
-    protected function castToInt(mixed $value): ?int
+    protected function castToInt(mixed $value): mixed
     {
-        return !is_null($value) ? (int)$value : null;
+        return (!is_null($value) && is_numeric($value)) ? (int)$value : $value;
     }
+
 
     /**
      * Преобразование значения к типу: float
      *
      * @param mixed $value
-     * @return float|null
+     * @return mixed
      */
-    protected function castToFloat(mixed $value): ?float
+    protected function castToFloat(mixed $value): mixed
     {
-        return !is_null($value) ? (float)$value : null;
+        return (!is_null($value) && is_numeric($value)) ? (float)$value : $value;
     }
+
 
     /**
      * Преобразование значения к типу: array
@@ -254,6 +260,7 @@ trait DtoCastsTrait
             default => (array)$value,
         };
     }
+
 
     /**
      * Преобразование значения к типу: array<type>
@@ -301,11 +308,12 @@ trait DtoCastsTrait
         }
     }
 
+
     /**
      * Преобразование значения к типу: DateTime|Carbon
      *
      * @param mixed $value
-     * @return DateTime|Carbon:null
+     * @return mixed
      */
     protected function castToDateTime(mixed $value): mixed
     {
@@ -361,25 +369,26 @@ trait DtoCastsTrait
         };
     }
 
+
     /**
      * Преобразование значения к типу с положительным значением: float|int
      *
      * @param mixed $value
-     * @return float|null
+     * @return mixed
      */
-    protected function castToPositive(mixed $value): ?float
+    protected function castToPositive(mixed $value): mixed
     {
         return match (true) {
             is_null($value) => null,
-            is_integer($value) => filter_var($value, FILTER_VALIDATE_INT, [
+            is_integer($value) && is_numeric($value) => filter_var($value, FILTER_VALIDATE_INT, [
                 'options' => ['min_range' => 0],
             ]),
-            is_float($value) => filter_var($value, FILTER_VALIDATE_FLOAT, [
+            is_float($value) && is_numeric($value) => filter_var($value, FILTER_VALIDATE_FLOAT, [
                 'options' => ['min_range' => 0],
             ]),
             is_bool($value) => (int)$this->castToBoolean($value),
 
-            default => (int)$value,
+            default => $value,
         };
     }
 

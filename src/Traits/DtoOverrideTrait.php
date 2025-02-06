@@ -55,12 +55,12 @@ trait DtoOverrideTrait
      */
     protected function onFilling(array &$array): void
     {
-        !(  // приводим id к integer
-            property_exists($this, 'id')
-            && array_key_exists('id', $array)
-            && str_contains((string)(new ReflectionProperty(get_class($this), 'id'))->getType(), 'int')
-            && is_numeric($array['id'] ?? null)
-        ) ?: $array['id'] = (int)($array['id'] ?? 0);
+        // !(  // приводим id к integer
+        //     property_exists($this, 'id')
+        //     && array_key_exists('id', $array)
+        //     && str_contains((string)(new ReflectionProperty(get_class($this), 'id'))->getType(), 'int')
+        //     && is_numeric($array['id'] ?? null)
+        // ) ?: $array['id'] = (int)($array['id'] ?? 0);
     }
 
 
