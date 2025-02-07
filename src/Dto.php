@@ -20,7 +20,7 @@ use Carbon\Carbon;
 /**
  * Абстрактный класс dto по умолчанию
  * @abstract
- * @version 2.57
+ * @version 2.58
  * 
  * @override @see self::mappings()
  * @override @see self::defaults()
@@ -78,7 +78,7 @@ abstract class Dto
         $this->onCreating($constructData);
 
         is_null($constructData) ?: $this->fillFromArray(static::convertDataToArray($constructData));
-        
+
         $this->onCreated($constructData);
     }
 
