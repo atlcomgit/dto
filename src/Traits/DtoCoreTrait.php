@@ -22,10 +22,10 @@ trait DtoCoreTrait
      * @param string $data
      * @return array
      */
-    final protected static function jsonDecode(string $data): array
+    final protected static function jsonDecode(string $data, bool $throwOnError = true): array
     {
         try {
-            $array = json_decode($data, true, 512, JSON_THROW_ON_ERROR) ?: [];
+            $array = json_decode($data, true, 512, $throwOnError ? JSON_THROW_ON_ERROR : 0) ?: [];
         } catch (Throwable $exception) {
             $array = (array)$data;
 
@@ -219,7 +219,7 @@ trait DtoCoreTrait
                         //         500
                         //     )
                         // ),
-    
+
                         !in_array(AttributeDtoInterface::class, class_implements($attributeClass) ?: []) => false,
                         // => $this->onException(
                         //     new Exception(
@@ -227,7 +227,7 @@ trait DtoCoreTrait
                         //         500
                         //     )
                         // ),
-    
+
                         !method_exists($attributeClass, 'handle') => false,
                         // => $this->onException(
                         //     new Exception(
@@ -235,7 +235,7 @@ trait DtoCoreTrait
                         //         500
                         //     )
                         // ),
-    
+
                         default
                         => (static function () use (&$key, &$value, $defaultValue, $attribute) {
                                 ($attribute->newInstance())->handle($key, $value, $defaultValue, static::class);
@@ -353,6 +353,7 @@ trait DtoCoreTrait
             }
 
             $this->onFilled($array);
+
         } catch (Throwable $exception) {
             $this->onException($exception);
         }

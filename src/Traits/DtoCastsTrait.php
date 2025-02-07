@@ -253,7 +253,7 @@ trait DtoCastsTrait
         return match (true) {
             is_null($value) => null,
             $value instanceof self => $value->serializeKeys()->toArray(),
-            is_string($value) => self::jsonDecode($value),
+            is_string($value) => self::jsonDecode($value, true),
             is_object($value) && method_exists($value, 'toArray') => $value->toArray(),
             is_array($value) => $value,
 

@@ -44,8 +44,8 @@ trait DtoFillTrait
             $this->onException(
                 new Exception(
                     $this->exceptions('ClassNotFound', ['class' => $dtoClass]),
-                    500
-                )
+                    500,
+                ),
             );
 
             return $this;
@@ -156,7 +156,7 @@ trait DtoFillTrait
                 if (!$reflection->isInitialized($this)) {
                     throw new Exception(
                         $this->exceptions('PropertyNotInitialized', ['property' => $key]),
-                        500
+                        500,
                     );
                 }
             }

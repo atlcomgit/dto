@@ -48,6 +48,30 @@ trait DtoOverrideTrait
 
     /**
      * @override
+     * Метод вызывается до создания и заполнения dto
+     *
+     * @param mixed $data
+     * @return void
+     */
+    protected function onCreating(mixed &$data): void
+    {
+    }
+
+
+    /**
+     * @override
+     * Метод вызывается после создания и заполнения dto
+     *
+     * @param mixed $data
+     * @return void
+     */
+    protected function onCreated(mixed $data): void
+    {
+    }
+
+
+    /**
+     * @override
      * Метод вызывается до заполнения dto
      *
      * @param array $array

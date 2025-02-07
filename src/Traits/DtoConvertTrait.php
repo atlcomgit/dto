@@ -26,7 +26,7 @@ trait DtoConvertTrait
 
             is_object($data) && method_exists($data, 'toArray') => $data->toArray(),
 
-            is_string($data) => static::jsonDecode($data),
+            is_string($data) => static::jsonDecode($data, false),
 
             is_array($data) => $data,
 

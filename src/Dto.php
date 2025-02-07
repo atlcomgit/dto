@@ -75,7 +75,11 @@ abstract class Dto
      */
     public function __construct(array|object|string|null $constructData = null)
     {
+        $this->onCreating($constructData);
+
         is_null($constructData) ?: $this->fillFromArray(static::convertDataToArray($constructData));
+        
+        $this->onCreated($constructData);
     }
 
 
