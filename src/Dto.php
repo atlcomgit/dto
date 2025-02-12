@@ -20,12 +20,14 @@ use Carbon\Carbon;
 /**
  * Абстрактный класс dto по умолчанию
  * @abstract
- * @version 2.58
+ * @version 2.59
  * 
  * @override @see self::mappings()
  * @override @see self::defaults()
  * @override @see self::casts()
  * @override @see self::exceptions()
+ * @override @see self::onCreating()
+ * @override @see self::onCreated()
  * @override @see self::onFilling()
  * @override @see self::onFilled()
  * @override @see self::onMerging()
@@ -41,6 +43,7 @@ use Carbon\Carbon;
  * 
  * @see \Atlcom\Tests\DtoTest
  * @see ../../README.md
+ * @link https://github.com/atlcomgit/dto
  */
 abstract class Dto
 {
