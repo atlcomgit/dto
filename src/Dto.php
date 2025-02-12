@@ -67,7 +67,7 @@ abstract class Dto
     public const AUTO_SERIALIZE_ENABLED = false;
     /** Указывает класс для работы с датой и временем по умолчанию */
     public const AUTO_DATETIME_CLASS = Carbon::class;
-    /** Включает опцию авто создания динамический свойств через опции */
+    /** Включает опцию для работы с динамическими свойствами через опции */
     public const AUTO_DYNAMIC_PROPERTIES_ENABLED = false;
 
 

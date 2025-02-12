@@ -206,7 +206,7 @@ trait DtoCoreTrait
      * @return void
      * @throws Exception
      */
-    final private function assignValue(string $key, mixed $value, mixed $defaultValue = null): void
+    private function assignValue(string $key, mixed $value, mixed $defaultValue = null): void
     {
         try {
             if (property_exists($this, $key)) {
@@ -329,7 +329,7 @@ trait DtoCoreTrait
     }
 
 
-    final private function fillDto(array $array): static
+    private function fillDto(array $array): static
     {
         try {
             $defaults = method_exists($this, 'defaults') ? $this->defaults() : [];

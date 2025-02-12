@@ -13,6 +13,7 @@ namespace App\Defaults;
 use Atlcom\Dto;
 use App\Exceptions\ValidationException;
 use Illuminate\Support\Facades\Validator;
+use Exception;
 use Throwable;
 
 abstract class DefaultDto extends Dto
@@ -30,13 +31,11 @@ abstract class DefaultDto extends Dto
                 $dataKeys = Validator::make($data, $this->rules(), $this->validatorMessages())
                     ->validate();
             } catch (Throwable $exception) {
-                ValidationException::except($exception->getMessage(), $exception->getCode());
+                throw new Exception($exception->getMessage(), $exception->getCode());
             }
         }
 
-        $this->fillFromArray([
-            ...($dataKeys ?? []),
-        ]);
+        $this->fillFromArray($dataKeys ?? []);
     }
 }
 ```
@@ -116,6 +115,7 @@ class ExampleController extends Controller
 {
     public function index(ExampleDto $dto): array
     {
+        // $dto->name
     }
 }
 ```
