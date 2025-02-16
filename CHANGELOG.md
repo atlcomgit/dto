@@ -1,5 +1,9 @@
 # Changelog
 
+## *Версия 2.60*
+
+- Обновлен метод castToArrayOfObjects
+
 ## *Версия 2.59*
 
 - Добавлен в трейты declare(strict_types=1)

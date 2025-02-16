@@ -32,7 +32,7 @@ trait DtoOptionsTrait
      * @param bool|null $withoutOptions
      * @return array
      */
-    final protected function options(
+    protected function options(
         ?bool $reset = null,
         ?bool $autoCasts = null,
         ?bool $autoMappings = null,
@@ -110,7 +110,7 @@ trait DtoOptionsTrait
      * @param string $key
      * @return bool
      */
-    final protected function isOptionContainKey(mixed $option, string $key): bool
+    protected function isOptionContainKey(mixed $option, string $key): bool
     {
         return is_null($option)
             || ($option === true)

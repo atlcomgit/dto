@@ -24,7 +24,7 @@ trait DtoCoreTrait
      * @param string $data
      * @return array
      */
-    final protected static function jsonDecode(string $data, bool $throwOnError = true): array
+    protected static function jsonDecode(string $data, bool $throwOnError = true): array
     {
         try {
             $array = json_decode($data, true, 512, $throwOnError ? JSON_THROW_ON_ERROR : 0) ?: [];
@@ -44,7 +44,7 @@ trait DtoCoreTrait
      * @param array $array
      * @return void
      */
-    final protected function validateCasts(array &$array): void
+    protected function validateCasts(array &$array): void
     {
         $casts = method_exists($this, 'casts') ? $this->casts() : [];
         $mappings = $this->mappings();
@@ -86,7 +86,7 @@ trait DtoCoreTrait
      * @param array $array
      * @return void
      */
-    final protected function serializeCasts(array &$array): void
+    protected function serializeCasts(array &$array): void
     {
         $serializeKeys = $this->options()['serializeKeys'];
         $casts = method_exists($this, 'casts') ? $this->casts() : [];
@@ -114,7 +114,7 @@ trait DtoCoreTrait
      * @param bool $forceMappings = false
      * @return void
      */
-    final protected function prepareStyles(array &$array, bool $forceMappings = false): void
+    protected function prepareStyles(array &$array, bool $forceMappings = false): void
     {
         $autoMappings = $this->options()['autoMappings'];
 
@@ -138,7 +138,7 @@ trait DtoCoreTrait
      * @param mixed $value
      * @return bool
      */
-    final protected function getMappingValue(array &$array, array $pathKey, mixed &$value): bool
+    protected function getMappingValue(array &$array, array $pathKey, mixed &$value): bool
     {
         $key = array_shift($pathKey);
 
@@ -165,7 +165,7 @@ trait DtoCoreTrait
      * @param array $array
      * @return void
      */
-    final protected function prepareMappings(array &$array): void
+    protected function prepareMappings(array &$array): void
     {
         $autoMappings = $this->options()['autoMappings'];
         $mappings = $this->mappings();

@@ -56,7 +56,7 @@ trait DtoCastsTrait
 
                         default => throw new Exception(
                             $this->exceptions('TypeForCastNotFound', ['type' => $type]),
-                            409
+                            409,
                         ),
                     },
             };
@@ -86,7 +86,7 @@ trait DtoCastsTrait
                     'onlyNotNull',
                     'includeStyles',
                     'serializeKeys',
-                ]
+                ],
             )->toArray(),
             $value instanceof DateTimeInterface => $value->getTimestamp(),
             $value instanceof BackedEnum => $value->value,
@@ -129,6 +129,7 @@ trait DtoCastsTrait
         if ($class instanceof ReflectionNamedType && ($class = $class->getName())) {
             switch (true) {
                 case is_null($value):
+
                     return null;
 
                 case enum_exists($class):
@@ -140,20 +141,20 @@ trait DtoCastsTrait
                                     return $class::from($value);
                                 } catch (Throwable $e) {
                                     $this->onException(
-                                        new Exception(
-                                            $this->exceptions(
-                                                'EnumValueNotSupported',
-                                                ['class' => $class, 'property' => $key, 'value' => $value],
-                                            ),
-                                            409
-                                        )
+                                    new Exception(
+                                        $this->exceptions(
+                                            'EnumValueNotSupported',
+                                            ['class' => $class, 'property' => $key, 'value' => $value],
+                                        ),
+                                        409,
+                                    ),
                                     );
                                 }
                             })($class, $key, $value),
 
                         default => throw new Exception(
                             $this->exceptions('ScalarForCastNeed', ['property' => $key]),
-                            409
+                            409,
                         ),
                     };
 
@@ -178,7 +179,7 @@ trait DtoCastsTrait
 
         throw new Exception(
             $this->exceptions('ClassCanNotBeCasted', ['class' => $class]),
-            409
+            409,
         );
     }
 
@@ -265,24 +266,26 @@ trait DtoCastsTrait
 
 
     /**
-     * Преобразование значения к типу: array<type>
+     * Преобразование значения к типу: array<type>|Collection<type>
      * 
      * @param string $key
      * @param array|string $type
      * @param mixed $value
-     * @return array
+     * @return array|object
      * @throws Exception
      */
-    protected function castToArrayOfObjects(string $key, array|string $type, mixed $value): array
+    protected function castToArrayOfObjects(string $key, array|string $type, mixed $value): array|object
     {
         if (!property_exists($this, $key)) {
             return $value;
         }
 
+        $value = (is_object($value) && method_exists($value, 'toArray')) ? $value->all() : ($value ?? []);
+
         if (!is_array($value)) {
             throw new Exception(
                 $this->exceptions('ArrayForCastNeed', ['property' => $key]),
-                409
+                409,
             );
         }
 
@@ -294,18 +297,27 @@ trait DtoCastsTrait
             if (!class_exists($class)) {
                 throw new Exception(
                     $this->exceptions('ClassNotFound', ['class' => $class]),
-                    409
+                    409,
                 );
             }
 
-            return method_exists($class, 'collect')
+            $items = method_exists($class, 'collect')
                 ? $class::collect($value)
                 : array_map(fn ($item) => $this->matchValue($key, $class, $item), $value);
+
+            $keyClass = (new ReflectionProperty(get_class($this), $key))?->getType()?->getName() ?: 'mixed';
+            $keyClass = explode('|', str_replace(['?', ' '], ['', ''], $keyClass))[0];
+
+            return match (true) {
+                $keyClass !== 'array' && class_exists($keyClass) => new $keyClass($items),
+
+                default => $items,
+            };
 
         } else {
             throw new Exception(
                 $this->exceptions('TypeForCastNotSpecified', ['property' => $key]),
-                409
+                409,
             );
         }
     }
