@@ -3,7 +3,7 @@
     "type": "library",
     "description": "Atlcom DTO library",
     "require": {
-        "php": "^8.1",
+        "php": "^8.2",
         "ext-mbstring": "*",
         "nesbot/carbon": "^2.0"
     },

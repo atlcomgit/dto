@@ -13,6 +13,30 @@ use Throwable;
 trait DtoMagicTrait
 {
     /**
+     * construct dto
+     *
+     * @param array|object|string|null $data
+     */
+    public function __construct(array|object|string|null $constructData = null)
+    {
+        $this->onCreating($constructData);
+
+        is_null($constructData) ?: $this->fillFromArray(static::convertDataToArray($constructData));
+
+        $this->onCreated($constructData);
+    }
+
+
+    /**
+     * destruct dto
+     */
+    public function __destruct()
+    {
+        $this->reset();
+    }
+
+
+    /**
      * Магический метод присвоения свойствам
      * - При заданном массиве mappings происходит поиск свойства согласно маппингу
      * - При включенной опции autoMappings или AUTO_MAPPINGS_ENABLED, поиск подменяет стили переменной camel, snake
@@ -31,6 +55,7 @@ trait DtoMagicTrait
 
             if (property_exists($this, $name)) {
                 $this->assignValue($name, $value);
+
                 return;
             }
 
@@ -76,7 +101,7 @@ trait DtoMagicTrait
 
             throw new Exception(
                 $this->exceptions('PropertyNotFound', ['property' => $name]),
-                500
+                500,
             );
 
         } catch (Throwable $exception) {
@@ -86,8 +111,8 @@ trait DtoMagicTrait
                 $this->onException(
                     new Exception(
                         $this->exceptions('PropertyAssignType', ['property' => $name, 'type' => $type]),
-                        500
-                    )
+                        500,
+                    ),
                 );
             } else {
                 $this->onException($exception);
@@ -151,7 +176,7 @@ trait DtoMagicTrait
 
             throw new Exception(
                 $this->exceptions('PropertyNotFound', ['property' => $name]),
-                500
+                500,
             );
         } catch (Throwable $exception) {
             $this->onException($exception);
