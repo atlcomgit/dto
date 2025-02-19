@@ -5,7 +5,7 @@
 **Работа с методами через Dto.**
 Имеется метод класса, который принимает на вход определённый объект Dto и возвращает другой объект Dto.\
 
-[Открыть пример](tests/Examples/Example01/Example01Test.php)
+[Открыть пример](../tests/Examples/Example01/Example01Test.php)
 
 ```php
 class IdDto extends \Atlcom\Dto
@@ -66,7 +66,7 @@ print_r($carDto->toArray());
 **Заполнение Dto из массива.**
 Создание объекта Dto и заполнение его свойств из массива.\
 
-[Открыть пример](tests/Examples/Example02/Example02Test.php)
+[Открыть пример](../tests/Examples/Example02/Example02Test.php)
 
 ```php
 class CarDto extends \Atlcom\Dto
@@ -102,7 +102,7 @@ print_r($carDto->toArray());
 **Заполнение Dto из объекта.**
 Создание объекта Dto и заполнение его свойств из другого объекта.\
 
-[Открыть пример](tests/Examples/Example03/Example03Test.php)
+[Открыть пример](../tests/Examples/Example03/Example03Test.php)
 
 ```php
 class CarDto extends \Atlcom\Dto
@@ -138,7 +138,7 @@ print_r($carDto2->toArray());
 **Заполнение Dto из строки json.**
 Создание объекта Dto и заполнение его свойств из строки формата json.\
 
-[Открыть пример](tests/Examples/Example04/Example04Test.php)
+[Открыть пример](../tests/Examples/Example04/Example04Test.php)
 
 ```php
 class CarDto extends \Atlcom\Dto
@@ -170,7 +170,7 @@ print_r($carDto->toArray());
 Создание объекта Dto и заполнение его свойств значениями по умолчанию.
 Значения из возвращаемого массива в методе defaults присваиваются свойству Dto в случае отсутствия значения для заполнения при его создании.\
 
-[Открыть пример](tests/Examples/Example05/Example05Test.php)
+[Открыть пример](../tests/Examples/Example05/Example05Test.php)
 
 ```php
 class CarDto extends \Atlcom\Dto
@@ -208,7 +208,7 @@ print_r($carDto->toArray());
 Создание объекта Dto и заполнение его свойств из других ключей передаваемого массива.
 Метод mappings возвращает массив с указанием названия свойств Dto в ключах и значения, который содержит название ключа массива для заполнения.\
 
-[Открыть пример](tests/Examples/Example06/Example06Test.php)
+[Открыть пример](../tests/Examples/Example06/Example06Test.php)
 
 ```php
 class CarDto extends \Atlcom\Dto
@@ -250,7 +250,7 @@ print_r($carDto->toArray());
 Создание объекта Dto и заполнение его свойств из других ключей передаваемого массива.
 Метод mappings возвращает массив с указанием названия свойств Dto в ключах и значения, который содержит название ключа с точками многоуровневого массива для заполнения.\
 
-[Открыть пример](tests/Examples/Example07/Example07Test.php)
+[Открыть пример](../tests/Examples/Example07/Example07Test.php)
 
 ```php
 class CarDto extends \Atlcom\Dto
@@ -297,7 +297,7 @@ print_r($carDto->toArray());
 Метод casts возвращает массив для преобразования, в ключе которого указывается название свойства Dto, а в значении тип для преобразования значения из массива заполнения.
 Также, для свойства Dto можно указать аттрибут для преобразования типа, класс которого должен содержать метод handle и реализовывать интерфейс AttributeDtoInterface.\
 
-[Открыть пример](tests/Examples/Example08/Example08Test.php)
+[Открыть пример](../tests/Examples/Example08/Example08Test.php)
 
 ```php
 enum CarTypeEnum: string
@@ -366,7 +366,7 @@ print_r($carDto->toArray());
 Создание объекта Dto и заполнение его свойств с типом Dto.
 Переданный массив передается по цепочке в создаваемые объекты Dto по ключу с названием свойства в родительском Dto.\
 
-[Открыть пример](tests/Examples/Example09/Example09Test.php)
+[Открыть пример](../tests/Examples/Example09/Example09Test.php)
 
 ```php
 class MarkDto extends \Atlcom\Dto
@@ -425,7 +425,7 @@ print_r($carDto->toArray());
 **Заполнение Dto с вложенными Dto, маппингом свойств и сериализацией.**
 Создание объекта Dto и заполнение его свойств с применением метода mappings и преобразованием к массиву всех его свойств при вызове метода toArray.\
 
-[Открыть пример](tests/Examples/Example10/Example10Test.php)
+[Открыть пример](../tests/Examples/Example10/Example10Test.php)
 
 ```php
 class MarkDto extends \Atlcom\Dto
@@ -509,7 +509,7 @@ print_r($carDto->serializeKeys()->toArray());
 **Заполнение Dto с событием onFilling (перед заполнением).**
 Создание объекта Dto и заполнение его свойств вызовом метода onFilling перед его заполнением.\
 
-[Открыть пример](tests/Examples/Example11/Example11Test.php)
+[Открыть пример](../tests/Examples/Example11/Example11Test.php)
 
 ```php
 class CarDto extends \Atlcom\Dto
@@ -546,7 +546,7 @@ print_r($carDto->toArray());
 **Заполнение Dto с событием onFilled (после заполнения).**
 Создание объекта Dto и заполнение его свойств вызовом метода onFilled после его заполнения.\
 
-[Открыть пример](tests/Examples/Example12/Example12Test.php)
+[Открыть пример](../tests/Examples/Example12/Example12Test.php)
 
 ```php
 class CarDto extends \Atlcom\Dto
@@ -583,7 +583,7 @@ print_r($carDto->toArray());
 **Заполнение Dto с событием onMerging (перед объединением).**
 Создание объекта Dto и объединение значений его свойств с массивом уже заполненного Dto и вызовом метода onMerging до его объединения.\
 
-[Открыть пример](tests/Examples/Example13/Example13Test.php)
+[Открыть пример](../tests/Examples/Example13/Example13Test.php)
 
 ```php
 class CarDto extends \Atlcom\Dto
@@ -632,7 +632,7 @@ print_r($carDto->toArray());
 **Заполнение Dto с событием onMerged (после объединения).**
 Создание объекта Dto и объединение значений его свойств с массивом уже заполненного Dto и вызовом метода onMerged после его объединения.\
 
-[Открыть пример](tests/Examples/Example14/Example14Test.php)
+[Открыть пример](../tests/Examples/Example14/Example14Test.php)
 
 ```php
 class CarDto extends \Atlcom\Dto
@@ -681,7 +681,7 @@ print_r($carDto->toArray());
 **Заполнение Dto с событием onSerializing (перед преобразованием в массив).**
 Создание объекта Dto и преобразование его свойств и значений в массив с вызовом метода onSerializing до его преобразования в методе toArray.\
 
-[Открыть пример](tests/Examples/Example15/Example15Test.php)
+[Открыть пример](../tests/Examples/Example15/Example15Test.php)
 
 ```php
 class CarDto extends \Atlcom\Dto
@@ -716,7 +716,7 @@ print_r($carArray);
 **Заполнение Dto с событием onSerialized (после преобразования в массив).**
 Создание объекта Dto и преобразование его свойств и значений в массив с вызовом метода onSerialized после его преобразования в методе toArray.\
 
-[Открыть пример](tests/Examples/Example16/Example16Test.php)
+[Открыть пример](../tests/Examples/Example16/Example16Test.php)
 
 ```php
 class CarDto extends \Atlcom\Dto
@@ -752,7 +752,7 @@ print_r($carArray);
 **Заполнение Dto с событием onException (при исключении).**
 Создание объекта Dto и вызовом метода onException при исключительной ситуации во время заполнения или преобразования в массив его свойств.\
 
-[Открыть пример](tests/Examples/Example17/Example17Test.php)
+[Открыть пример](../tests/Examples/Example17/Example17Test.php)
 
 ```php
 class CarDto extends \Atlcom\Dto
@@ -783,7 +783,7 @@ $carDto = CarDto::create();
 **Заполнение Dto с автоматическим приведением стилей camelCase и snake_case.**
 Создание объекта Dto и заполнение его свойств с автоматическим маппингом названий ключей в передаваемом массиве.\
 
-[Открыть пример](tests/Examples/Example18/Example18Test.php)
+[Открыть пример](../tests/Examples/Example18/Example18Test.php)
 
 ```php
 class CarDto extends \Atlcom\Dto
@@ -820,7 +820,7 @@ print_r($carDto->toArray());
 Создание объекта Dto и заполнение его свойств с автоматическим преобразованием типов значений в передаваемом массиве.
 Поддерживаются: Dto, DateTime, Enum, string, integer, float, bool, null.\
 
-[Открыть пример](tests/Examples/Example19/Example19Test.php)
+[Открыть пример](../tests/Examples/Example19/Example19Test.php)
 
 ```php
 enum CarTypeEnum: string
@@ -866,7 +866,7 @@ print_r($carDto->toArray());
 Преобразование свойств объекта Dto к массиву с автоматическим преобразованием типов к скалярному.
 Поддерживаются: Dto, DateTime, Enum, object, array.\
 
-[Открыть пример](tests/Examples/Example20/Example20Test.php)
+[Открыть пример](../tests/Examples/Example20/Example20Test.php)
 
 ```php
 class CarTypeEnum
@@ -912,7 +912,7 @@ print_r($carDto->toArray());
 **Сериализация Dto в массив с использованием autoMappings.**
 Заполнение свойств Dto с включением опции автоматического маппинга названий ключей из массива заполнения.\
 
-[Открыть пример](tests/Examples/Example21/Example21Test.php)
+[Открыть пример](../tests/Examples/Example21/Example21Test.php)
 
 ```php
 class CarDto extends \Atlcom\Dto
@@ -946,7 +946,7 @@ print_r($carDto->toArray());
 **Сериализация Dto в массив с использованием onlyFilled.**
 Преобразование свойств объекта Dto к массиву с включением опции вывода только заполненных значений.\
 
-[Открыть пример](tests/Examples/Example22/Example22Test.php)
+[Открыть пример](../tests/Examples/Example22/Example22Test.php)
 
 ```php
 class CarDto extends \Atlcom\Dto
@@ -976,7 +976,7 @@ print_r($carDto->onlyFilled()->toArray());
 **Сериализация Dto в массив с использованием onlyKeys.**
 Преобразование свойств объекта Dto к массиву с включением опции вывода только указанных свойств.\
 
-[Открыть пример](tests/Examples/Example23/Example23Test.php)
+[Открыть пример](../tests/Examples/Example23/Example23Test.php)
 
 ```php
 class CarDto extends \Atlcom\Dto
@@ -1006,7 +1006,7 @@ print_r($carDto->onlyKeys(['markName'])->toArray());
 **Сериализация Dto в массив с использованием includeStyles.**
 Преобразование свойств объекта Dto к массиву с включением опции добавления в вывод стилей свойств в camelCase и snake_case.\
 
-[Открыть пример](tests/Examples/Example24/Example24Test.php)
+[Открыть пример](../tests/Examples/Example24/Example24Test.php)
 
 ```php
 class CarDto extends \Atlcom\Dto
@@ -1039,7 +1039,7 @@ print_r($carDto->includeStyles()->toArray());
 **Сериализация Dto в массив с использованием includeArray.**
 Преобразование свойств объекта Dto к массиву с включением опции добавления в вывод дополнительного массива.\
 
-[Открыть пример](tests/Examples/Example25/Example25Test.php)
+[Открыть пример](../tests/Examples/Example25/Example25Test.php)
 
 ```php
 class CarDto extends \Atlcom\Dto
@@ -1069,7 +1069,7 @@ print_r($carDto->includeArray(['modelName' => 'RX500'])->toArray());
 **Сериализация Dto в массив с использованием excludeKeys.**
 Преобразование свойств объекта Dto к массиву с включением опции исключения из вывода указанных свойств.\
 
-[Открыть пример](tests/Examples/Example26/Example26Test.php)
+[Открыть пример](../tests/Examples/Example26/Example26Test.php)
 
 ```php
 class CarDto extends \Atlcom\Dto
@@ -1136,7 +1136,7 @@ print_r(ModelDto::create()->toArray());
 **Сериализация Dto в массив с использованием mappingKeys.**
 Преобразование свойств объекта Dto к массиву с включением опции маппинга названий свойств в выводе.\
 
-[Открыть пример](tests/Examples/Example27/Example27Test.php)
+[Открыть пример](../tests/Examples/Example27/Example27Test.php)
 
 ```php
 class CarDto extends \Atlcom\Dto
@@ -1173,7 +1173,7 @@ print_r($carDto->mappingKeys(['markName' => 'Марка', 'modelName' => 'Мод
 **Сериализация Dto в массив с использованием serializeKeys.**
 Преобразование свойств объекта Dto к массиву с включением опции сериализации всех/указанных вложенных свойств и приведения объектов к скалярному типу.\
 
-[Открыть пример](tests/Examples/Example28/Example28Test.php)
+[Открыть пример](../tests/Examples/Example28/Example28Test.php)
 
 ```php
 class MarkDto extends \Atlcom\Dto
@@ -1235,7 +1235,7 @@ print_r($carDto->serializeKeys(true)->toArray());
 **Сериализация Dto в массив с использованием toArray.**
 Преобразование свойств объекта Dto к массиву.\
 
-[Открыть пример](tests/Examples/Example29/Example29Test.php)
+[Открыть пример](../tests/Examples/Example29/Example29Test.php)
 
 ```php
 class CarDto extends \Atlcom\Dto
@@ -1264,7 +1264,7 @@ print_r(CarDto::create()->toArray());
 **Сериализация Dto в строку с использованием toJson.**
 Преобразование свойств объекта Dto к строке формата json.\
 
-[Открыть пример](tests/Examples/Example30/Example30Test.php)
+[Открыть пример](../tests/Examples/Example30/Example30Test.php)
 
 ```php
 class CarDto extends \Atlcom\Dto
@@ -1291,7 +1291,7 @@ echo CarDto::create()->toJson();
 Создание объекта Dto и заполнение его свойств с массивами объектов указанного типа (коллекции).
 Для преобразования массива (коллекции) к массиву объектов необходимо указать в методе casts свойству возвращаемый массив с названием класса объектов или задать свойству аттрибут Collection с названием класса объектов.\
 
-[Открыть пример](tests/Examples/Example31/Example31Test.php)
+[Открыть пример](../tests/Examples/Example31/Example31Test.php)
 
 ```php
 class MarkDto extends \Atlcom\Dto
@@ -1362,7 +1362,7 @@ print_r($carDto->toArray());
 **Заполнение Dto с событием onAssigned (после изменения).**
 Создание объекта Dto и обработка события изменения его свойств.\
 
-[Открыть пример](tests/Examples/Example32/Example32Test.php)
+[Открыть пример](../tests/Examples/Example32/Example32Test.php)
 
 ```php
 class SumDto extends \Atlcom\Dto
@@ -1400,7 +1400,7 @@ print_r($sumDto->withProtectedKeys(true)->toArray());
 **Сообщения об ошибке при работе с Dto.**
 Позволяет при ошибке сформировать собственное сообщение.\
 
-[Открыть пример](tests/Examples/Example33/Example33Test.php)
+[Открыть пример](../tests/Examples/Example33/Example33Test.php)
 
 ```php
 class CarDto extends \Atlcom\Dto
@@ -1439,7 +1439,7 @@ print_r([$exceptionMessage]);
 **Трансформация Dto в другое Dto с дополнением данными из массива.**
 Позволяет при ошибке сформировать собственное сообщение.\
 
-[Открыть пример](tests/Examples/Example34/Example34Test.php)
+[Открыть пример](../tests/Examples/Example34/Example34Test.php)
 
 ```php
 class CarFirstDto extends \Atlcom\Dto
@@ -1521,7 +1521,7 @@ print_r($carSecondDto->toArray());
 **Работа со свойствами даты и времени.**
 Позволяет преобразовывать типы даты и времени к одному типу, указанному в константе AUTO_DATETIME_CLASS.\
 
-[Открыть пример](tests/Examples/Example35/Example35Test.php)
+[Открыть пример](../tests/Examples/Example35/Example35Test.php)
 
 ```php
 class CarbonDto extends \Atlcom\Dto
@@ -1603,7 +1603,7 @@ print_r($dateTimeDto->toArray());
 **Сериализация Dto в массив с использованием withoutOptions.**
 Преобразование свойств объекта Dto к массиву с включением опции отключения ранее установленных опций.\
 
-[Открыть пример](tests/Examples/Example36/Example36Test.php)
+[Открыть пример](../tests/Examples/Example36/Example36Test.php)
 
 ```php
 class CarDto extends \Atlcom\Dto
@@ -1639,7 +1639,7 @@ print_r($carDto->withoutOptions()->toArray());
 **Добавление своих опций в dto с использованием customOptions.**
 Добавление своих опций в Dto и получение их значений.\
 
-[Открыть пример](tests/Examples/Example37/Example37Test.php)
+[Открыть пример](../tests/Examples/Example37/Example37Test.php)
 
 ```php
 class CarDto extends \Atlcom\Dto
@@ -1673,7 +1673,7 @@ print_r($carDto->getOption('customOptions'));
 **Получение хеша dto.**
 Преобразует свойства к массиву и возвращает хеш относительно dto.\
 
-[Открыть пример](tests/Examples/Example38/Example38Test.php)
+[Открыть пример](../tests/Examples/Example38/Example38Test.php)
 
 ```php
 class CarDto extends \Atlcom\Dto
@@ -1701,7 +1701,7 @@ CarDto:81f2a8e48ec40ca36faffa1eec01dc5c2b191b088adcccf7814214090218a308
 **Проверка на пустой dto.**
 Проверяет dto на заполнение лхотя бы одного свойства.\
 
-[Открыть пример](tests/Examples/Example39/Example39Test.php)
+[Открыть пример](../tests/Examples/Example39/Example39Test.php)
 
 ```php
 class CarDto extends \Atlcom\Dto
@@ -1731,7 +1731,7 @@ true
 **Преобразование dto в пустой массив.**
 Возвращает массив со всеми свойствами dto с пустым значением.\
 
-[Открыть пример](tests/Examples/Example40/Example40Test.php)
+[Открыть пример](../tests/Examples/Example40/Example40Test.php)
 
 ```php
 class CarDto extends \Atlcom\Dto
@@ -1760,7 +1760,7 @@ print_r($carArray);
 **Преобразование dto в массив его свойств с типами.**
 Возвращает массив со всеми свойствами dto и типами.\
 
-[Открыть пример](tests/Examples/Example41/Example41Test.php)
+[Открыть пример](../tests/Examples/Example41/Example41Test.php)
 
 ```php
 class CarDto extends \Atlcom\Dto
@@ -1794,7 +1794,7 @@ print_r($carArray2);
 **Работа с getCustomOption, setCustomOption.**
 Возвращает/добавляет свою опцию в dto.\
 
-[Открыть пример](tests/Examples/Example42/Example42Test.php)
+[Открыть пример](../tests/Examples/Example42/Example42Test.php)
 
 ```php
 class CarDto extends \Atlcom\Dto
@@ -1820,7 +1820,7 @@ print_r($carDto->getCustomOption('test'));
 **Работа с динамическими свойствами Dto через опции.**
 Позволяет устанавливать и возвращать динамические свойства в dto.\
 
-[Открыть пример](tests/Examples/Example43/Example43Test.php)
+[Открыть пример](../tests/Examples/Example43/Example43Test.php)
 
 ```php
 class CarDto extends \Atlcom\Dto
@@ -1847,7 +1847,7 @@ print_r($carDto->test);
 **Создание Dto с событием onCreating и onCreated.**
 Создание объекта Dto и вызов хук методов перед и после создания dto.\
 
-[Открыть пример](tests/Examples/Example44/Example44Test.php)
+[Открыть пример](../tests/Examples/Example44/Example44Test.php)
 
 ```php
 class CarDto extends \Atlcom\Dto
@@ -1884,7 +1884,7 @@ Toyota
 **Создание Dto с событием onCreating и onCreated.**
 Создание своего Dto с расширением функционала через трейт.\
 
-[Открыть пример](tests/Examples/Example45/Example45Test.php)
+[Открыть пример](../tests/Examples/Example45/Example45Test.php)
 
 ```php
 class CarDto

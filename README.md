@@ -269,7 +269,3 @@ $exampleArray = $exampleDto->for(CarEntity::class)->toArray(true);
 ```bash
 composer install
 ```
-
-```
-
-```
