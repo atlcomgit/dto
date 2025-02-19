@@ -26,6 +26,10 @@ Dto используется для передачи типизированны�
 
 <hr style="border:1px solid black">
 
+## История изменений
+
+[Открыть историю](docs/CHANGELOG.md)
+
 ## Описание методов
 
 
@@ -236,11 +240,11 @@ $exampleArray = $exampleDto->for(CarEntity::class)->toArray(true);
 
 ## Пример Dependency Injection Dto вместо Request в Laravel
 
-[Открыть пример для Laravel](LARAVEL.md)
+[Открыть пример для Laravel](docs/LARAVEL.md)
 
 ## Примеры из тестов
 
-[Открыть все примеры](EXAMPLES.md)
+[Открыть все примеры](docs/EXAMPLES.md)
 
 <hr style="border:1px solid black">
 
