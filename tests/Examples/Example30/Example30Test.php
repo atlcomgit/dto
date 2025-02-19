@@ -29,5 +29,13 @@ final class Example30Test extends TestCase
 
         $this->assertJson($carJson);
         $this->assertJsonStringEqualsJsonString('{"markName": "Lexus", "modelName": "RX500"}', $carJson);
+
+        $carJson = CarDto::create()->toJson(0);
+
+        $this->assertJson($carJson);
+
+        $carJson = CarDto::create()->toJson('0');
+
+        $this->assertJson($carJson);
     }
 }

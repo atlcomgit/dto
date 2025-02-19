@@ -271,5 +271,5 @@ $exampleArray = $exampleDto->for(CarEntity::class)->toArray(true);
 2. Выполните команду
 
 ```bash
-composer install
+composer update atlcom/dto
 ```

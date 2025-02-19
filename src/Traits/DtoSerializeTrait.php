@@ -114,7 +114,7 @@ trait DtoSerializeTrait
      * @param int $options = 0
      * @return string
      */
-    final public function toJson(int $options = 0): string
+    public function toJson($options = 0): string
     {
         return json_encode($this->toArray(), $options ?: JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
     }
@@ -126,7 +126,7 @@ trait DtoSerializeTrait
      * @param bool $allValuesToNull
      * @return array
      */
-    final public static function toArrayBlank(bool $allValuesToNull = true): array
+    public static function toArrayBlank(bool $allValuesToNull = true): array
     {
         $array = [];
 
@@ -148,7 +148,7 @@ trait DtoSerializeTrait
      * @param bool $allValuesToNull
      * @return array
      */
-    final public static function toArrayBlankRecursive(bool $allValuesToNull = true): array
+    public static function toArrayBlankRecursive(bool $allValuesToNull = true): array
     {
         $array = [];
 
@@ -171,7 +171,7 @@ trait DtoSerializeTrait
      * @param string|null $class = null
      * @return string
      */
-    final public function getHash(string $keyPrefix = '', ?string $class = null): string
+    public function getHash(string $keyPrefix = '', ?string $class = null): string
     {
         $class ??= get_class($this);
         $array = $this->toArray();
