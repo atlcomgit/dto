@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Atlcom\Tests\Examples\Example39;
 
 use PHPUnit\Framework\Attributes\Test;
@@ -16,6 +18,7 @@ class CarDto extends \Atlcom\Dto
     public ?array $array;
     public ?object $object;
     public ?\Atlcom\Dto $dto;
+    public ?bool $boolean;
 }
 
 /**
@@ -54,6 +57,15 @@ final class Example39Test extends TestCase
         $this->assertFalse($carDto->isEmpty());
 
         $carDto = CarDto::create(dto: CarDto::create(markName: 'Lexus'));
+        $this->assertFalse($carDto->isEmpty());
+
+        $carDto = CarDto::create(boolean: null);
+        $this->assertTrue($carDto->isEmpty());
+
+        $carDto = CarDto::create(boolean: true);
+        $this->assertFalse($carDto->isEmpty());
+
+        $carDto = CarDto::create(boolean: false);
         $this->assertFalse($carDto->isEmpty());
     }
 }

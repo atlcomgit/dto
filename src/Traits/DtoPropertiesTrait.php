@@ -42,8 +42,10 @@ trait DtoPropertiesTrait
      * @param bool|array|null $useMappings
      * @return array
      */
-    final public static function getPropertiesWithFirstType(bool|array|null $useCasts = [], bool|array|null $useMappings = false): array
-    {
+    final public static function getPropertiesWithFirstType(
+        bool|array|null $useCasts = [],
+        bool|array|null $useMappings = false,
+    ): array {
         return array_map(
             static fn (array $v) => mb_strtolower($v[0]) === 'null' ? ($v[1] ?? $v[0]) : $v[0],
             static::getPropertiesWithAllTypes($useCasts, $useMappings),
@@ -58,8 +60,10 @@ trait DtoPropertiesTrait
      * @param bool|array|null $useMappings
      * @return array
      */
-    final public static function getPropertiesWithAllTypes(bool|array|null $useCasts = false, bool|array|null $useMappings = false): array
-    {
+    final public static function getPropertiesWithAllTypes(
+        bool|array|null $useCasts = false,
+        bool|array|null $useMappings = false,
+    ): array {
         $array = [];
         $dto = new static();
         $casts = $useCasts
@@ -103,19 +107,20 @@ trait DtoPropertiesTrait
      */
     final public function isEmpty(): bool
     {
-        foreach (get_class_vars(get_class($this)) as $key => $value) {
+        foreach (static::getPropertiesWithAllTypes() as $key => $types) {
             $value = $this->$key ?? null;
             $isEmpty = match (true) {
                 is_callable($value) => false,
-
                 $value instanceof self => $value->isEmpty(),
-
+                is_object($value) && method_exists($value, 'isEmpty') => $value->isEmpty(),
+                is_object($value) && method_exists($value, 'count') => $value->count() === 0,
                 is_object($value) => empty((array)$value),
-
                 is_array($value) => empty($value),
-
-                is_scalar($value) => empty($value),
-
+                is_scalar($value) =>
+                    match (true) {
+                        in_array('null', $types) => $value === null,
+                        default => empty($value),
+                    },
                 default => true,
             };
 

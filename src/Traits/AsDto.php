@@ -6,6 +6,7 @@ namespace Atlcom\Traits;
 
 /**
  * Трейт для расширения своего Dto
+ * @version 2.62
  */
 trait AsDto
 {

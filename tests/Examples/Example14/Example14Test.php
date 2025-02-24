@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Atlcom\Tests\Examples\Example14;
 
 use PHPUnit\Framework\Attributes\Test;

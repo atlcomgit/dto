@@ -19,7 +19,7 @@ use Atlcom\Traits\DtoStrTrait;
 /**
  * Абстрактный класс Dto
  * @abstract
- * @version 2.61
+ * @version 2.62
  * 
  * @override @see self::mappings()
  * @override @see self::defaults()

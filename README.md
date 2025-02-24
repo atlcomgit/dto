@@ -235,7 +235,7 @@ $exampleArray = $exampleDto
 $carEntity = new CarEntity();
 $exampleDto = ExampleDto::create();
 $exampleArray = $exampleDto->for($carEntity)->toArray();
-$exampleArray = $exampleDto->for(CarEntity::class)->toArray(true);
+$exampleArray = $exampleDto->for(CarEntity::class)->toArray();
 ```
 
 ## Пример Dependency Injection Dto вместо Request в Laravel
