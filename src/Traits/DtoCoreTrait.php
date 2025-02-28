@@ -270,18 +270,18 @@ trait DtoCoreTrait
                         $value =
                             match (true) {
                                 is_null($value) => null,
-
                                 $value instanceof UnitEnum => $value,
-
+                                $value instanceof BackedEnum => $value,
+                                is_object($value) && $value::class === $class => $value,
                                 is_string($value) && defined("$class::$value") => constant("$class::$value"),
 
                                 default => $class::from($value),
                             }
                             ?? match (true) {
                                 is_null($defaultValue) => null,
-
                                 $defaultValue instanceof UnitEnum => $defaultValue,
-
+                                $defaultValue instanceof BackedEnum => $defaultValue,
+                                is_object($defaultValue) && $defaultValue::class === $class => $defaultValue,
                                 is_string($defaultValue) && defined("$class::$defaultValue")
                                 => constant("$class::$defaultValue"),
 
@@ -295,7 +295,6 @@ trait DtoCoreTrait
                         $value =
                             match (true) {
                                 $value instanceof self => (new $class())->fillFromArray($value->toArray()),
-
                                 is_array($value) => (new $class())->fillFromArray($value),
 
                                 default => $value ?? $defaultValue,

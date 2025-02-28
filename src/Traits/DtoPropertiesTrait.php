@@ -77,7 +77,6 @@ trait DtoPropertiesTrait
             $mapKey = $mappings[$key] ?? $key;
             $array[$mapKey] = match (true) {
                 isset($casts[$mapKey]) => (is_array($casts[$mapKey]) ? $casts[$mapKey] : [$casts[$mapKey]]),
-
                 isset($casts[$key]) => (is_array($casts[$key]) ? $casts[$key] : [$casts[$key]]),
 
                 default => array_filter(
@@ -119,8 +118,10 @@ trait DtoPropertiesTrait
                 is_scalar($value) =>
                     match (true) {
                         in_array('null', $types) => $value === null,
+
                         default => empty($value),
                     },
+                    
                 default => true,
             };
 

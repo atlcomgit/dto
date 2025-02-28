@@ -40,7 +40,7 @@ final class Example38Test extends TestCase
         $expectHash = ltrim(
             ''
             . ':' . basename(str_replace('\\', '/', $carDto::class))
-            . ':' . hash('sha256', '' . $carDto::class . json_encode($carArray)),
+            . ':' . hash('xxh128', '' . $carDto::class . json_encode($carArray)),
             ':'
         );
         $actualHash = $carDto->excludeKeys(['date'])->getHash();
@@ -48,6 +48,6 @@ final class Example38Test extends TestCase
         $this->assertObjectHasProperty('year', $carDto);
         $this->assertArrayNotHasKey('date', $carArray);
         $this->assertEquals($expectHash, $actualHash);
-        $this->assertEquals('CarDto:81f2a8e48ec40ca36faffa1eec01dc5c2b191b088adcccf7814214090218a308', $actualHash);
+        $this->assertEquals('CarDto:3bc8bc4c01fa44d78a7dae5248f68822', $actualHash);
     }
 }

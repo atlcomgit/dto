@@ -47,11 +47,9 @@ trait DtoCastsTrait
 
                 default => match (true) {
                         is_string($type) && class_exists($type) => $this->castToObject($key, $type, $value),
-
                         is_array($type),
                         is_string($type) && preg_match('/array\<.*\>/', $type)
                         => $this->castToArrayOfObjects($key, $type, $value),
-
                         is_callable($type) => $type($value, $key),
 
                         default => throw new Exception(
@@ -90,18 +88,13 @@ trait DtoCastsTrait
             )->toArray(),
             $value instanceof DateTimeInterface => $value->getTimestamp(),
             $value instanceof BackedEnum => $value->value,
-
             is_null($type) => $value,
-
             is_callable($type) => $type($value, $key),
-
             mb_strtolower($type) === Carbon::class
             => $value->toDateTimeString(),
-
             mb_strtolower($type) === 'libphonenumber\phonenumber'
             => 'libphonenumber\PhoneNumberUtil'::getInstance()
                 ->format($value, 'libphonenumber\PhoneNumberFormat'::E164),
-
             is_array($value) => array_map(fn ($item) => $this->serializeValue($key, $type, $item), $value),
             is_object($value) && method_exists($value, 'toArray') => $value->toArray(),
 
@@ -348,7 +341,6 @@ trait DtoCastsTrait
 
             is_string($value) => match (static::AUTO_DATETIME_CLASS) {
                     Carbon::class => Carbon::parse($value),
-
                     DateTime::class, DateTimeInterface::class => DateTime::createFromFormat('Y-m-d H:i:s', $value)
                     ?: DateTime::createFromFormat('Y-m-d/TH:i:s', $value)
                     ?: DateTime::createFromFormat('Y.m.d H:i:s', $value)

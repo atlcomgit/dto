@@ -38,5 +38,12 @@ final class Example18Test extends TestCase
         $this->assertObjectHasProperty('modelName', $carDto);
         $this->assertEquals('Lexus', $carDto->markName);
         $this->assertEquals('RX500', $carDto->modelName);
+
+        $carDtoArray = $carDto->toArray();
+
+        $this->assertArrayHasKey('markName', $carDtoArray);
+        $this->assertArrayHasKey('modelName', $carDtoArray);
+        $this->assertArrayNotHasKey('mark_name', $carDtoArray);
+        $this->assertArrayNotHasKey('model_name', $carDtoArray);
     }
 }

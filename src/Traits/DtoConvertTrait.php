@@ -25,13 +25,9 @@ trait DtoConvertTrait
     {
         return match (true) {
             $data instanceof self => $data->withoutOptions()->toArray(),
-
             is_object($data) && method_exists($data, 'toArray') => $data->toArray(),
-
             is_string($data) => static::jsonDecode($data, false),
-
             is_array($data) => $data,
-
             is_object($data) => (array)$data ?: get_class_vars(get_class($data)),
 
             default => [],
@@ -59,7 +55,6 @@ trait DtoConvertTrait
             $array,
             static fn (&$item) => $item = match (true) {
                 is_array($item) => static::convertArrayToEmptyRecursive($item, $allValuesToNull),
-
                 is_object($item) => static::convertArrayToEmptyRecursive($item, $allValuesToNull),
 
                 default => static::convertTypeToEmptyValue(gettype($item), true, $allValuesToNull),
@@ -94,22 +89,17 @@ trait DtoConvertTrait
             case count($types) === 1 && class_exists($type):
                 $result = match (true) {
                     $type === stdClass::class => $allValuesToNull ? null : (object)[],
-
                     is_subclass_of($type, DateTime::class) => $allValuesToNull
                     ? null
                     : '', // static::convertArrayToEmptyRecursive(new $type(), $allValuesToNull),
-
                     is_subclass_of($type, BackedEnum::class) => null,
-
                     is_subclass_of($type, self::class) => $recursive
                     ? (
                         $type::toArrayBlankRecursive($allValuesToNull)
                     )
                     : (
                         $allValuesToNull ? null : (array)(new $type())
-                    )
-                    ,
-
+                    ),
                     method_exists($type, 'toArray') => $recursive
                     ? (
                         (new ReflectionMethod($type, 'toArray'))->isStatic()
@@ -118,8 +108,7 @@ trait DtoConvertTrait
                     )
                     : (
                         $allValuesToNull ? null : (array)(new $type())
-                    )
-                    ,
+                    ),
 
                     default => $allValuesToNull ? null : (array)(new $type()),
                 };

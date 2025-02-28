@@ -63,6 +63,7 @@ trait DtoSerializeTrait
             }
         }
 
+        !$autoMappings ?: $onlyKeys = [...$onlyKeys, ...static::getProperties()];
         !($includeStyles || $autoMappings) ?: $this->prepareStyles($keys, true);
 
         $mappingKeysFlip = array_flip($mappingKeys);
@@ -180,7 +181,7 @@ trait DtoSerializeTrait
         return ltrim(
             $keyPrefix
             . ':' . $this->toBasename($class)
-            . ':' . hash('sha256', $keyPrefix . $class . json_encode($array)),
+            . ':' . hash('xxh128', $keyPrefix . $class . json_encode($array)),
             ':'
         );
     }
