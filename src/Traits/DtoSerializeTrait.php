@@ -63,7 +63,7 @@ trait DtoSerializeTrait
             }
         }
 
-        !$autoMappings ?: $onlyKeys = [...$onlyKeys, ...static::getProperties()];
+        !($autoMappings && !$onlyKeys) ?: $onlyKeys = static::getProperties();
         !($includeStyles || $autoMappings) ?: $this->prepareStyles($keys, true);
 
         $mappingKeysFlip = array_flip($mappingKeys);
