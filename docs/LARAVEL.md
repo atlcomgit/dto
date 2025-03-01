@@ -2,65 +2,28 @@
 
 ## Пример Dependency Injection Dto вместо Request в Laravel
 
-##### Файл app/Defaults/DefaultDto.php
-Добавляем абстрактное Dto и расширяем его от Dto
-
-```php
-declare(strict_types=1);
-
-namespace App\Defaults;
-
-use Atlcom\Dto;
-use App\Exceptions\ValidationException;
-use Illuminate\Support\Facades\Validator;
-use Exception;
-use Throwable;
-
-abstract class DefaultDto extends Dto
-{
-    final public function fillFromRequest(): void
-    {
-        $data = request()->toArray();
-        $dataKeys = null;
-
-        if (method_exists($this, 'rules')) {
-            try {
-                !$this->mappings() ?: $this->prepareMappings($data);
-                !static::AUTO_MAPPINGS_ENABLED ?: $this->prepareStyles($data);
-              
-                $dataKeys = Validator::make($data, $this->rules(), $this->validatorMessages())
-                    ->validate();
-            } catch (Throwable $exception) {
-                throw new Exception($exception->getMessage(), $exception->getCode());
-            }
-        }
-
-        $this->fillFromArray($dataKeys ?? []);
-    }
-}
-```
-
 ##### Файл app/Providers/DtoServiceProvider.php
 Добавляем сервис провайдер для обработки Dto (dependency injection)
 
 ```php
 namespace App\Providers;
 
-use App\Defaults\DefaultDto;
+use Atlcom\Dto;
+use Atlcom\Exceptions\DtoException;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\ServiceProvider;
-use Exception;
+
 use Throwable;
 
 class DtoServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
-        $this->app->resolving(DefaultDto::class, function (DefaultDto $dto, Application $app) {
+        $this->app->resolving(Dto::class, function (Dto $dto, Application $app) {
             try {
-                return !method_exists($dto, 'fillFromRequest') ?: $dto->fillFromRequest();
+                return $dto->fillFromRequest(request()->toArray());
             } catch (Throwable $exception) {
-                throw new Exception($exception->getMessage());
+                throw new DtoException($exception->getMessage());
             }
         });
     }

@@ -6,7 +6,7 @@ namespace Atlcom\Traits;
 
 /**
  * Трейт для расширения своего Dto
- * @version 2.63
+ * @version 2.64
  */
 trait AsDto
 {
@@ -19,6 +19,7 @@ trait AsDto
     use DtoOptionsTrait;
     use DtoOverrideTrait;
     use DtoPropertiesTrait;
+    use DtoLaravelTrait;
     use DtoSerializeTrait;
     use DtoStrTrait;
 }

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Atlcom\Traits;
 
-use Exception;
+use Atlcom\Exceptions\DtoException;
 use ReflectionProperty;
 
 /**
@@ -506,13 +506,14 @@ trait DtoOptionsTrait
      *
      * @param object|string $object
      * @return static
+     * @throws DtoException
      */
     final public function for(object|string $object): static
     {
         if (is_string($object)) {
             if (!class_exists($object)) {
                 $this->onException(
-                    new Exception(
+                    new DtoException(
                         $this->exceptions('ClassNotFound', ['class' => $object]),
                         500
                     )

@@ -23,8 +23,23 @@ trait DtoConvertTrait
      */
     protected static function convertDataToArray(mixed $data = null): array
     {
+        $laravelClassSchema = 'Illuminate\Support\Facades\Schema';
+        $laravelClassModel = 'Illuminate\Database\Eloquent\Model';
+        $laravelClassArr = 'Illuminate\Support\Arr';
+
         return match (true) {
             $data instanceof self => $data->withoutOptions()->toArray(),
+            is_object($data) && $data::class === $laravelClassModel
+            => $laravelClassArr::except(
+                $data->exists ? $data->toArray() : $data->getAttributes(),
+                $data->getAppends(),
+            )
+            ?: array_diff_key(
+                array_fill_keys($laravelClassSchema::getColumnListing($data->getTable()), null),
+                [], // array_fill_keys(is_array($data->getGuarded()) ? $data->getGuarded() : [], null),
+            ),
+            is_object($data) && $data::class ===  'Illuminate\Foundation\Http\FormRequest' => $data->toArray(),
+            is_object($data) && $data::class ===  'Illuminate\Http\Request' => $data->toArray(),
             is_object($data) && method_exists($data, 'toArray') => $data->toArray(),
             is_string($data) => static::jsonDecode($data, false),
             is_array($data) => $data,

@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Atlcom\Traits;
 
+use Atlcom\Exceptions\DtoException;
 use Atlcom\Interfaces\AttributeDtoInterface;
 use Carbon\Carbon;
 use DateTime;
 use DateTimeInterface;
-use Exception;
 use ReflectionNamedType;
 use ReflectionProperty;
 use Throwable;
@@ -204,7 +204,7 @@ trait DtoCoreTrait
      * @param mixed $value
      * @param mixed|null $defaultValue
      * @return void
-     * @throws Exception
+     * @throws DtoException
      */
     private function assignValue(string $key, mixed $value, mixed $defaultValue = null): void
     {
@@ -216,7 +216,7 @@ trait DtoCoreTrait
                     match (true) {
                         !class_exists($attributeClass) => false,
                         // => $this->onException(
-                        //     new Exception(
+                        //     new DtoException(
                         //         $this->exceptions('AttributeClassNotFound', ['class' => $attributeClass]),
                         //         500
                         //     )
@@ -224,7 +224,7 @@ trait DtoCoreTrait
 
                         !in_array(AttributeDtoInterface::class, class_implements($attributeClass) ?: []) => false,
                         // => $this->onException(
-                        //     new Exception(
+                        //     new DtoException(
                         //         $this->exceptions('AttributeNotImplementsBy', ['class' => AttributeDtoInterface::class]),
                         //         500
                         //     )
@@ -232,7 +232,7 @@ trait DtoCoreTrait
 
                         !method_exists($attributeClass, 'handle') => false,
                         // => $this->onException(
-                        //     new Exception(
+                        //     new DtoException(
                         //         $this->exceptions('AttributeMethodNotFound', ['method' => "{$attributeClass}::handle"]),
                         //         500
                         //     )
@@ -317,7 +317,7 @@ trait DtoCoreTrait
             if (str_contains($exception->getMessage(), 'Cannot assign ')) {
                 $type = is_object($value) ? $this->toBasename(get_class($value)) : mb_strtoupper(gettype($value));
 
-                throw new Exception(
+                throw new DtoException(
                     $this->exceptions('PropertyAssignType', ['property' => $key, 'type' => $type]),
                     500
                 );

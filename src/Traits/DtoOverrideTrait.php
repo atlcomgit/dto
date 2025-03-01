@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Atlcom\Traits;
 
+use Carbon\Carbon;
 use ReflectionProperty;
 use Throwable;
 
@@ -18,6 +19,7 @@ trait DtoOverrideTrait
      *
      * @return array
      */
+    // #[Override()]
     protected function mappings(): array
     {
         return [];
@@ -30,6 +32,7 @@ trait DtoOverrideTrait
      *
      * @return array
      */
+    // #[Override()]
     protected function defaults(): array
     {
         return [];
@@ -42,9 +45,29 @@ trait DtoOverrideTrait
      *
      * @return array
      */
+    // #[Override()]
     protected function casts(): array
     {
-        return [];
+        $laravelClassCollection = 'Illuminate\Support\Collection';
+
+        return static::AUTO_CASTS_OBJECTS_ENABLED
+            ? array_filter(
+                array_map(
+                    static fn (string $item): string => strtr(
+                        $item,
+                        [
+                            'int' => null,
+                            'string' => null,
+                            'bool' => null,
+                            'array' => null,
+                            Carbon::class => 'datetime',
+                            $laravelClassCollection => static fn ($v) => new $laravelClassCollection($v),
+                        ],
+                    ),
+                    static::getPropertiesWithFirstType()
+                )
+            )
+            : [];
     }
 
 
@@ -55,9 +78,8 @@ trait DtoOverrideTrait
      * @param mixed $data
      * @return void
      */
-    protected function onCreating(mixed &$data): void
-    {
-    }
+    // #[Override()]
+    protected function onCreating(mixed &$data): void {}
 
 
     /**
@@ -67,9 +89,8 @@ trait DtoOverrideTrait
      * @param mixed $data
      * @return void
      */
-    protected function onCreated(mixed $data): void
-    {
-    }
+    // #[Override()]
+    protected function onCreated(mixed $data): void {}
 
 
     /**
@@ -79,6 +100,7 @@ trait DtoOverrideTrait
      * @param array $array
      * @return void
      */
+    // #[Override()]
     protected function onFilling(array &$array): void
     {
         // !(  // приводим id к integer
@@ -97,9 +119,8 @@ trait DtoOverrideTrait
      * @param array $array
      * @return void
      */
-    protected function onFilled(array $array): void
-    {
-    }
+    // #[Override()]
+    protected function onFilled(array $array): void {}
 
 
     /**
@@ -109,9 +130,8 @@ trait DtoOverrideTrait
      * @param array $array
      * @return void
      */
-    protected function onMerging(array &$array): void
-    {
-    }
+    // #[Override()]
+    protected function onMerging(array &$array): void {}
 
 
     /**
@@ -121,9 +141,8 @@ trait DtoOverrideTrait
      * @param array $array
      * @return void
      */
-    protected function onMerged(array $array): void
-    {
-    }
+    // #[Override()]
+    protected function onMerged(array $array): void {}
 
 
     /**
@@ -134,9 +153,8 @@ trait DtoOverrideTrait
      * @param mixed $value
      * @return void
      */
-    protected function onAssigning(string $key, mixed $value): void
-    {
-    }
+    // #[Override()]
+    protected function onAssigning(string $key, mixed $value): void {}
 
 
     /**
@@ -146,9 +164,8 @@ trait DtoOverrideTrait
      * @param string $key
      * @return void
      */
-    protected function onAssigned(string $key): void
-    {
-    }
+    // #[Override()]
+    protected function onAssigned(string $key): void {}
 
 
     /**
@@ -158,9 +175,8 @@ trait DtoOverrideTrait
      * @param array $array
      * @return void
      */
-    protected function onSerializing(array &$array): void
-    {
-    }
+    // #[Override()]
+    protected function onSerializing(array &$array): void {}
 
 
     /**
@@ -170,9 +186,8 @@ trait DtoOverrideTrait
      * @param array $array
      * @return void
      */
-    protected function onSerialized(array &$array): void
-    {
-    }
+    // #[Override()]
+    protected function onSerialized(array &$array): void {}
 
 
     /**
@@ -183,6 +198,7 @@ trait DtoOverrideTrait
      * @return void
      * @throws \Exception
      */
+    // #[Override()]
     protected function onException(Throwable $exception): void
     {
         throw $exception;
@@ -197,65 +213,66 @@ trait DtoOverrideTrait
      * @param array $values
      * @return string
      */
+    // #[Override()]
     protected function exceptions(string $messageCode, array $messageItems): string
     {
         return match ($messageCode) {
             'PropertyNotFound' => sprintf(
-                $this->toBasename($this) . '->%s: property not found',
+                $this->toBasename($this) . '->%s: свойство не найдено',
                 $messageItems['property'],
             ),
             'PropertyAssignType' => sprintf(
-                $this->toBasename($this) . '->%s' . ": cannot assign property type %s",
+                $this->toBasename($this) . '->%s' . ": невозможно присвоить свойству тип %s",
                 $messageItems['property'],
                 $messageItems['type'],
             ),
             'AttributeClassNotFound' => sprintf(
-                "Attribute class not found: %s",
+                "Класс атрибута не найден: %s",
                 $messageItems['class'],
             ),
             'AttributeNotImplementsBy' => sprintf(
-                "Attribute class not implements by: %s",
+                "Класс аттрибута не реализован от: %s",
                 $messageItems['class'],
             ),
             'AttributeMethodNotFound' => sprintf(
-                "Attribute method not found: %s",
+                "Атрибут не содержит метод: %s",
                 $messageItems['method'],
             ),
             'ClassNotFound' => sprintf(
-                "Class not found: %s",
+                "Класс не найден: %s",
                 $messageItems['class'],
             ),
             'PropertyNotInitialized' => sprintf(
-                $this->toBasename($this) . '->%s: property not initialized',
+                $this->toBasename($this) . '->%s: свойство не инициализировано',
                 $messageItems['property'],
             ),
             'EnumValueNotSupported' => sprintf(
-                $this->toBasename($this) . '->%s: value "%s" not supported',
+                $this->toBasename($this) . '->%s: значение "%s" не поддерживается',
                 $messageItems['property'],
                 $messageItems['value'],
             ),
             'ClassCanNotBeCasted' => sprintf(
-                "Class can not be casted: %s",
+                "Класс не может быть приведён: %s",
                 $messageItems['class'],
             ),
             'TypeForCastNotFound' => sprintf(
-                "Type for cast not found: %s",
+                "Тип приведения не найден: %s",
                 $messageItems['type'],
             ),
             'ScalarForCastNeed' => sprintf(
-                $this->toBasename($this) . '->%s: for cast need SCALAR',
+                $this->toBasename($this) . '->%s: приведение типа требует SCALAR',
                 $messageItems['property'],
             ),
             'ArrayForCastNeed' => sprintf(
-                $this->toBasename($this) . '->%s: for cast need ARRAY',
+                $this->toBasename($this) . '->%s: приведение типа требует ARRAY',
                 $messageItems['property'],
             ),
             'TypeForCastNotSpecified' => sprintf(
-                $this->toBasename($this) . '->%s: type for cast not specified',
+                $this->toBasename($this) . '->%s: тип приведения не указан',
                 $messageItems['property'],
             ),
 
-            default => 'Unknown message code',
+            default => 'Неизвестный код сообщения',
         };
     }
 }

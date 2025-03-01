@@ -13,13 +13,14 @@ use Atlcom\Traits\DtoMagicTrait;
 use Atlcom\Traits\DtoOptionsTrait;
 use Atlcom\Traits\DtoOverrideTrait;
 use Atlcom\Traits\DtoPropertiesTrait;
+use Atlcom\Traits\DtoLaravelTrait;
 use Atlcom\Traits\DtoSerializeTrait;
 use Atlcom\Traits\DtoStrTrait;
 
 /**
  * Абстрактный класс Dto
  * @abstract
- * @version 2.63
+ * @version 2.64
  * 
  * @override @see self::mappings()
  * @override @see self::defaults()
@@ -36,6 +37,8 @@ use Atlcom\Traits\DtoStrTrait;
  * @override @see self::onAssigning()
  * @override @see self::onAssigned()
  * @override @see self::onException()
+ * 
+ * @override @see self::rules()
  * 
  * @example
  * ExampleDto::fill([])->onlyKeys([])->excludeKeys([])->mappingKeys([])->serializeKeys(true)->toArray();
@@ -55,6 +58,7 @@ abstract class Dto
     use DtoOptionsTrait;
     use DtoOverrideTrait;
     use DtoPropertiesTrait;
+    use DtoLaravelTrait;
     use DtoSerializeTrait;
     use DtoStrTrait;
 }

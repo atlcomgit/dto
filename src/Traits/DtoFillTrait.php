@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Atlcom\Traits;
 
-use Exception;
+use Atlcom\Exceptions\DtoException;
 use ReflectionProperty;
 use Throwable;
 
@@ -44,7 +44,7 @@ trait DtoFillTrait
     {
         if (!class_exists($dtoClass)) {
             $this->onException(
-                new Exception(
+                new DtoException(
                     $this->exceptions('ClassNotFound', ['class' => $dtoClass]),
                     500,
                 ),
@@ -134,7 +134,7 @@ trait DtoFillTrait
      *
      * @param array|object|string|null $data
      * @return static
-     * @throws Exception
+     * @throws DtoException
      */
     final public function merge(array|object|string|null $data): static
     {
@@ -156,7 +156,7 @@ trait DtoFillTrait
             foreach (get_class_vars($class = get_class($this)) as $key => $value) {
                 $reflection = new ReflectionProperty($class, $key);
                 if (!$reflection->isInitialized($this)) {
-                    throw new Exception(
+                    throw new DtoException(
                         $this->exceptions('PropertyNotInitialized', ['property' => $key]),
                         500,
                     );

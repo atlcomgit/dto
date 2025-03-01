@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Atlcom\Traits;
 
+use Atlcom\Exceptions\DtoException;
 use BackedEnum;
 use Carbon\Carbon;
 use DateTime;
 use DateTimeInterface;
-use Exception;
 use ReflectionNamedType;
 use ReflectionProperty;
 use stdClass;
@@ -27,7 +27,7 @@ trait DtoCastsTrait
      * @param string|array|callable $type
      * @param mixed $value
      * @return mixed
-     * @throws Exception
+     * @throws DtoException
      */
     protected function matchValue(string $key, string|array|callable $type, mixed $value): mixed
     {
@@ -52,7 +52,7 @@ trait DtoCastsTrait
                         => $this->castToArrayOfObjects($key, $type, $value),
                         is_callable($type) => $type($value, $key),
 
-                        default => throw new Exception(
+                        default => throw new DtoException(
                             $this->exceptions('TypeForCastNotFound', ['type' => $type]),
                             409,
                         ),
@@ -110,7 +110,7 @@ trait DtoCastsTrait
      * @param string $class
      * @param mixed $value
      * @return mixed
-     * @throws Exception
+     * @throws DtoException
      */
     protected function castToObject(string $key, string $class, mixed $value): mixed
     {
@@ -134,7 +134,7 @@ trait DtoCastsTrait
                                     return $class::from($value);
                                 } catch (Throwable $e) {
                                     $this->onException(
-                                    new Exception(
+                                    new DtoException(
                                         $this->exceptions(
                                             'EnumValueNotSupported',
                                             ['class' => $class, 'property' => $key, 'value' => $value],
@@ -145,7 +145,7 @@ trait DtoCastsTrait
                                 }
                             })($class, $key, $value),
 
-                        default => throw new Exception(
+                        default => throw new DtoException(
                             $this->exceptions('ScalarForCastNeed', ['property' => $key]),
                             409,
                         ),
@@ -170,7 +170,7 @@ trait DtoCastsTrait
             }
         }
 
-        throw new Exception(
+        throw new DtoException(
             $this->exceptions('ClassCanNotBeCasted', ['class' => $class]),
             409,
         );
@@ -265,7 +265,7 @@ trait DtoCastsTrait
      * @param array|string $type
      * @param mixed $value
      * @return array|object
-     * @throws Exception
+     * @throws DtoException
      */
     protected function castToArrayOfObjects(string $key, array|string $type, mixed $value): array|object
     {
@@ -276,7 +276,7 @@ trait DtoCastsTrait
         $value = (is_object($value) && method_exists($value, 'toArray')) ? $value->all() : ($value ?? []);
 
         if (!is_array($value)) {
-            throw new Exception(
+            throw new DtoException(
                 $this->exceptions('ArrayForCastNeed', ['property' => $key]),
                 409,
             );
@@ -288,7 +288,7 @@ trait DtoCastsTrait
 
         if ($class) {
             if (!class_exists($class)) {
-                throw new Exception(
+                throw new DtoException(
                     $this->exceptions('ClassNotFound', ['class' => $class]),
                     409,
                 );
@@ -308,7 +308,7 @@ trait DtoCastsTrait
             };
 
         } else {
-            throw new Exception(
+            throw new DtoException(
                 $this->exceptions('TypeForCastNotSpecified', ['property' => $key]),
                 409,
             );

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Atlcom\Traits;
 
-use Exception;
+use Atlcom\Exceptions\DtoException;
 use Throwable;
 
 /**
@@ -45,7 +45,7 @@ trait DtoMagicTrait
      * @param mixed $name
      * @param mixed $value
      * @return void
-     * @throws Exception
+     * @throws DtoException
      */
     public function __set(mixed $name, mixed $value): void
     {
@@ -99,7 +99,7 @@ trait DtoMagicTrait
                 return;
             }
 
-            throw new Exception(
+            throw new DtoException(
                 $this->exceptions('PropertyNotFound', ['property' => $name]),
                 500,
             );
@@ -109,7 +109,7 @@ trait DtoMagicTrait
                 $type = is_object($value) ? $this->toBasename(get_class($value)) : mb_strtoupper(gettype($value));
 
                 $this->onException(
-                    new Exception(
+                    new DtoException(
                         $this->exceptions('PropertyAssignType', ['property' => $name, 'type' => $type]),
                         500,
                     ),
@@ -129,7 +129,7 @@ trait DtoMagicTrait
      *
      * @param mixed $name
      * @return mixed
-     * @throws Exception
+     * @throws DtoException
      */
     public function __get(mixed $name): mixed
     {
@@ -174,7 +174,7 @@ trait DtoMagicTrait
                 return $this->getCustomOption($name);
             }
 
-            throw new Exception(
+            throw new DtoException(
                 $this->exceptions('PropertyNotFound', ['property' => $name]),
                 500,
             );
