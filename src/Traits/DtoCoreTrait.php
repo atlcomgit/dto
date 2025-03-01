@@ -256,7 +256,8 @@ trait DtoCoreTrait
             if (
                 $this->options()['autoCasts']
                 && $class instanceof ReflectionNamedType
-                && ($class = $class->getName()) && class_exists($class)
+                && ($class = $class->getName())
+                && class_exists($class)
             ) {
                 switch (true) {
                     case $class === DateTime::class:
@@ -291,11 +292,12 @@ trait DtoCoreTrait
                         $isDynamicProperty ? $this->setCustomOption($key, $value) : $this->$key = $value;
                         break;
 
-                    case method_exists($class, 'fillFromArray'):
+                    case is_subclass_of($class, self::class) || method_exists($class, 'fillFromArray'):
                         $value =
                             match (true) {
-                                $value instanceof self => (new $class())->fillFromArray($value->toArray()),
-                                is_array($value) => (new $class())->fillFromArray($value),
+                                $value instanceof static => $value,
+                                $value instanceof self => (new $class())::create($value->toArray()),
+                                is_array($value) => (new $class())::create($value),
 
                                 default => $value ?? $defaultValue,
                             };

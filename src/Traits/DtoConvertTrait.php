@@ -28,6 +28,7 @@ trait DtoConvertTrait
         $laravelClassArr = 'Illuminate\Support\Arr';
         $laravelClassFormRequest = 'Illuminate\Foundation\Http\FormRequest';
         $laravelClassRequest = 'Illuminate\Http\Request';
+        $laravelClassCollection = 'Illuminate\Support\Collection';
 
         return match (true) {
             $data instanceof self => $data->withoutOptions()->toArray(),
@@ -47,6 +48,9 @@ trait DtoConvertTrait
             is_object($data) && (
                 $data::class ===  $laravelClassRequest || is_subclass_of($data, $laravelClassRequest)
             ) => $data->toArray(),
+            is_object($data) && (
+                $data::class ===  $laravelClassCollection || is_subclass_of($data, $laravelClassCollection)
+            ) => $data->all(),
             is_object($data) && method_exists($data, 'toArray') => $data->toArray(),
             is_string($data) => static::jsonDecode($data, false),
             is_array($data) => $data,

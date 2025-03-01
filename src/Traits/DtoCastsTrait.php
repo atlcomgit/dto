@@ -155,7 +155,9 @@ trait DtoCastsTrait
                 default:
                     $laravelClassCollection = 'Illuminate\Support\Collection';
                     $laravelClassModel = 'Illuminate\Database\Eloquent\Model';
-
+                    $laravelClassFormRequest = 'Illuminate\Foundation\Http\FormRequest';
+                    $laravelClassRequest = 'Illuminate\Http\Request';
+                        
                     switch (true) {
                         case is_subclass_of($class, self::class):
                             $value = (is_object($value) && $value instanceof self)
@@ -165,13 +167,29 @@ trait DtoCastsTrait
                             break;
 
                         case is_array($value)
-                            && ($class === $laravelClassCollection || is_subclass_of($class, $laravelClassCollection)):
-                            $object = new $laravelClassCollection($value);
+                            && (
+                                $class === $laravelClassCollection
+                                || is_subclass_of($class, $laravelClassCollection)
+                                || $class === $laravelClassModel
+                                || is_subclass_of($class, $laravelClassModel)
+                                || $class === $laravelClassFormRequest
+                                || is_subclass_of($class, $laravelClassFormRequest)
+                                || $class === $laravelClassRequest
+                                || is_subclass_of($class, $laravelClassRequest)
+                            ):
+                            $object = new $class($value);
                             break;
 
-                        case is_array($value)
-                            && ($class === $laravelClassModel || is_subclass_of($class, $laravelClassModel)):
-                            $object = new $laravelClassModel($value);
+                        case is_array($value):
+                            try {
+                                $object = new $class($value);
+                            } catch (Throwable $exception) {
+                                try {
+                                    $object = new $class(...$value);
+                                } catch (Throwable $exception) {
+                                    $object = $value;
+                                }
+                            }
                             break;
 
                         default:

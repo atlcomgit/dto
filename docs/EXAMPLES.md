@@ -1905,3 +1905,100 @@ print_r($carDto->markName);
 ```text
 Lexus
 ```
+
+---
+
+###### Пример 46
+
+**Создание Dto внутри Dto.**
+Создание своего Dto с вложенными Dto.\
+
+[Открыть пример](../tests/Examples/Example45/Example46Test.php)
+
+```php
+class CarDto1 extends \Atlcom\Dto
+{
+    public string $markName;
+    public CarDto2 $carDto2;
+    public CarDto2 $carDto3;
+
+    protected function casts(): array
+    {
+        return [
+            'carDto3' => CarDto2::class,
+        ];
+    }
+}
+ 
+class CarDto2 extends \Atlcom\Dto
+{
+    public string $markName;
+
+    protected function onCreated(mixed $data): void
+    {
+        $this->markName = 'Toyota';
+    }
+}
+
+$carDto1 = CarDto1::create(
+	markName: 'Lexus',
+	carDto2: CarDto2::create(markName: 'Lexus'),
+	carDto3: ['markName' => 'Lexus'],
+);
+
+/* Вывод результата */
+print_r($carDto->toArray());
+```
+
+Результат:
+
+```text
+[
+	'markName' => 'Lexus',
+	'carDto2' => object \CarDto2 {markName: 'Toyota'},
+	'carDto3' => object \CarDto2 {markName: 'Toyota'},
+]
+```
+
+---
+
+###### Пример 47
+
+**Создание Dto с параметром AUTO_CASTS_OBJECTS_ENABLED.**
+Создание Dto с включенной опцией AUTO_CASTS_OBJECTS_ENABLED для авто приведения объектов при заполнении dto.\
+
+[Открыть пример](../tests/Examples/Example45/Example46Test.php)
+
+```php
+class CarDto1 extends \Atlcom\Dto
+{
+    public const AUTO_CASTS_OBJECTS_ENABLED = true;
+    
+    public string $markName;
+    public CarDto2 $carDto2;
+}
+ 
+class CarDto2 extends \Atlcom\Dto
+{
+    public string $markName;
+}
+
+$carDto1 = CarDto1::create(
+	markName: 'Lexus',
+    carDto2: ['markName' => 'Lexus'],
+);
+
+/* Вывод результата */
+print_r($carDto->toArray());
+```
+
+Результат:
+
+```text
+[
+	'markName' => 'Lexus',
+	'carDto2' => object \CarDto2 {markName: 'Lexus'},
+]
+```
+
+---
