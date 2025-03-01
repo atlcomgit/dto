@@ -51,7 +51,8 @@ trait DtoCastsTrait
                         is_string($type) && preg_match('/array\<.*\>/', $type)
                         => $this->castToArrayOfObjects($key, $type, $value),
                         is_callable($type) => $type($value, $key),
-
+                        is_object($value) && $value instanceof $type => $value,
+        
                         default => throw new DtoException(
                             $this->exceptions('TypeForCastNotFound', ['type' => $type]),
                             409,
@@ -152,18 +153,29 @@ trait DtoCastsTrait
                     };
 
                 default:
-                    if (class_exists($class)) {
-                        $object = new $class();
-                        if ($object instanceof self && method_exists($object, 'fillFromArray')) {
+                    $laravelClassCollection = 'Illuminate\Support\Collection';
+                    $laravelClassModel = 'Illuminate\Database\Eloquent\Model';
+
+                    switch (true) {
+                        case is_subclass_of($class, self::class):
                             $value = (is_object($value) && $value instanceof self)
                                 ? $value->serializeKeys(true)->toArray()
                                 : (is_array($value) ? $value : null);
-                            !is_null($value) ? $object->fillFromArray($value) : $object = $value;
-                        } else {
+                            $object = !is_null($value) ? $class::create($value) : $value;
+                            break;
+
+                        case is_array($value)
+                            && ($class === $laravelClassCollection || is_subclass_of($class, $laravelClassCollection)):
+                            $object = new $laravelClassCollection($value);
+                            break;
+
+                        case is_array($value)
+                            && ($class === $laravelClassModel || is_subclass_of($class, $laravelClassModel)):
+                            $object = new $laravelClassModel($value);
+                            break;
+
+                        default:
                             $object = $value;
-                        }
-                    } else {
-                        $object = $value;
                     }
 
                     return $object;

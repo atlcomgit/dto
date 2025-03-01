@@ -22,10 +22,12 @@ use Atlcom\Traits\DtoStrTrait;
  * @abstract
  * @version 2.64
  * 
+ * @override @see self::rules()
  * @override @see self::mappings()
  * @override @see self::defaults()
  * @override @see self::casts()
  * @override @see self::exceptions()
+ * 
  * @override @see self::onCreating()
  * @override @see self::onCreated()
  * @override @see self::onFilling()
@@ -37,8 +39,6 @@ use Atlcom\Traits\DtoStrTrait;
  * @override @see self::onAssigning()
  * @override @see self::onAssigned()
  * @override @see self::onException()
- * 
- * @override @see self::rules()
  * 
  * @example
  * ExampleDto::fill([])->onlyKeys([])->excludeKeys([])->mappingKeys([])->serializeKeys(true)->toArray();
