@@ -53,8 +53,9 @@ trait DtoOverrideTrait
         return static::AUTO_CASTS_OBJECTS_ENABLED
             ? array_filter(
                 array_map(
-                    static fn (string $type) => match ($type) {
-                        $laravelClassCollection => static fn ($v) => new $laravelClassCollection($v),
+                    static fn (string $type) => match (true) {
+                        $type === $laravelClassCollection || is_subclass_of($type, $laravelClassCollection)
+                        => static fn ($v) => new $laravelClassCollection($v),
 
                         default => strtr(
                             $type,

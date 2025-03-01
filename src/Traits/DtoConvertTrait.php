@@ -26,11 +26,14 @@ trait DtoConvertTrait
         $laravelClassSchema = 'Illuminate\Support\Facades\Schema';
         $laravelClassModel = 'Illuminate\Database\Eloquent\Model';
         $laravelClassArr = 'Illuminate\Support\Arr';
+        $laravelClassFormRequest = 'Illuminate\Foundation\Http\FormRequest';
+        $laravelClassRequest = 'Illuminate\Http\Request';
 
         return match (true) {
             $data instanceof self => $data->withoutOptions()->toArray(),
-            is_object($data) && $data::class === $laravelClassModel
-            => $laravelClassArr::except(
+            is_object($data) && (
+                $data::class ===  $laravelClassModel || is_subclass_of($data, $laravelClassModel)
+            ) => $laravelClassArr::except(
                 $data->exists ? $data->toArray() : $data->getAttributes(),
                 $data->getAppends(),
             )
@@ -38,8 +41,12 @@ trait DtoConvertTrait
                 array_fill_keys($laravelClassSchema::getColumnListing($data->getTable()), null),
                 [], // array_fill_keys(is_array($data->getGuarded()) ? $data->getGuarded() : [], null),
             ),
-            is_object($data) && $data::class ===  'Illuminate\Foundation\Http\FormRequest' => $data->toArray(),
-            is_object($data) && $data::class ===  'Illuminate\Http\Request' => $data->toArray(),
+            is_object($data) && (
+                $data::class ===  $laravelClassFormRequest || is_subclass_of($data, $laravelClassFormRequest)
+            ) => $data->toArray(),
+            is_object($data) && (
+                $data::class ===  $laravelClassRequest || is_subclass_of($data, $laravelClassRequest)
+            ) => $data->toArray(),
             is_object($data) && method_exists($data, 'toArray') => $data->toArray(),
             is_string($data) => static::jsonDecode($data, false),
             is_array($data) => $data,
