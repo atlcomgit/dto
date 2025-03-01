@@ -53,19 +53,22 @@ trait DtoOverrideTrait
         return static::AUTO_CASTS_OBJECTS_ENABLED
             ? array_filter(
                 array_map(
-                    static fn (string $item): string => strtr(
-                        $item,
-                        [
-                            'int' => null,
-                            'string' => null,
-                            'bool' => null,
-                            'array' => null,
-                            Carbon::class => 'datetime',
-                            $laravelClassCollection => static fn ($v) => new $laravelClassCollection($v),
-                        ],
-                    ),
-                    static::getPropertiesWithFirstType()
-                )
+                    static fn (string $type) => match ($type) {
+                        $laravelClassCollection => static fn ($v) => new $laravelClassCollection($v),
+
+                        default => strtr(
+                            $type,
+                            [
+                                'int' => null,
+                                'string' => null,
+                                'bool' => null,
+                                'array' => null,
+                                Carbon::class => 'datetime',
+                            ],
+                        )
+                    },
+                    static::getPropertiesWithFirstType(),
+                ),
             )
             : [];
     }
