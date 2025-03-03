@@ -32,34 +32,40 @@ trait DtoCastsTrait
     protected function matchValue(string $key, string|array|callable $type, mixed $value): mixed
     {
         try {
-            return match (is_string($type) ? mb_strtolower($type) : null) {
+            return match (true) {
+                is_null($value) => null,
                 $type === gettype($value) => $value,
-                'boolean', 'bool' => $this->castToBoolean($value),
-                'string', 'str' => $this->castToString($value),
-                'integer', 'int' => $this->castToInt($value),
-                'float', 'numeric' => $this->castToFloat($value),
-                'array', 'arr' => $this->castToArray($value),
-                'object', 'obj' => $this->castToObject($key, stdClass::class, $value),
-                'datetime', 'date' => $this->castToDateTime($value),
-                'positive' => $this->castToPositive($value),
-                'mixed', 'any' => $value,
-                mb_strtolower(DateTime::class) => new DateTime($value),
-                mb_strtolower(Carbon::class) => Carbon::parse($value),
-                mb_strtolower(DateTimeInterface::class) => $this->castToDateTime($value),
+                $type === DateTime::class => new DateTime($value),
+                $type === Carbon::class => Carbon::parse($value),
+                $type === DateTimeInterface::class => $this->castToDateTime($value),
 
-                default => match (true) {
-                        is_string($type) && class_exists($type) => $this->castToObject($key, $type, $value),
-                        is_array($type),
-                        is_string($type) && preg_match('/array\<.*\>/', $type)
-                        => $this->castToArrayOfObjects($key, $type, $value),
-                        is_callable($type) => $type($value, $key),
-                        is_object($value) && $value instanceof $type => $value,
-        
-                        default => throw new DtoException(
-                            $this->exceptions('TypeForCastNotFound', ['type' => $type]),
-                            409,
-                        ),
-                    },
+                default =>
+                    match (is_string($type) ? mb_strtolower($type) : null) {
+                        'boolean', 'bool' => $this->castToBoolean($value),
+                        'string', 'str' => $this->castToString($value),
+                        'integer', 'int' => $this->castToInt($value),
+                        'float', 'numeric' => $this->castToFloat($value),
+                        'array', 'arr' => $this->castToArray($value),
+                        'object', 'obj' => $this->castToObject($key, stdClass::class, $value),
+                        'datetime', 'date' => $this->castToDateTime($value),
+                        'positive' => $this->castToPositive($value),
+                        'mixed', 'any' => $value,
+
+                        default =>
+                            match (true) {
+                                is_string($type) && class_exists($type) => $this->castToObject($key, $type, $value),
+                                is_array($type),
+                                is_string($type) && preg_match('/array\<.*\>/', $type)
+                                => $this->castToArrayOfObjects($key, $type, $value),
+                                is_callable($type) => $type($value, $key),
+                                is_object($value) && $value instanceof $type => $value,
+
+                                default => throw new DtoException(
+                                    $this->exceptions('TypeForCastNotFound', ['type' => $type]),
+                                    409,
+                                ),
+                            },
+                    }
             };
         } catch (Throwable $e) {
             throw $e;
