@@ -33,6 +33,7 @@ trait DtoCastsTrait
     {
         try {
             return match (is_string($type) ? mb_strtolower($type) : null) {
+                $type === gettype($value) => $value,
                 'boolean', 'bool' => $this->castToBoolean($value),
                 'string', 'str' => $this->castToString($value),
                 'integer', 'int' => $this->castToInt($value),
@@ -41,6 +42,7 @@ trait DtoCastsTrait
                 'object', 'obj' => $this->castToObject($key, stdClass::class, $value),
                 'datetime', 'date' => $this->castToDateTime($value),
                 'positive' => $this->castToPositive($value),
+                'mixed', 'any' => $value,
                 mb_strtolower(DateTime::class) => new DateTime($value),
                 mb_strtolower(Carbon::class) => Carbon::parse($value),
                 mb_strtolower(DateTimeInterface::class) => $this->castToDateTime($value),
