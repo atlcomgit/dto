@@ -3,6 +3,7 @@
 ## *Версия 2.64*
 
 - Добавлен трейт DtoLaravelTrait
+- publish to packagist.org
 
 ## *Версия 2.63*
 
