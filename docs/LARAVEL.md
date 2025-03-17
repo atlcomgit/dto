@@ -50,9 +50,10 @@ return [
 ```php
 namespace App\Dto;
 
-use App\Defaults\DefaultDto;
+use Atlcom\Dto;
+use Illuminate\Contracts\Support\Arrayable;
 
-class ExampleDto extends DefaultDto
+class ExampleDto extends Dto implements Arrayable
 {
     public string $name;
 
