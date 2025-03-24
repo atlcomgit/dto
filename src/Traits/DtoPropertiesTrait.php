@@ -16,7 +16,7 @@ trait DtoPropertiesTrait
      *
      * @return array
      */
-    final public static function getProperties(): array
+    public static function getProperties(): array
     {
         $array = [];
 
@@ -42,7 +42,7 @@ trait DtoPropertiesTrait
      * @param bool|array|null $useMappings
      * @return array
      */
-    final public static function getPropertiesWithFirstType(
+    public static function getPropertiesWithFirstType(
         bool|array|null $useCasts = [],
         bool|array|null $useMappings = false,
     ): array {
@@ -60,7 +60,7 @@ trait DtoPropertiesTrait
      * @param bool|array|null $useMappings
      * @return array
      */
-    final public static function getPropertiesWithAllTypes(
+    public static function getPropertiesWithAllTypes(
         bool|array|null $useCasts = false,
         bool|array|null $useMappings = false,
     ): array {
@@ -104,7 +104,7 @@ trait DtoPropertiesTrait
      *
      * @return bool
      */
-    final public function isEmpty(): bool
+    public function isEmpty(): bool
     {
         foreach (static::getPropertiesWithAllTypes() as $key => $types) {
             $value = $this->$key ?? null;

@@ -22,7 +22,7 @@ trait DtoSerializeTrait
      * @param array|null $mappingKeys
      * @return array
      */
-    final public function toArray(
+    public function toArray(
         ?bool $onlyFilled = null,
         ?bool $onlyNotNull = null,
         ?array $onlyKeys = null,
@@ -115,7 +115,7 @@ trait DtoSerializeTrait
      * @param int $options = 0
      * @return string
      */
-    final public function toJson($options = 0): string
+    public function toJson($options = 0): string
     {
         return json_encode($this->toArray(), $options ?: JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
     }
@@ -172,7 +172,7 @@ trait DtoSerializeTrait
      * @param string|null $class = null
      * @return string
      */
-    final public function getHash(string $keyPrefix = '', ?string $class = null): string
+    public function getHash(string $keyPrefix = '', ?string $class = null): string
     {
         $class ??= get_class($this);
         $array = $this->toArray();

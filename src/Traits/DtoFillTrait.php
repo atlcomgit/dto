@@ -19,7 +19,7 @@ trait DtoFillTrait
      * @param mixed ...$data
      * @return static
      */
-    final public static function create(mixed ...$createData): static
+    public static function create(mixed ...$createData): static
     {
         $array = [];
         foreach ($createData as $key => $value) {
@@ -40,7 +40,7 @@ trait DtoFillTrait
      * @param array $array = []
      * @return mixed
      */
-    final public function transformToDto(string $dtoClass, array $array = []): mixed
+    public function transformToDto(string $dtoClass, array $array = []): mixed
     {
         if (!class_exists($dtoClass)) {
             $this->onException(
@@ -63,7 +63,7 @@ trait DtoFillTrait
      * @param array|object|string|null $data
      * @return static
      */
-    final public static function fill(array|object|string|null $data = null): static
+    public static function fill(array|object|string|null $data = null): static
     {
         return new static($data);
     }
@@ -75,7 +75,7 @@ trait DtoFillTrait
      * @param mixed $data
      * @return static
      */
-    final public function fillFromData(mixed $data): static
+    public function fillFromData(mixed $data): static
     {
         return $this->fillFromArray(static::convertDataToArray($data));
     }
@@ -87,7 +87,7 @@ trait DtoFillTrait
      * @param object $data
      * @return static
      */
-    final public function fillFromObject(object $data): static
+    public function fillFromObject(object $data): static
     {
         return $this->fillFromData($data);
     }
@@ -99,7 +99,7 @@ trait DtoFillTrait
      * @param self $data
      * @return static
      */
-    final public function fillFromDto(self $data): static
+    public function fillFromDto(self $data): static
     {
         return $this->fillFromData($data);
     }
@@ -111,7 +111,7 @@ trait DtoFillTrait
      * @param string $data
      * @return static
      */
-    final public function fillFromJson(string $data): static
+    public function fillFromJson(string $data): static
     {
         return $this->fillFromData($data);
     }
@@ -123,7 +123,7 @@ trait DtoFillTrait
      * @param array $array
      * @return static
      */
-    final public function fillFromArray(array $array): static
+    public function fillFromArray(array $array): static
     {
         return $this->fillDto($array);
     }
@@ -136,7 +136,7 @@ trait DtoFillTrait
      * @return static
      * @throws DtoException
      */
-    final public function merge(array|object|string|null $data): static
+    public function merge(array|object|string|null $data): static
     {
         try {
             $array = static::convertDataToArray($data);
@@ -181,5 +181,20 @@ trait DtoFillTrait
     public static function collect(array $items): array
     {
         return array_map(static fn ($item) => static::fill($item), $items);
+    }
+
+
+    /**
+     * Очищает все свойства dto
+     *
+     * @return static
+     */
+    public function clear(): static
+    {
+        return $this
+            ->autoCasts()
+            ->fillFromData(static::toArrayBlank(false))
+            ->merge($this->defaults())
+            ->reset();
     }
 }

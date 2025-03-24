@@ -1913,7 +1913,7 @@ Lexus
 **Создание Dto внутри Dto.**
 Создание своего Dto с вложенными Dto.\
 
-[Открыть пример](../tests/Examples/Example45/Example46Test.php)
+[Открыть пример](../tests/Examples/Example46/Example46Test.php)
 
 ```php
 class CarDto1 extends \Atlcom\Dto
@@ -1947,7 +1947,7 @@ $carDto1 = CarDto1::create(
 );
 
 /* Вывод результата */
-print_r($carDto->toArray());
+print_r($carDto1->toArray());
 ```
 
 Результат:
@@ -1967,7 +1967,7 @@ print_r($carDto->toArray());
 **Создание Dto с параметром AUTO_CASTS_OBJECTS_ENABLED.**
 Создание Dto с включенной опцией AUTO_CASTS_OBJECTS_ENABLED для авто приведения объектов при заполнении dto.\
 
-[Открыть пример](../tests/Examples/Example45/Example46Test.php)
+[Открыть пример](../tests/Examples/Example47/Example47Test.php)
 
 ```php
 class CarDto1 extends \Atlcom\Dto
@@ -1989,7 +1989,7 @@ $carDto1 = CarDto1::create(
 );
 
 /* Вывод результата */
-print_r($carDto->toArray());
+print_r($carDto1->toArray());
 ```
 
 Результат:
@@ -1998,6 +1998,37 @@ print_r($carDto->toArray());
 [
 	'markName' => 'Lexus',
 	'carDto2' => object \CarDto2 {markName: 'Lexus'},
+]
+```
+
+---
+
+###### Пример 48
+
+**Очистка свойств Dto.**
+Очищает все свойства dto.\
+
+[Открыть пример](../tests/Examples/Example48/Example48Test.php)
+
+```php
+class CarDto1 extends \Atlcom\Dto
+{
+    public string $markName;
+    public string $modelName = 'RX350';
+}
+
+$carDto = CarDto1::create(markName: 'Lexus')->clear();
+
+/* Вывод результата */
+print_r($carDto->toArray());
+```
+
+Результат:
+
+```text
+[
+	'markName' => '',
+	'modelName' => 'RX350',
 ]
 ```
 

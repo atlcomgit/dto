@@ -1,43 +1,37 @@
 # Changelog
 
-## *Версия 2.64*
+## *Версия 2.65*
+- Добавлен метод clear
 
+## *Версия 2.64*
 - Добавлен трейт DtoLaravelTrait
 - publish to packagist.org
 
 ## *Версия 2.63*
-
 - Обновлен метод getHash
 - Обновлен метод assignValue
 
 ## *Версия 2.62*
-
 - Обновлен метод isEmpty
 - Добавлен в тесты strict_type
 
 ## *Версия 2.61*
-
 - Добавлен трейт AsDto для расширения своего Dto
 - Повышена минимальная версия PHP до 8.2
 
 ## *Версия 2.60*
-
 - Обновлен метод castToArrayOfObjects
 
 ## *Версия 2.59*
-
 - Добавлен в трейты declare(strict_types=1)
 
 ## *Версия 2.58*
-
 - Добавлены методы onCreating, onCreated
 
 ## *Версия 2.57*
-
 - Обновлен метод getPropertiesWithFirstType
 
 ## *Версия 2.56*
-
 - Добавлен метод toArrayBlank
 - Добавлен метод toArrayBlankRecursive
 - Добавлен метод getProperties
@@ -50,51 +44,41 @@
 - Добавлена работа с динамическими свойствами через опции
 
 ## *Версия 2.55*
-
 - Поправлен deprecated для mb_strtolower
 
 ## *Версия 2.54*
-
 - Добавлен метод isEmpty
 
 ## *Версия 2.53*
-
 - Обновлен метод serializeValue
 
 ## *Версия 2.52*
-
 - Добавлен магический метод __call
 - Добавлен атрибут свойства Hidden
 
 ## *Версия 2.51*
-
 - Обновлен метод toArray
 - Обновлен метод castToObject
 - Обновлен метод exceptions
 - Понижена зависимость версии Carbon
 
 ## *Версия 2.50*
-
 - Добавлен метод getOption
 - Добавлен метод customOptions
 
 ## *Версия 2.49*
-
 - Обновлен метод transformToDto
 - Добавлен метод withoutOptions
 
 ## *Версия 2.48*
-
 - Обновлен метод convertDataToArray
 - Обновлен метод for
 
 ## *Версия 2.47*
-
 - Обновлен метод for
 - Обновлен метод toArray
 
 ## *Версия 2.46*
-
 - Обновлен метод for
 - Добавлена константа AUTO_DATETIME_CLASS
 - Добавлена поддержка Carbon
@@ -102,20 +86,16 @@
 - Обновлен метод castToDateTime
 
 ## *Версия 2.45*
-
 - Добавлен метод onlyNotNull
 - Обновлен метод transformToDto
 
 ## *Версия 2.44*
-
 - Класс DefaultDto переименован в Dto
 - Добавлен метод exceptions
 
 ## *Версия 2.43*
-
 - Добавлены методы onAssigning, onAssigned
 - Добавлены методы withProtectedKeys, withPrivateKeys
 
 ## *Версия 2.42*
-
 - Первый релиз
