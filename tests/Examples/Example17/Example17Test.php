@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Atlcom\Tests\Examples\Example17;
 
+use Atlcom\Exceptions\DtoException;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
@@ -33,11 +34,7 @@ final class Example17Test extends TestCase
     #[Test]
     public function example(): void
     {
-        try {
-            $carDto = CarDto::create();
-            $this->fail('Обработка исключений отключена');
-        } catch (\Throwable $exception) {
-            $this->assertTrue(true);
-        }
+        $this->expectException(DtoException::class);
+        $carDto = CarDto::create();
     }
 }

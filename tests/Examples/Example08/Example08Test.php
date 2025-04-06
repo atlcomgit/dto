@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Atlcom\Tests\Examples\Example08;
 
+use Atlcom\Exceptions\DtoException;
 use Atlcom\Interfaces\AttributeDtoInterface;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -19,6 +20,7 @@ enum CarTypeEnum: string
 }
 
 #[\Attribute(\Attribute::TARGET_PROPERTY)]
+
 class YearCast implements AttributeDtoInterface
 {
     public function __construct(private ?bool $enabled = null) {}
@@ -86,13 +88,7 @@ final class Example08Test extends TestCase
         $this->assertEquals('Пример', $carDto->comment);
         $this->assertEquals(2024, $carDto->year);
 
-        try {
-            $carDto2 = CarDto2::create(id: '123abc');
-            $result = false;
-        } catch (\Throwable $exception) {
-            $result = true;
-        }
-
-        $this->assertTrue($result);
+        $this->expectException(DtoException::class);
+        $carDto2 = CarDto2::create(id: '123abc');
     }
 }

@@ -28,4 +28,22 @@ trait DtoConstsTrait
 
     /** Включает опцию для работы с динамическими свойствами через опции */
     public const AUTO_DYNAMIC_PROPERTIES_ENABLED = false;
+
+    /** Включает реализацию интерфейса ArrayAccess для работы с dto как с массивом */
+    public const INTERFACE_ARRAY_ACCESS_ENABLED = false;
+
+    /** Включает реализацию интерфейса Countable для включения метода count() */
+    public const INTERFACE_COUNTABLE_ENABLED = false;
+
+    /** Включает реализацию интерфейса IteratorAggregate для включения метода getIterator() */
+    public const INTERFACE_ITERATOR_AGGREGATE_ENABLED = false;
+
+    /** Включает реализацию интерфейса JsonSerializable для метода json_encode($dto) */
+    public const INTERFACE_JSON_SERIALIZABLE_ENABLED = false;
+
+    /** Включает реализацию интерфейса Serializable для методов serialize($dto)/unserialize($dto) */
+    public const INTERFACE_SERIALIZABLE_ENABLED = false;
+
+    /** Включает реализацию интерфейса Stringable для работы с dto как со строкой (string)$dto */
+    public const INTERFACE_STRINGABLE_ENABLED = false;
 }

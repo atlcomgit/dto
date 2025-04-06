@@ -1087,7 +1087,7 @@ class CarDto extends \Atlcom\Dto
 class ModelDto extends \Atlcom\Dto
 {
 	public string $modelName = 'RX500';
-  
+
 	protected function mappings(): array {
 		return [
 			'modelName' => 'model_name',
@@ -1929,7 +1929,7 @@ class CarDto1 extends \Atlcom\Dto
         ];
     }
 }
- 
+
 class CarDto2 extends \Atlcom\Dto
 {
     public string $markName;
@@ -1973,11 +1973,11 @@ print_r($carDto1->toArray());
 class CarDto1 extends \Atlcom\Dto
 {
     public const AUTO_CASTS_OBJECTS_ENABLED = true;
-    
+
     public string $markName;
     public CarDto2 $carDto2;
 }
- 
+
 class CarDto2 extends \Atlcom\Dto
 {
     public string $markName;

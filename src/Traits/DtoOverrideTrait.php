@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Atlcom\Traits;
 
 use Carbon\Carbon;
-use ReflectionProperty;
 use Throwable;
 
 /**
@@ -105,15 +104,7 @@ trait DtoOverrideTrait
      * @return void
      */
     // #[Override()]
-    protected function onFilling(array &$array): void
-    {
-        // !(  // приводим id к integer
-        //     property_exists($this, 'id')
-        //     && array_key_exists('id', $array)
-        //     && str_contains((string)(new ReflectionProperty(get_class($this), 'id'))->getType(), 'int')
-        //     && is_numeric($array['id'] ?? null)
-        // ) ?: $array['id'] = (int)($array['id'] ?? 0);
-    }
+    protected function onFilling(array &$array): void {}
 
 
     /**
@@ -274,6 +265,19 @@ trait DtoOverrideTrait
             'TypeForCastNotSpecified' => sprintf(
                 $this->toBasename($this) . '->%s: тип приведения не указан',
                 $messageItems['property'],
+            ),
+            'ArrayAccessDisabled' => sprintf(
+                $this->toBasename($this) . '->%s: доступ к свойству через массив отключен',
+                $messageItems['property'],
+            ),
+            'CountableDisabled',
+            'IteratorAggregateDisabled',
+            'JsonSerializableDisabled',
+            'SerializableDisabled',
+            'StringableDisabled'
+            => sprintf(
+                $this->toBasename($this) . '->%s(): доступ к интерфейсу отключен',
+                $messageItems['method'],
             ),
 
             default => 'Неизвестный код сообщения',

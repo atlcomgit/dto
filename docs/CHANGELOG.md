@@ -1,37 +1,63 @@
 # Changelog
 
-## *Версия 2.65*
+## _Версия 2.66_
+
+- Добавлена константа INTERFACE_ARRAY_ACCESS_ENABLED
+- Добавлена константа INTERFACE_COUNTABLE_ENABLED
+- Добавлена константа INTERFACE_ITERATOR_AGGREGATE_ENABLED
+- Добавлена константа INTERFACE_JSON_SERIALIZABLE_ENABLED
+- Добавлена константа INTERFACE_SERIALIZABLE_ENABLED
+- Добавлена константа INTERFACE_STRINGABLE_ENABLED
+
+- Реализован интерфейс ArrayAccess
+- Реализован интерфейс Countable
+- Реализован интерфейс IteratorAggregate
+- Реализован интерфейс JsonSerializable
+- Реализован интерфейс Serializable
+- Реализован интерфейс Stringable
+
+## _Версия 2.65_
+
 - Добавлен метод clear
 
-## *Версия 2.64*
+## _Версия 2.64_
+
 - Добавлен трейт DtoLaravelTrait
 - publish to packagist.org
 
-## *Версия 2.63*
+## _Версия 2.63_
+
 - Обновлен метод getHash
 - Обновлен метод assignValue
 
-## *Версия 2.62*
+## _Версия 2.62_
+
 - Обновлен метод isEmpty
 - Добавлен в тесты strict_type
 
-## *Версия 2.61*
+## _Версия 2.61_
+
 - Добавлен трейт AsDto для расширения своего Dto
 - Повышена минимальная версия PHP до 8.2
 
-## *Версия 2.60*
+## _Версия 2.60_
+
 - Обновлен метод castToArrayOfObjects
 
-## *Версия 2.59*
+## _Версия 2.59_
+
 - Добавлен в трейты declare(strict_types=1)
 
-## *Версия 2.58*
+## _Версия 2.58_
+
 - Добавлены методы onCreating, onCreated
 
-## *Версия 2.57*
+## _Версия 2.57_
+
 - Обновлен метод getPropertiesWithFirstType
 
-## *Версия 2.56*
+## _Версия 2.56_
+
 - Добавлен метод toArrayBlank
 - Добавлен метод toArrayBlankRecursive
 - Добавлен метод getProperties
@@ -43,59 +69,73 @@
 - Добавлена константа AUTO_DYNAMIC_PROPERTIES_ENABLED
 - Добавлена работа с динамическими свойствами через опции
 
-## *Версия 2.55*
+## _Версия 2.55_
+
 - Поправлен deprecated для mb_strtolower
 
-## *Версия 2.54*
+## _Версия 2.54_
+
 - Добавлен метод isEmpty
 
-## *Версия 2.53*
+## _Версия 2.53_
+
 - Обновлен метод serializeValue
 
-## *Версия 2.52*
-- Добавлен магический метод __call
+## _Версия 2.52_
+
+- Добавлен магический метод \_\_call
 - Добавлен атрибут свойства Hidden
 
-## *Версия 2.51*
+## _Версия 2.51_
+
 - Обновлен метод toArray
 - Обновлен метод castToObject
 - Обновлен метод exceptions
 - Понижена зависимость версии Carbon
 
-## *Версия 2.50*
+## _Версия 2.50_
+
 - Добавлен метод getOption
 - Добавлен метод customOptions
 
-## *Версия 2.49*
+## _Версия 2.49_
+
 - Обновлен метод transformToDto
 - Добавлен метод withoutOptions
 
-## *Версия 2.48*
+## _Версия 2.48_
+
 - Обновлен метод convertDataToArray
 - Обновлен метод for
 
-## *Версия 2.47*
+## _Версия 2.47_
+
 - Обновлен метод for
 - Обновлен метод toArray
 
-## *Версия 2.46*
+## _Версия 2.46_
+
 - Обновлен метод for
 - Добавлена константа AUTO_DATETIME_CLASS
 - Добавлена поддержка Carbon
 - Обновлен метод matchValue
 - Обновлен метод castToDateTime
 
-## *Версия 2.45*
+## _Версия 2.45_
+
 - Добавлен метод onlyNotNull
 - Обновлен метод transformToDto
 
-## *Версия 2.44*
+## _Версия 2.44_
+
 - Класс DefaultDto переименован в Dto
 - Добавлен метод exceptions
 
-## *Версия 2.43*
+## _Версия 2.43_
+
 - Добавлены методы onAssigning, onAssigned
 - Добавлены методы withProtectedKeys, withPrivateKeys
 
-## *Версия 2.42*
+## _Версия 2.42_
+
 - Первый релиз

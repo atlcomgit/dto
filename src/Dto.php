@@ -4,23 +4,35 @@ declare(strict_types=1);
 
 namespace Atlcom;
 
+use ArrayAccess;
+use Atlcom\Traits\DtoArrayAccess;
 use Atlcom\Traits\DtoCastsTrait;
 use Atlcom\Traits\DtoConstsTrait;
 use Atlcom\Traits\DtoConvertTrait;
 use Atlcom\Traits\DtoCoreTrait;
+use Atlcom\Traits\DtoCountable;
 use Atlcom\Traits\DtoFillTrait;
+use Atlcom\Traits\DtoIteratorAggregate;
+use Atlcom\Traits\DtoJsonSerializable;
 use Atlcom\Traits\DtoMagicTrait;
 use Atlcom\Traits\DtoOptionsTrait;
 use Atlcom\Traits\DtoOverrideTrait;
 use Atlcom\Traits\DtoPropertiesTrait;
 use Atlcom\Traits\DtoLaravelTrait;
+use Atlcom\Traits\DtoSerializable;
 use Atlcom\Traits\DtoSerializeTrait;
+use Atlcom\Traits\DtoStringable;
 use Atlcom\Traits\DtoStrTrait;
+use Countable;
+use IteratorAggregate;
+use JsonSerializable;
+use Serializable;
+use Stringable;
 
 /**
  * Абстрактный класс Dto
  * @abstract
- * @version 2.65
+ * @version 2.66
  * 
  * @override @see self::rules()
  * @override @see self::mappings()
@@ -78,18 +90,30 @@ use Atlcom\Traits\DtoStrTrait;
  * @see ../../README.md
  * @link https://github.com/atlcomgit/dto
  */
-abstract class Dto
+abstract class Dto implements
+    ArrayAccess,
+    Countable,
+    IteratorAggregate,
+    JsonSerializable,
+    Serializable,
+    Stringable
 {
+    use DtoArrayAccess;
     use DtoCastsTrait;
     use DtoConstsTrait;
     use DtoConvertTrait;
     use DtoCoreTrait;
+    use DtoCountable;
     use DtoFillTrait;
+    use DtoIteratorAggregate;
+    use DtoJsonSerializable;
     use DtoMagicTrait;
     use DtoOptionsTrait;
     use DtoOverrideTrait;
     use DtoPropertiesTrait;
     use DtoLaravelTrait;
+    use DtoSerializable;
     use DtoSerializeTrait;
+    use DtoStringable;
     use DtoStrTrait;
 }
