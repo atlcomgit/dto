@@ -30,6 +30,9 @@ trait DtoJsonSerializable
             $this->onException($exception);
         }
 
-        return $this->toArray();
+        return [
+            ...(array)$this,
+            ...(static::AUTO_DYNAMIC_PROPERTIES_ENABLED ? ($this->options()['customOptions'] ?? []) : []),
+        ];
     }
 }

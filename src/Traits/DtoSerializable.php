@@ -30,7 +30,10 @@ trait DtoSerializable
             $this->onException($exception);
         }
 
-        return serialize($this->toArray());
+        return serialize([
+            ...(array)$this,
+            ...(static::AUTO_DYNAMIC_PROPERTIES_ENABLED ? ($this->options()['customOptions'] ?? []) : []),
+        ]);
     }
 
 
