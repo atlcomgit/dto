@@ -33,17 +33,17 @@ trait DtoConstsTrait
     public const INTERFACE_ARRAY_ACCESS_ENABLED = false;
 
     /** Включает реализацию интерфейса Countable для включения метода count() */
-    public const INTERFACE_COUNTABLE_ENABLED = false;
+    public const INTERFACE_COUNTABLE_ENABLED = true;
 
     /** Включает реализацию интерфейса IteratorAggregate для включения метода getIterator() */
-    public const INTERFACE_ITERATOR_AGGREGATE_ENABLED = false;
+    public const INTERFACE_ITERATOR_AGGREGATE_ENABLED = true;
 
     /** Включает реализацию интерфейса JsonSerializable для метода json_encode($dto) */
-    public const INTERFACE_JSON_SERIALIZABLE_ENABLED = false;
+    public const INTERFACE_JSON_SERIALIZABLE_ENABLED = true;
 
     /** Включает реализацию интерфейса Serializable для методов serialize($dto)/unserialize($dto) */
-    public const INTERFACE_SERIALIZABLE_ENABLED = false;
+    public const INTERFACE_SERIALIZABLE_ENABLED = true;
 
     /** Включает реализацию интерфейса Stringable для работы с dto как со строкой (string)$dto */
-    public const INTERFACE_STRINGABLE_ENABLED = false;
+    public const INTERFACE_STRINGABLE_ENABLED = true;
 }
