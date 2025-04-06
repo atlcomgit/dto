@@ -38,13 +38,18 @@ final class Example51Test extends TestCase
     #[Test]
     public function example(): void
     {
+        // enabled
+
         $carDto1 = CarDto1::create();
 
         foreach ($carDto1 as $key => $value) {
             $this->assertTrue($carDto1->$key === $value);
         }
 
+        // disabled
+
         $this->expectException(DtoException::class);
+
         $carDto2 = CarDto2::create();
 
         foreach ($carDto2 as $key => $value) {

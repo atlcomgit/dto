@@ -38,6 +38,8 @@ final class Example54Test extends TestCase
     #[Test]
     public function example(): void
     {
+        // enabled
+
         $carDto1 = CarDto1::create();
 
         $this->assertEquals(
@@ -45,7 +47,10 @@ final class Example54Test extends TestCase
             '{"markName":"Lexus","modelName":"RX500"}',
         );
 
+        // disabled
+
         $this->expectException(DtoException::class);
+
         $carDto2 = CarDto2::create();
 
         (string)$carDto2;

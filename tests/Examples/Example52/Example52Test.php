@@ -38,11 +38,16 @@ final class Example52Test extends TestCase
     #[Test]
     public function example(): void
     {
+        // enabled
+
         $carDto1 = CarDto1::create();
 
         $this->assertTrue(json_encode($carDto1) === '{"markName":"Lexus","modelName":"RX500"}');
 
+        // disabled
+
         $this->expectException(DtoException::class);
+
         $carDto2 = CarDto2::create();
 
         json_encode($carDto2);
