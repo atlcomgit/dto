@@ -15,6 +15,7 @@ trait DtoFillTrait
 {
     /**
      * Создает и заполняет dto
+     * @see ../../tests/Examples/Example01/Example01Test.php
      *
      * @param mixed ...$data
      * @return static
@@ -35,6 +36,7 @@ trait DtoFillTrait
 
     /**
      * Преобразование в другой dto
+     * @see ../../tests/Examples/Example34/Example34Test.php
      *
      * @param class-string $dtoClass
      * @param array $array = []
@@ -59,6 +61,7 @@ trait DtoFillTrait
 
     /**
      * Статический вызов создания объекта dto
+     * @see ../../tests/Other/DefaultsDtoTest.php
      *
      * @param array|object|string|null $data
      * @return static
@@ -71,6 +74,7 @@ trait DtoFillTrait
 
     /**
      * Заполнение dto из объекта
+     * @see ../../tests/Other/DefaultsDtoTest.php
      *
      * @param mixed $data
      * @return static
@@ -83,6 +87,7 @@ trait DtoFillTrait
 
     /**
      * Заполнение dto из объекта
+     * @see ../../tests/Other/DefaultsDtoTest.php
      *
      * @param object $data
      * @return static
@@ -95,6 +100,7 @@ trait DtoFillTrait
 
     /**
      * Заполнение dto из dto
+     * @see ../../tests/Other/DefaultsDtoTest.php
      *
      * @param self $data
      * @return static
@@ -107,6 +113,7 @@ trait DtoFillTrait
 
     /**
      * Заполнение dto из json строки
+     * @see ../../tests/Other/DefaultsDtoTest.php
      *
      * @param string $data
      * @return static
@@ -119,6 +126,7 @@ trait DtoFillTrait
 
     /**
      * Заполнение dto из массива
+     * @see ../../tests/Examples/Example21/Example21Test.php
      *
      * @param array $array
      * @return static
@@ -131,6 +139,7 @@ trait DtoFillTrait
 
     /**
      * Объединить массив с dto
+     * @see ../../tests/Examples/Example13/Example13Test.php
      *
      * @param array|object|string|null $data
      * @return static
@@ -174,6 +183,7 @@ trait DtoFillTrait
 
     /**
      * Преобразует массив или коллекцию данных в коллекцию из dto
+     * @see ../../tests/Examples/Example31/Example31Test.php
      *
      * @param array $items
      * @return array
@@ -186,6 +196,7 @@ trait DtoFillTrait
 
     /**
      * Очищает все свойства dto
+     * @see ../../tests/Examples/Example48/Example48Test.php
      *
      * @return static
      */

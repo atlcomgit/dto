@@ -6,7 +6,7 @@ namespace Atlcom\Traits;
 
 /**
  * Трейт для расширения своего Dto
- * @version 2.66
+ * @version 2.67
  * 
  * @override @see self::rules()
  * @override @see self::mappings()

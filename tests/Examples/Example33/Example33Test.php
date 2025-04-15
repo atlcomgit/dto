@@ -25,7 +25,7 @@ class CarDto extends \Atlcom\Dto
 
 /**
  * Тест 33
- * Заполнение Dto с событием onAssigned (после изменения)
+ * Заполнение Dto с событием exceptions
  */
 
 final class Example33Test extends TestCase

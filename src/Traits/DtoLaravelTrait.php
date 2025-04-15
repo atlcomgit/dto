@@ -75,12 +75,14 @@ trait DtoLaravelTrait
      * @override
      * Заполнение Dto из запроса Request
      *
+     * @param object|array $data
      * @return static
      * @throws DtoException
      */
     // #[Override()]
-    public function fillFromRequest(array $data): static
+    public function fillFromRequest(object|array $data): static
     {
+        $data = static::convertDataToArray($data);
         $validator = 'Illuminate\Support\Facades\Validator';
         $rules = $this->rules();
         $dataNew = [];
@@ -96,6 +98,8 @@ trait DtoLaravelTrait
             } catch (Throwable $exception) {
                 throw new DtoException($exception->getMessage(), $exception->getCode() ?: 400);
             }
+        } else {
+            $dataNew = $data;
         }
 
         return $this->fillFromArray($dataNew ?? []);

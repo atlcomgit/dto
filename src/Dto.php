@@ -32,7 +32,7 @@ use Stringable;
 /**
  * Абстрактный класс Dto
  * @abstract
- * @version 2.66
+ * @version 2.67
  * 
  * @override @see self::rules()
  * @override @see self::mappings()
@@ -86,8 +86,7 @@ use Stringable;
  * @example
  * ExampleDto::fill([])->onlyKeys([])->excludeKeys([])->mappingKeys([])->serializeKeys(true)->toArray();
  * 
- * @see \Atlcom\Tests\DtoTest
- * @see ../../README.md
+ * @see ../README.md
  * @link https://github.com/atlcomgit/dto
  */
 abstract class Dto implements

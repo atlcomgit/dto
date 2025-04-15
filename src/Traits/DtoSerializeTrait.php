@@ -14,6 +14,7 @@ trait DtoSerializeTrait
 {
     /**
      * Преобразование dto в массив
+     * @see ../../tests/Examples/Example29/Example29Test.php
      *
      * @param bool|null $onlyFilled = false
      * @param bool|null $onlyNotNull
@@ -111,6 +112,7 @@ trait DtoSerializeTrait
 
     /**
      * Преобразование dto в json
+     * @see ../../tests/Examples/Example30/Example30Test.php
      *
      * @param int $options = 0
      * @return string
@@ -123,6 +125,7 @@ trait DtoSerializeTrait
 
     /**
      * Возвращает массив с пустыми значениями всех свойств dto
+     * @see ../../tests/Examples/Example40/Example40Test.php
      * 
      * @param bool $allValuesToNull
      * @return array
@@ -145,6 +148,7 @@ trait DtoSerializeTrait
 
     /**
      * Возвращает массив с пустыми значениями всех свойств dto с рекурсией по объектам
+     * @see ../../tests/Examples/Example40/Example40Test.php
      * 
      * @param bool $allValuesToNull
      * @return array
@@ -167,6 +171,7 @@ trait DtoSerializeTrait
 
     /**
      * Получение хеша dto
+     * @see ../../tests/Examples/Example38/Example38Test.php
      *
      * @param string $keyPrefix = ''
      * @param string|null $class = null

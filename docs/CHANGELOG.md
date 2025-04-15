@@ -1,5 +1,9 @@
 # Changelog
 
+## _Версия 2.67_
+
+- Обновлен метод fillFromRequest
+
 ## _Версия 2.66_
 
 - Добавлена константа INTERFACE_ARRAY_ACCESS_ENABLED
