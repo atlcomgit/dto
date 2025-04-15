@@ -59,16 +59,15 @@ trait DtoOverrideTrait
                         $type === $laravelClassCollection || is_subclass_of($type, $laravelClassCollection)
                         => static fn ($v) => new $laravelClassCollection($v),
 
-                        default => strtr(
-                            $type,
-                            [
-                                'int' => null,
-                                'string' => null,
-                                'bool' => null,
-                                'array' => null,
-                                Carbon::class => 'datetime',
-                            ],
-                        )
+                        default => match ($type) {
+                            'int' => null,
+                            'string' => null,
+                            'bool' => null,
+                            'array' => null,
+                            static::AUTO_DATETIME_CLASS => 'datetime',
+
+                            default => $type,
+                        },
                     },
                     static::getPropertiesWithFirstType(),
                 ),
