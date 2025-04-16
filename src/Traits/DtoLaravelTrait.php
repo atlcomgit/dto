@@ -19,7 +19,8 @@ trait DtoLaravelTrait
 {
     /**
      * @override
-     * Правила валидации
+     * Правила валидации при использовании Dto вместо FormRequest
+     * @see ../../docs/LARAVEL.md
      *
      * @return array
      */

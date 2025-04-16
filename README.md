@@ -272,4 +272,8 @@ $exampleArray = $exampleDto->for(CarEntity::class)->toArray();
 
 [Открыть все примеры](docs/EXAMPLES.md)
 
+## Переопределяемые методы
+
+[Открыть список](docs/OVERRIDES.md)
+
 <hr style="border:1px solid black">

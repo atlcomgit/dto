@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Atlcom\Traits;
 
-use Carbon\Carbon;
 use Throwable;
 
 /**
@@ -16,6 +15,7 @@ trait DtoOverrideTrait
      * @override
      * Возвращает массив маппинга свойств
      * @see ../../tests/Examples/Example06/Example06Test.php
+     * @link https://github.com/atlcomgit/dto/blob/master/tests/Examples/Example06/Example06Test.php
      *
      * @return array
      */
@@ -30,6 +30,7 @@ trait DtoOverrideTrait
      * @override
      * Возвращает массив значений по умолчанию
      * @see ../../tests/Examples/Example05/Example05Test.php
+     * @link https://github.com/atlcomgit/dto/blob/master/tests/Examples/Example05/Example05Test.php
      *
      * @return array
      */
@@ -44,6 +45,7 @@ trait DtoOverrideTrait
      * @override
      * Возвращает массив преобразований типов
      * @see ../../tests/Examples/Example08/Example08Test.php
+     * @link https://github.com/atlcomgit/dto/blob/master/tests/Examples/Example08/Example08Test.php
      *
      * @return array
      */
@@ -80,6 +82,7 @@ trait DtoOverrideTrait
      * @override
      * Метод вызывается до создания и заполнения dto
      * @see ../../tests/Examples/Example44/Example44Test.php
+     * @link https://github.com/atlcomgit/dto/blob/master/tests/Examples/Example44/Example44Test.php
      *
      * @param mixed $data
      * @return void
@@ -92,6 +95,7 @@ trait DtoOverrideTrait
      * @override
      * Метод вызывается после создания и заполнения dto
      * @see ../../tests/Examples/Example44/Example44Test.php
+     * @link https://github.com/atlcomgit/dto/blob/master/tests/Examples/Example44/Example44Test.php
      *
      * @param mixed $data
      * @return void
@@ -104,6 +108,7 @@ trait DtoOverrideTrait
      * @override
      * Метод вызывается до заполнения dto
      * @see ../../tests/Examples/Example11/Example11Test.php
+     * @link https://github.com/atlcomgit/dto/blob/master/tests/Examples/Example11/Example11Test.php
      *
      * @param array $array
      * @return void
@@ -116,6 +121,7 @@ trait DtoOverrideTrait
      * @override
      * Метод вызывается после заполнения dto
      * @see ../../tests/Examples/Example12/Example12Test.php
+     * @link https://github.com/atlcomgit/dto/blob/master/tests/Examples/Example12/Example12Test.php
      *
      * @param array $array
      * @return void
@@ -128,6 +134,7 @@ trait DtoOverrideTrait
      * @override
      * Метод вызывается до объединения с dto
      * @see ../../tests/Examples/Example13/Example13Test.php
+     * @link https://github.com/atlcomgit/dto/blob/master/tests/Examples/Example13/Example13Test.php
      *
      * @param array $array
      * @return void
@@ -140,6 +147,7 @@ trait DtoOverrideTrait
      * @override
      * Метод вызывается после объединения с dto
      * @see ../../tests/Examples/Example14/Example14Test.php
+     * @link https://github.com/atlcomgit/dto/blob/master/tests/Examples/Example14/Example14Test.php
      *
      * @param array $array
      * @return void
@@ -164,6 +172,7 @@ trait DtoOverrideTrait
      * @override
      * Метод вызывается после изменения значения свойства dto
      * @see ../../tests/Examples/Example32/Example32Test.php
+     * @link https://github.com/atlcomgit/dto/blob/master/tests/Examples/Example32/Example32Test.php
      *
      * @param string $key
      * @return void
@@ -176,6 +185,7 @@ trait DtoOverrideTrait
      * @override
      * Метод вызывается до преобразования dto в массив
      * @see ../../tests/Examples/Example15/Example15Test.php
+     * @link https://github.com/atlcomgit/dto/blob/master/tests/Examples/Example15/Example15Test.php
      *
      * @param array $array
      * @return void
@@ -188,6 +198,7 @@ trait DtoOverrideTrait
      * @override
      * Метод вызывается после преобразования dto в массив
      * @see ../../tests/Examples/Example16/Example16Test.php
+     * @link https://github.com/atlcomgit/dto/blob/master/tests/Examples/Example16/Example16Test.php
      *
      * @param array $array
      * @return void
@@ -200,6 +211,7 @@ trait DtoOverrideTrait
      * @override
      * Метод вызывается во время исключения при заполнении dto
      * @see ../../tests/Examples/Example17/Example17Test.php
+     * @link https://github.com/atlcomgit/dto/blob/master/tests/Examples/Example17/Example17Test.php
      *
      * @param Throwable $exception
      * @return void
@@ -216,6 +228,7 @@ trait DtoOverrideTrait
      * @override
      * Сообщения ошибок dto
      * @see ../../tests/Examples/Example33/Example33Test.php
+     * @link https://github.com/atlcomgit/dto/blob/master/tests/Examples/Example33/Example33Test.php
      *
      * @param string $message
      * @param array $values
