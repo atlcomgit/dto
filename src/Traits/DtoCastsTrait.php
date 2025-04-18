@@ -9,7 +9,6 @@ use BackedEnum;
 use Carbon\Carbon;
 use DateTime;
 use DateTimeInterface;
-use ReflectionNamedType;
 use ReflectionProperty;
 use stdClass;
 use Throwable;
@@ -62,7 +61,7 @@ trait DtoCastsTrait
 
                                 default => throw new DtoException(
                                     $this->exceptions('TypeForCastNotFound', ['type' => $type]),
-                                    409,
+                                    500,
                                 ),
                             },
                     }
@@ -127,13 +126,14 @@ trait DtoCastsTrait
             return $value;
         }
 
-        $class = (new ReflectionProperty(get_class($this), $key))->getType();
-        if ($class instanceof ReflectionNamedType && ($class = $class->getName())) {
+        try {
             switch (true) {
+                case is_object($value) && $value::class === $class:
+                    return $value;
+    
                 case is_null($value):
-
                     return null;
-
+    
                 case enum_exists($class):
                     return match (true) {
                         $value instanceof UnitEnum => $value,
@@ -153,19 +153,19 @@ trait DtoCastsTrait
                                     );
                                 }
                             })($class, $key, $value),
-
+    
                         default => throw new DtoException(
                             $this->exceptions('ScalarForCastNeed', ['property' => $key]),
                             409,
                         ),
                     };
-
+    
                 default:
                     $laravelClassCollection = 'Illuminate\Support\Collection';
                     $laravelClassModel = 'Illuminate\Database\Eloquent\Model';
                     $laravelClassFormRequest = 'Illuminate\Foundation\Http\FormRequest';
                     $laravelClassRequest = 'Illuminate\Http\Request';
-                        
+    
                     switch (true) {
                         case is_subclass_of($class, self::class):
                             $value = (is_object($value) && $value instanceof self)
@@ -173,21 +173,21 @@ trait DtoCastsTrait
                                 : (is_array($value) ? $value : null);
                             $object = !is_null($value) ? $class::create($value) : $value;
                             break;
-
+    
                         case is_array($value)
-                            && (
-                                $class === $laravelClassCollection
-                                || is_subclass_of($class, $laravelClassCollection)
-                                || $class === $laravelClassModel
-                                || is_subclass_of($class, $laravelClassModel)
-                                || $class === $laravelClassFormRequest
-                                || is_subclass_of($class, $laravelClassFormRequest)
-                                || $class === $laravelClassRequest
-                                || is_subclass_of($class, $laravelClassRequest)
-                            ):
+                        && (
+                        $class === $laravelClassCollection
+                        || is_subclass_of($class, $laravelClassCollection)
+                        || $class === $laravelClassModel
+                        || is_subclass_of($class, $laravelClassModel)
+                        || $class === $laravelClassFormRequest
+                        || is_subclass_of($class, $laravelClassFormRequest)
+                        || $class === $laravelClassRequest
+                        || is_subclass_of($class, $laravelClassRequest)
+                        ):
                             $object = new $class($value);
                             break;
-
+    
                         case is_array($value):
                             try {
                                 $object = new $class($value);
@@ -199,19 +199,20 @@ trait DtoCastsTrait
                                 }
                             }
                             break;
-
+    
                         default:
                             $object = $value;
                     }
-
+    
                     return $object;
             }
-        }
 
-        throw new DtoException(
-            $this->exceptions('ClassCanNotBeCasted', ['class' => $class]),
-            409,
-        );
+        } catch (Throwable $exception) {
+            throw new DtoException(
+                $this->exceptions('ClassCanNotBeCasted', ['class' => $class]),
+                500,
+            );
+        }
     }
 
 
@@ -328,7 +329,7 @@ trait DtoCastsTrait
             if (!class_exists($class)) {
                 throw new DtoException(
                     $this->exceptions('ClassNotFound', ['class' => $class]),
-                    409,
+                    500,
                 );
             }
 
@@ -348,7 +349,7 @@ trait DtoCastsTrait
         } else {
             throw new DtoException(
                 $this->exceptions('TypeForCastNotSpecified', ['property' => $key]),
-                409,
+                500,
             );
         }
     }
@@ -436,6 +437,38 @@ trait DtoCastsTrait
         };
     }
 
+
+    /**
+     * Возвращает массив для преобразований типов по умолчанию
+     *
+     * @return array
+     */
+    protected function castDefault(): array
+    {
+        $laravelClassCollection = 'Illuminate\Support\Collection';
+
+        return static::AUTO_CASTS_OBJECTS_ENABLED
+            ? array_filter(
+                array_map(
+                    static fn (string $type) => match (true) {
+                        $type === $laravelClassCollection || is_subclass_of($type, $laravelClassCollection)
+                        => static fn ($v) => new $laravelClassCollection($v),
+
+                        default => match ($type) {
+                                'int' => null,
+                                'string' => null,
+                                'bool' => null,
+                                'array' => null,
+                                static::AUTO_DATETIME_CLASS => 'datetime',
+
+                                default => $type,
+                            },
+                    },
+                    static::getPropertiesWithFirstType(),
+                ),
+            )
+            : [];
+    }
 
     /**
      * Возвращает массив всех свойств dto с его первым типом

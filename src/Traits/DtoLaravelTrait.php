@@ -19,7 +19,7 @@ trait DtoLaravelTrait
 {
     /**
      * @override
-     * Правила валидации при использовании Dto вместо FormRequest
+     * Возвращает массив правил валидации при использовании Dto вместо FormRequest в Laravel
      * @see ../../docs/LARAVEL.md
      *
      * @return array
@@ -74,7 +74,7 @@ trait DtoLaravelTrait
 
     /**
      * @override
-     * Заполнение Dto из запроса Request
+     * Заполнение Dto из запроса Request в Laravel
      *
      * @param object|array $data
      * @return static
@@ -109,7 +109,7 @@ trait DtoLaravelTrait
 
     /**
      * @override
-     * Названия отображения имен свойств при ошибке валидации
+     * Названия отображения имен свойств при ошибке валидации в Laravel
      *
      * @return array
      */
@@ -122,7 +122,7 @@ trait DtoLaravelTrait
 
     /**
      * @override
-     * Сообщения валидации
+     * Сообщения валидации в Laravel
      *
      * @return array
      */

@@ -13,7 +13,7 @@ trait DtoOverrideTrait
 {
     /**
      * @override
-     * Возвращает массив маппинга свойств
+     * Возвращает массив для маппинга имен свойств
      * @see ../../tests/Examples/Example06/Example06Test.php
      * @link https://github.com/atlcomgit/dto/blob/master/tests/Examples/Example06/Example06Test.php
      *
@@ -28,7 +28,7 @@ trait DtoOverrideTrait
 
     /**
      * @override
-     * Возвращает массив значений по умолчанию
+     * Возвращает массив для значений по умолчанию
      * @see ../../tests/Examples/Example05/Example05Test.php
      * @link https://github.com/atlcomgit/dto/blob/master/tests/Examples/Example05/Example05Test.php
      *
@@ -43,7 +43,7 @@ trait DtoOverrideTrait
 
     /**
      * @override
-     * Возвращает массив преобразований типов
+     * Возвращает массив для преобразований типов
      * @see ../../tests/Examples/Example08/Example08Test.php
      * @link https://github.com/atlcomgit/dto/blob/master/tests/Examples/Example08/Example08Test.php
      *
@@ -52,29 +52,7 @@ trait DtoOverrideTrait
     // #[Override()]
     protected function casts(): array
     {
-        $laravelClassCollection = 'Illuminate\Support\Collection';
-
-        return static::AUTO_CASTS_OBJECTS_ENABLED
-            ? array_filter(
-                array_map(
-                    static fn (string $type) => match (true) {
-                        $type === $laravelClassCollection || is_subclass_of($type, $laravelClassCollection)
-                        => static fn ($v) => new $laravelClassCollection($v),
-
-                        default => match ($type) {
-                            'int' => null,
-                            'string' => null,
-                            'bool' => null,
-                            'array' => null,
-                            static::AUTO_DATETIME_CLASS => 'datetime',
-
-                            default => $type,
-                        },
-                    },
-                    static::getPropertiesWithFirstType(),
-                ),
-            )
-            : [];
+        return static::castDefault();
     }
 
 
