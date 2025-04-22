@@ -15,6 +15,7 @@ trait DtoJsonSerializable
     /**
      * Задаёт данные, которые должны быть сериализованы в JSON
      * Сериализует объект в значение, которое изначально может быть сериализовано функцией json_encode()
+     * @see ../../tests/Examples/Example52/Example52Test.php
      * 
      * @return mixed
      */

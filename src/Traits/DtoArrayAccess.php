@@ -14,6 +14,7 @@ trait DtoArrayAccess
 {
     /**
      * Определяет, существует или нет данное смещение (ключ)
+     * @see ../../tests/Examples/Example49/Example49Test.php
      *
      * @param mixed $offset Смещение (ключ) для проверки
      * @return bool
@@ -37,6 +38,7 @@ trait DtoArrayAccess
 
     /**
      * Возвращает заданное смещение (ключ)
+     * @see ../../tests/Examples/Example49/Example49Test.php
      *
      * @param mixed $offset Смещение (ключ) для возврата
      * @return mixed
@@ -59,6 +61,7 @@ trait DtoArrayAccess
 
     /**
      * Присваивает значение указанному смещению (ключу)
+     * @see ../../tests/Examples/Example49/Example49Test.php
      *
      * @param mixed $offset Смещение (ключ), которому будет присваиваться значение
      * @param mixed $value Значение для присвоения
@@ -81,7 +84,8 @@ trait DtoArrayAccess
 
 
     /**
-     * Удаляет смещение (ключ).
+     * Удаляет смещение (ключ)
+     * @see ../../tests/Examples/Example49/Example49Test.php
      *
      * @param mixed $offset Смещение (ключ) для удаления
      * @return void Функция не возвращает значения после выполнения

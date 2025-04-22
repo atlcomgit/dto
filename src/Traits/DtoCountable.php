@@ -15,6 +15,7 @@ trait DtoCountable
     /**
      * Количество элементов объекта
      * Этот метод выполняется при использовании count() на объекте, реализующем интерфейс Countable
+     * @see ../../tests/Examples/Example50/Example50Test.php
      * 
      * @return int
      */

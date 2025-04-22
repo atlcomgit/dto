@@ -16,6 +16,9 @@ trait DtoFillTrait
     /**
      * Создает и заполняет dto
      * @see ../../tests/Examples/Example01/Example01Test.php
+     * @see ../../tests/Examples/Example02/Example02Test.php
+     * @see ../../tests/Examples/Example03/Example03Test.php
+     * @see ../../tests/Examples/Example04/Example04Test.php
      *
      * @param mixed ...$data
      * @return static

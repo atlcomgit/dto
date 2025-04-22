@@ -148,6 +148,7 @@ trait DtoOptionsTrait
 
     /**
      * Возвращает опции dto
+     * @see ../../tests/Examples/Example37/Example37Test.php
      * 
      * @return array
      */
@@ -159,6 +160,7 @@ trait DtoOptionsTrait
 
     /**
      * Добавляет свои опции в dto
+     * @see ../../tests/Examples/Example37/Example37Test.php
      *
      * @return static
      */
@@ -212,6 +214,7 @@ trait DtoOptionsTrait
 
     /**
      * Включает опцию при заполнении в свойств: автоматическое преобразование стиля свойств
+     * @see ../../tests/Examples/Example21/Example21Test.php
      *
      * @param bool $autoMappings
      * @return static
@@ -226,6 +229,7 @@ trait DtoOptionsTrait
 
     /**
      * Включает опцию при преобразовании в массив: только заполненные свойства
+     * @see ../../tests/Examples/Example22/Example22Test.php
      *
      * @param bool $onlyFilled
      * @return static
@@ -253,6 +257,7 @@ trait DtoOptionsTrait
 
     /**
      * Включает опцию при преобразовании в массив: заполнить только указанными ключами
+     * @see ../../tests/Examples/Example23/Example23Test.php
      *
      * @param string|array|object ...$data
      * @return static
@@ -280,6 +285,7 @@ trait DtoOptionsTrait
 
     /**
      * Включает опцию при преобразовании в массив: дополнить ключами в разных стилях
+     * @see ../../tests/Examples/Example24/Example24Test.php
      *
      * @param bool $includeStyles
      * @return static
@@ -294,6 +300,7 @@ trait DtoOptionsTrait
 
     /**
      * Включает опцию при преобразовании в массив: дополнить другим массивом
+     * @see ../../tests/Examples/Example25/Example25Test.php
      *
      * @param string|array ...$data
      * @return static
@@ -317,6 +324,7 @@ trait DtoOptionsTrait
 
     /**
      * Включает опцию при преобразовании в массив: исключить из массива указанные ключи
+     * @see ../../tests/Examples/Example26/Example26Test.php
      *
      * @param string|array ...$data
      * @return static
@@ -343,6 +351,7 @@ trait DtoOptionsTrait
 
     /**
      * Включает опцию при преобразовании в массив: маппинг указанных ключей с новым именем
+     * @see ../../tests/Examples/Example27/Example27Test.php
      *
      * @param string|array|object ...$data
      * @return static
@@ -366,6 +375,7 @@ trait DtoOptionsTrait
 
     /**
      * Включает опцию при преобразовании в массив: преобразование вложенных свойств к массиву
+     * @see ../../tests/Examples/Example28/Example28Test.php
      * 
      * @param string|array|object|bool ...$data
      * @return static
@@ -490,6 +500,7 @@ trait DtoOptionsTrait
 
     /**
      * Включает опцию при преобразовании в массив: только не null
+     * @see ../../tests/Examples/Example36/Example36Test.php
      *
      * @return static
      */

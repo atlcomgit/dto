@@ -19,7 +19,7 @@ class CarDto extends \Atlcom\Dto
 
 /**
  * Тест 30
- * Сериализация Dto в массив с использованием toArray
+ * Сериализация Dto в json строку с использованием toJson
  */
 
 final class Example30Test extends TestCase

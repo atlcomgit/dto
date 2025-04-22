@@ -114,12 +114,12 @@ trait DtoSerializeTrait
      * Преобразование dto в json
      * @see ../../tests/Examples/Example30/Example30Test.php
      *
-     * @param int $options = 0
+     * @param int|string $options = 0
      * @return string
      */
     public function toJson($options = 0): string
     {
-        return json_encode($this->toArray(), $options ?: JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        return json_encode($this->toArray(), (int)$options ?: JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
     }
 
 

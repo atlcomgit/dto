@@ -19,8 +19,6 @@
 @override [protected function onException(Throwable \$exception): void](#onException)
 
 ## rules
-<a name="rules"></a>
-
 ```php
 /**
  * Правила валидации при использовании Dto вместо FormRequest
@@ -36,8 +34,6 @@ public function rules(): array
 ```
 
 ## mappings
-<a name="mappings"></a>
-
 ```php
 /**
  * Возвращает массив маппинга свойств
@@ -53,8 +49,6 @@ protected function mappings(): array
 ```
 
 ## defaults
-<a name="defaults"></a>
-
 ```php
 /**
  * Возвращает массив значений по умолчанию
@@ -70,8 +64,6 @@ protected function defaults(): array
 ```
 
 ## casts
-<a name="casts"></a>
-
 ```php
 /**
  * Возвращает массив преобразований типов
@@ -89,8 +81,6 @@ protected function casts(): array
 ```
 
 ## exceptions
-<a name="exceptions"></a>
-
 ```php
 /**
  * Сообщения ошибок dto
@@ -108,8 +98,6 @@ protected function exceptions(string $messageCode, array $messageItems): string
 ```
 
 ## onCreating
-<a name="onCreating"></a>
-
 ```php
 /**
  * Метод вызывается до создания и заполнения dto
@@ -123,8 +111,6 @@ protected function onCreating(mixed &$data): void {}
 ```
 
 ## onCreated
-<a name="onCreated"></a>
-
 ```php
 /**
  * Метод вызывается после создания и заполнения dto
@@ -138,8 +124,6 @@ protected function onCreated(mixed $data): void {}
 ```
 
 ## onFilling
-<a name="onFilling"></a>
-
 ```php
 /**
  * Метод вызывается до заполнения dto
@@ -153,8 +137,6 @@ protected function onFilling(array &$array): void {}
 ```
 
 ## onFilled
-<a name="onFilled"></a>
-
 ```php
 /**
  * Метод вызывается после заполнения dto
@@ -168,8 +150,6 @@ protected function onFilled(array $array): void {}
 ```
 
 ## onMerging
-<a name="onMerging"></a>
-
 ```php
 /**
  * Метод вызывается до объединения с dto
@@ -183,8 +163,6 @@ protected function onMerging(array &$array): void {}
 ```
 
 ## onMerged
-<a name="onMerged"></a>
-
 ```php
 /**
  * Метод вызывается после объединения с dto
@@ -198,8 +176,6 @@ protected function onMerged(array $array): void {}
 ```
 
 ## onSerializing
-<a name="onSerializing"></a>
-
 ```php
 /**
  * Метод вызывается до преобразования dto в массив
@@ -213,8 +189,6 @@ protected function onSerializing(array &$array): void {}
 ```
 
 ## onSerialized
-<a name="onSerialized"></a>
-
 ```php
 /**
  * Метод вызывается после преобразования dto в массив
@@ -228,8 +202,6 @@ protected function onSerialized(array &$array): void {}
 ```
 
 ## onAssigning
-<a name="onAssigning"></a>
-
 ```php
 /**
  * Метод вызывается перед изменением значения свойства dto
@@ -243,8 +215,6 @@ protected function onAssigning(string $key, mixed $value): void {}
 ```
 
 ## onAssigned
-<a name="onAssigned"></a>
-
 ```php
 /**
  * Метод вызывается после изменения значения свойства dto
@@ -258,8 +228,6 @@ protected function onAssigned(string $key): void {}
 ```
 
 ## onException
-<a name="onException"></a>
-
 ```php
 /**
  * Метод вызывается во время исключения при заполнении dto

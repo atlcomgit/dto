@@ -7,6 +7,7 @@ use Atlcom\Interfaces\AttributeDtoInterface;
 
 /**
  * Атрибут указывает, что поле содержит коллекцию объектов
+ * @see ../../tests/Examples/Example31/Example31Test.php
  */
 #[Attribute(Attribute::TARGET_PROPERTY)]
 class Collection implements AttributeDtoInterface

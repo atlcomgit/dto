@@ -52,7 +52,7 @@ class CarThirdDto extends \Atlcom\Dto
 
 /**
  * Тест 34
- * Трансформация Dto в другое Dto с дополнением данными из массива
+ * Трансформация Dto в другое Dto с дополнением данных из массива
  */
 
 final class Example34Test extends TestCase

@@ -15,6 +15,7 @@ trait DtoSerializable
     /**
      * Представляет объект в виде строки
      * Возвращает строковое представление объекта
+     * @see ../../tests/Examples/Example53/Example53Test.php
      * 
      * @return string|null
      */
@@ -40,6 +41,7 @@ trait DtoSerializable
     /**
      * Создаёт объект
      * Вызывается во время десериализации объекта
+     * @see ../../tests/Examples/Example53/Example53Test.php
      *
      * @param string $data Строковое представление объекта
      * @return void

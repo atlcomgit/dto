@@ -14,6 +14,7 @@ trait DtoStringable
 {
     /**
      * Магический метод обращения к dto как к строке
+     * @see ../../tests/Examples/Example54/Example54Test.php
      * 
      * @return string
      */

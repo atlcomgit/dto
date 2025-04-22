@@ -16,6 +16,7 @@ trait DtoIteratorAggregate
 {
     /**
      * Возвращает внешний итератор
+     * @see ../../tests/Examples/Example51/Example51Test.php
      * 
      * @return Traversable<string, mixed>|mixed[]
      */

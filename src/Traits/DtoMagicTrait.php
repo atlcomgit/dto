@@ -14,6 +14,9 @@ trait DtoMagicTrait
 {
     /**
      * construct dto
+     * @see ../../tests/Examples/Example21/Example21Test.php
+     * @see ../../tests/Examples/Example39/Example39Test.php
+     * @see ../../tests/Examples/Example44/Example44Test.php
      *
      * @param array|object|string|null $data
      */
@@ -191,6 +194,7 @@ trait DtoMagicTrait
      * - При заданном массиве mappings происходит поиск свойства согласно маппингу
      * - При включенной опции autoMappings или AUTO_MAPPINGS_ENABLED, поиск подменяет стили переменной camel, snake
      * - При отсутствии свойства, будет выброшено исключение в методе onException
+     * @see ../../tests/Examples/Example56/Example56Test.php
      *
      * @param mixed $name
      * @return mixed
@@ -202,5 +206,20 @@ trait DtoMagicTrait
         }
 
         return $this->__get($name);
+    }
+
+
+    /**
+     * Магический метод при вызове print_r или var_dump
+     * @see ../../tests/Examples/Example55/Example55Test.php
+     *
+     * @return array
+     */
+    public function __debugInfo(): array
+    {
+        return [
+            ...(array)$this,
+            ...(static::AUTO_DYNAMIC_PROPERTIES_ENABLED ? ($this->options()['customOptions'] ?? []) : []),
+        ];
     }
 }

@@ -13,6 +13,7 @@ trait DtoPropertiesTrait
 {
     /**
      * Возвращает массив свойств dto
+     * @see ../../tests/Examples/Example41/Example41Test.php
      *
      * @return array
      */
@@ -37,6 +38,7 @@ trait DtoPropertiesTrait
 
     /**
      * Возвращает массив всех свойств dto с его первым типом
+     * @see ../../tests/Examples/Example41/Example41Test.php
      *
      * @param bool|array|null $useCasts
      * @param bool|array|null $useMappings
@@ -55,6 +57,7 @@ trait DtoPropertiesTrait
 
     /**
      * Возвращает массив всех свойств dto со всеми его типами
+     * @see ../../tests/Examples/Example41/Example41Test.php
      * 
      * @param bool|array|null $useCasts
      * @param bool|array|null $useMappings
@@ -101,6 +104,7 @@ trait DtoPropertiesTrait
 
     /**
      * Проверяет dto на заполнение хотя бы одного свойства
+     * @see ../../tests/Examples/Example39/Example39Test.php
      *
      * @return bool
      */
