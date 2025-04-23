@@ -22,7 +22,7 @@ trait DtoCountable
     public function count(): int
     {
         try {
-            (static::INTERFACE_COUNTABLE_ENABLED) ?: throw new DtoException(
+            static::INTERFACE_COUNTABLE_ENABLED ?: throw new DtoException(
                 $this->exceptions('CountableDisabled', ['method' => __FUNCTION__]),
                 500,
             );

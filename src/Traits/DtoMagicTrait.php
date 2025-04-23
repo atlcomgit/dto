@@ -13,7 +13,7 @@ use Throwable;
 trait DtoMagicTrait
 {
     /**
-     * construct dto
+     * Магический метод вызывается при создании Dto
      * @see ../../tests/Examples/Example21/Example21Test.php
      * @see ../../tests/Examples/Example39/Example39Test.php
      * @see ../../tests/Examples/Example44/Example44Test.php
@@ -221,5 +221,53 @@ trait DtoMagicTrait
             ...(array)$this,
             ...(static::AUTO_DYNAMIC_PROPERTIES_ENABLED ? ($this->options()['customOptions'] ?? []) : []),
         ];
+    }
+
+
+    /**
+     * Магический метод вызывается при сериализации Dto
+     * @see ../../tests/Examples/Example53/Example53Test.php
+     * 
+     * @return array
+     */
+    public function __serialize(): array
+    {
+        try {
+            static::INTERFACE_SERIALIZABLE_ENABLED ?: throw new DtoException(
+                $this->exceptions('SerializableDisabled', ['method' => __FUNCTION__]),
+                500,
+            );
+
+        } catch (Throwable $exception) {
+            $this->onException($exception);
+        }
+
+        return [
+            ...(array)$this,
+            ...(static::AUTO_DYNAMIC_PROPERTIES_ENABLED ? ($this->options()['customOptions'] ?? []) : []),
+        ];
+    }
+
+
+    /**
+     * Магический метод вызывается при десериализации Dto
+     * @see ../../tests/Examples/Example53/Example53Test.php
+     *
+     * @param array $data Строковое представление объекта
+     * @return void
+     */
+    public function __unserialize(array $data): void
+    {
+        try {
+            static::INTERFACE_SERIALIZABLE_ENABLED ?: throw new DtoException(
+                $this->exceptions('SerializableDisabled', ['method' => __FUNCTION__]),
+                500,
+            );
+
+        } catch (Throwable $exception) {
+            $this->onException($exception);
+        }
+
+        $this->fillDto($data);
     }
 }

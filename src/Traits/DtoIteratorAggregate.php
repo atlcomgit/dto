@@ -23,7 +23,7 @@ trait DtoIteratorAggregate
     public function getIterator(): Traversable
     {
         try {
-            (static::INTERFACE_ITERATOR_AGGREGATE_ENABLED) ?: throw new DtoException(
+            static::INTERFACE_ITERATOR_AGGREGATE_ENABLED ?: throw new DtoException(
                 $this->exceptions('IteratorAggregateDisabled', ['method' => __FUNCTION__]),
                 500,
             );

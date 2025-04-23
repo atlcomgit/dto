@@ -72,7 +72,7 @@ trait DtoConstsTrait
     public const INTERFACE_JSON_SERIALIZABLE_ENABLED = true;
 
     /**
-     * Включает реализацию интерфейса Serializable для методов serialize($dto)/unserialize($dto)
+     * Включает реализацию интерфейса Serializable для методов __serialize()/__unserialize()
      * @see ../../tests/Examples/Example53/Example53Test.php
      */
     public const INTERFACE_SERIALIZABLE_ENABLED = true;

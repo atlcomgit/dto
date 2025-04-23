@@ -1,5 +1,12 @@
 # Changelog
 
+## _Версия 2.71_
+- Добавлен метод __serialize
+- Добавлен метод __unserialize
+
+- Удален интерфейс Serializable
+- Удален трейт DtoSerializable
+
 ## _Версия 2.70_
 - Добавлен метод __debugInfo
 

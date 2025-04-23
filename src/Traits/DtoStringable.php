@@ -21,7 +21,7 @@ trait DtoStringable
     public function __toString(): string
     {
         try {
-            (static::INTERFACE_STRINGABLE_ENABLED) ?: throw new DtoException(
+            static::INTERFACE_STRINGABLE_ENABLED ?: throw new DtoException(
                 $this->exceptions('StringableDisabled', ['method' => __FUNCTION__]),
                 500,
             );

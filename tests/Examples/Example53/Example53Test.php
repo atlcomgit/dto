@@ -52,7 +52,7 @@ final class Example53Test extends TestCase
 
         $this->assertEquals(
             $carDto1Serialize,
-            'C:39:"Atlcom\Tests\Examples\Example53\CarDto1":61:{a:2:{s:8:"markName";s:5:"Lexus";s:9:"modelName";s:5:"RX500";}}',
+            'O:39:"Atlcom\Tests\Examples\Example53\CarDto1":2:{s:8:"markName";s:5:"Lexus";s:9:"modelName";s:5:"RX500";}',
         );
 
         $carDto1Unserialize = unserialize($carDto1Serialize);
@@ -69,7 +69,7 @@ final class Example53Test extends TestCase
 
         $this->assertEquals(
             $carDto2Serialize,
-            'C:39:"Atlcom\Tests\Examples\Example53\CarDto2":61:{a:2:{s:8:"markName";s:5:"Lexus";s:9:"modelName";s:5:"RX500";}}',
+            'O:39:"Atlcom\Tests\Examples\Example53\CarDto2":2:{s:8:"markName";s:5:"Lexus";s:9:"modelName";s:5:"RX500";}',
         );
 
         $carDto2Unserialize = unserialize($carDto2Serialize);

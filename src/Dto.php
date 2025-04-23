@@ -19,20 +19,18 @@ use Atlcom\Traits\DtoOptionsTrait;
 use Atlcom\Traits\DtoOverrideTrait;
 use Atlcom\Traits\DtoPropertiesTrait;
 use Atlcom\Traits\DtoLaravelTrait;
-use Atlcom\Traits\DtoSerializable;
 use Atlcom\Traits\DtoSerializeTrait;
 use Atlcom\Traits\DtoStringable;
 use Atlcom\Traits\DtoStrTrait;
 use Countable;
 use IteratorAggregate;
 use JsonSerializable;
-use Serializable;
 use Stringable;
 
 /**
  * Абстрактный класс Dto
  * @abstract
- * @version 2.70
+ * @version 2.71
  * 
  * @static   @see self::create()
  * @static   @see self::fill()
@@ -101,7 +99,6 @@ abstract class Dto implements
     Countable,
     IteratorAggregate,
     JsonSerializable,
-    Serializable,
     Stringable
 {
     use DtoArrayAccess;
@@ -118,7 +115,6 @@ abstract class Dto implements
     use DtoOverrideTrait;
     use DtoPropertiesTrait;
     use DtoLaravelTrait;
-    use DtoSerializable;
     use DtoSerializeTrait;
     use DtoStringable;
     use DtoStrTrait;

@@ -22,7 +22,7 @@ trait DtoArrayAccess
     public function offsetExists(mixed $offset): bool
     {
         try {
-            (static::INTERFACE_ARRAY_ACCESS_ENABLED) ?: throw new DtoException(
+            static::INTERFACE_ARRAY_ACCESS_ENABLED ?: throw new DtoException(
                 $this->exceptions('ArrayAccessDisabled', ['property' => $offset, 'method' => __FUNCTION__]),
                 500,
             );
@@ -46,7 +46,7 @@ trait DtoArrayAccess
     public function offsetGet(mixed $offset): mixed
     {
         try {
-            (static::INTERFACE_ARRAY_ACCESS_ENABLED) ?: throw new DtoException(
+            static::INTERFACE_ARRAY_ACCESS_ENABLED ?: throw new DtoException(
                 $this->exceptions('ArrayAccessDisabled', ['property' => $offset, 'method' => __FUNCTION__]),
                 500,
             );
@@ -70,7 +70,7 @@ trait DtoArrayAccess
     public function offsetSet(mixed $offset, mixed $value): void
     {
         try {
-            (static::INTERFACE_ARRAY_ACCESS_ENABLED) ?: throw new DtoException(
+            static::INTERFACE_ARRAY_ACCESS_ENABLED ?: throw new DtoException(
                 $this->exceptions('ArrayAccessDisabled', ['property' => $offset, 'method' => __FUNCTION__]),
                 500,
             );
@@ -93,7 +93,7 @@ trait DtoArrayAccess
     public function offsetUnset(mixed $offset): void
     {
         try {
-            (static::INTERFACE_ARRAY_ACCESS_ENABLED) ?: throw new DtoException(
+            static::INTERFACE_ARRAY_ACCESS_ENABLED ?: throw new DtoException(
                 $this->exceptions('ArrayAccessDisabled', ['property' => $offset, 'method' => __FUNCTION__]),
                 500,
             );

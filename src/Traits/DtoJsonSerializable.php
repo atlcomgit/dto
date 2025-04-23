@@ -22,7 +22,7 @@ trait DtoJsonSerializable
     public function jsonSerialize(): mixed
     {
         try {
-            (static::INTERFACE_JSON_SERIALIZABLE_ENABLED) ?: throw new DtoException(
+            static::INTERFACE_JSON_SERIALIZABLE_ENABLED ?: throw new DtoException(
                 $this->exceptions('JsonSerializableDisabled', ['method' => __FUNCTION__]),
                 500,
             );
