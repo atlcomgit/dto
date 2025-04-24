@@ -285,10 +285,18 @@ trait DtoOverrideTrait
             'CountableDisabled',
             'IteratorAggregateDisabled',
             'JsonSerializableDisabled',
-            'SerializableDisabled',
             'StringableDisabled'
             => sprintf(
                 $this->toBasename($this) . '->%s(): доступ к интерфейсу отключен',
+                $messageItems['method'],
+            ),
+            'SerializableDisabled' => sprintf(
+                $this->toBasename($this) . '->%s(): доступ к сериализации отключен',
+                $messageItems['method'],
+            ),
+            'PropertiesAsMethodsDisabled' => sprintf(
+                $this->toBasename($this) . '->%s(): доступ к свойству через метод отключен в %s',
+                $messageItems['property'],
                 $messageItems['method'],
             ),
 

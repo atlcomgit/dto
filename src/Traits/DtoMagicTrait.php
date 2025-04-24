@@ -190,10 +190,7 @@ trait DtoMagicTrait
 
 
     /**
-     * Магический метод обращения к свойствам как к методам
-     * - При заданном массиве mappings происходит поиск свойства согласно маппингу
-     * - При включенной опции autoMappings или AUTO_MAPPINGS_ENABLED, поиск подменяет стили переменной camel, snake
-     * - При отсутствии свойства, будет выброшено исключение в методе onException
+     * Магический метод обращения к свойствам через метод
      * @see ../../tests/Examples/Example56/Example56Test.php
      *
      * @param mixed $name
@@ -201,8 +198,20 @@ trait DtoMagicTrait
      */
     public function __call(string $name, array $arguments): mixed
     {
+        try {
+            static::AUTO_PROPERTIES_AS_METHODS_ENABLED ?: throw new DtoException(
+                $this->exceptions('PropertiesAsMethodsDisabled', ['method' => __FUNCTION__, 'property' => $name]),
+                500,
+            );
+
+        } catch (Throwable $exception) {
+            $this->onException($exception);
+        }
+
         if ($arguments && isset($arguments[0])) {
             $this->__set($name, $arguments[0]);
+
+            return $this;
         }
 
         return $this->__get($name);

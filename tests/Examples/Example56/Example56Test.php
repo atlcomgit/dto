@@ -14,6 +14,7 @@ use PHPUnit\Framework\TestCase;
 class CarDto extends \Atlcom\Dto
 {
     public string $markName;
+    public ?string $modelName;
 }
 
 /**
@@ -29,10 +30,16 @@ final class Example56Test extends TestCase
         $carDto = CarDto::create(markName: 'Lexus');
         
         $this->assertTrue($carDto->markName === 'Lexus');
+        $this->assertTrue($carDto->modelName === null);
 
-        $carDto->markName('Toyota');
+        $carDto
+            ->markName('Toyota')
+            ->modelName('Allion');
 
         $this->assertTrue($carDto->markName === 'Toyota');
         $this->assertTrue($carDto->markName() === 'Toyota');
+
+        $this->assertTrue($carDto->modelName === 'Allion');
+        $this->assertTrue($carDto->modelName() === 'Allion');
     }
 }

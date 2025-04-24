@@ -1,5 +1,11 @@
 # Changelog
 
+## _Версия 2.72_
+- Обновлен метод exceptions
+- Обновлен метод __call
+
+- Добавлена константа AUTO_PROPERTIES_AS_METHODS_ENABLED
+
 ## _Версия 2.71_
 - Добавлен метод __serialize
 - Добавлен метод __unserialize

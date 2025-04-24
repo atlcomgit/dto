@@ -48,6 +48,12 @@ trait DtoConstsTrait
     public const AUTO_DYNAMIC_PROPERTIES_ENABLED = false;
 
     /**
+     * Включает опцию для работы со свойствами как с методами
+     * @see ../../tests/Examples/Example56/Example56Test.php
+     */
+    public const AUTO_PROPERTIES_AS_METHODS_ENABLED = true;
+
+    /**
      * Включает реализацию интерфейса ArrayAccess для работы с dto как с массивом
      * @see ../../tests/Examples/Example49/Example49Test.php
      */
