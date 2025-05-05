@@ -8,6 +8,7 @@ use ReflectionProperty;
 
 /**
  * Трейт свойств
+ * @mixin \Atlcom\Dto
  */
 trait DtoPropertiesTrait
 {

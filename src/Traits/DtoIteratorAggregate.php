@@ -11,6 +11,7 @@ use Traversable;
 
 /**
  * Трейт для реализации интерфейса IteratorAggregate
+ * @mixin \Atlcom\Dto
  */
 trait DtoIteratorAggregate
 {

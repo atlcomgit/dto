@@ -9,6 +9,7 @@ use ReflectionProperty;
 
 /**
  * Трейт сериализации
+ * @mixin \Atlcom\Dto
  */
 trait DtoSerializeTrait
 {

@@ -14,6 +14,7 @@ use UnitEnum;
 
 /**
  * Трейт для Laravel Framework
+ * @mixin \Atlcom\Dto
  */
 trait DtoLaravelTrait
 {

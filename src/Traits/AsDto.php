@@ -6,7 +6,7 @@ namespace Atlcom\Traits;
 
 /**
  * Трейт для расширения своего Dto
- * @version 2.70
+ * @version 2.72
  * 
  * @static   @see self::create()
  * @static   @see self::fill()
@@ -58,6 +58,7 @@ namespace Atlcom\Traits;
  * @override @see self::onException()
  * 
  * @see ../../tests/Examples/Example45/Example45Test.php
+ * @mixin \Atlcom\Dto
  */
 trait AsDto
 {

@@ -6,6 +6,7 @@ namespace Atlcom\Traits;
 
 /**
  * Трейт работы со строками
+ * @mixin \Atlcom\Dto
  */
 trait DtoStrTrait
 {

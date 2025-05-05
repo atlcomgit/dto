@@ -11,6 +11,7 @@ use stdClass;
 
 /**
  * Трейт преобразования значений
+ * @mixin \Atlcom\Dto
  */
 trait DtoConvertTrait
 {

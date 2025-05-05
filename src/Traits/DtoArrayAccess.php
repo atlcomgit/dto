@@ -9,6 +9,7 @@ use Throwable;
 
 /**
  * Трейт для реализации интерфейса ArrayAccess
+ * @mixin \Atlcom\Dto
  */
 trait DtoArrayAccess
 {

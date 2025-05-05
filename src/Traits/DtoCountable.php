@@ -9,6 +9,7 @@ use Throwable;
 
 /**
  * Трейт для реализации интерфейса Countable
+ * @mixin \Atlcom\Dto
  */
 trait DtoCountable
 {

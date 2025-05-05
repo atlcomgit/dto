@@ -41,5 +41,9 @@ final class Example56Test extends TestCase
 
         $this->assertTrue($carDto->modelName === 'Allion');
         $this->assertTrue($carDto->modelName() === 'Allion');
+
+        $markName = $carDto->markName('Nissan')->markName();
+
+        $this->assertTrue($markName === 'Nissan');
     }
 }

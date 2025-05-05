@@ -10,6 +10,7 @@ use Throwable;
 
 /**
  * Трейт заполнения dto
+ * @mixin \Atlcom\Dto
  */
 trait DtoFillTrait
 {
@@ -210,5 +211,17 @@ trait DtoFillTrait
             ->fillFromData(static::toArrayBlank(false))
             ->merge($this->defaults())
             ->reset();
+    }
+
+
+    /**
+     * Клонирует dto
+     * @see ../../tests/Examples/Example57/Example57Test.php
+     *
+     * @return static
+     */
+    public function clone(): static
+    {
+        return (clone $this)->setOptions($this->options());
     }
 }

@@ -9,6 +9,7 @@ use Throwable;
 
 /**
  * Трейт для реализации интерфейса Stringable
+ * @mixin \Atlcom\Dto
  */
 trait DtoStringable
 {

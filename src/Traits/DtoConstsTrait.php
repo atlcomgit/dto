@@ -8,6 +8,7 @@ use Carbon\Carbon;
 
 /**
  * Трейт констант
+ * @mixin \Atlcom\Dto
  */
 trait DtoConstsTrait
 {

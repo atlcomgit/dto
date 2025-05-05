@@ -45,8 +45,8 @@ final class Example32Test extends TestCase
         $this->assertObjectHasProperty('sum', $sumDto);
         $this->assertEquals($sum, $sumDto->sum);
 
-        $x = $sumDto->x(2);
-        $y = $sumDto->y(3);
+        $x = $sumDto->x(2)->x();
+        $y = $sumDto->y(3)->y();
         $sum = $x + $y;
         $this->assertEquals($sum, $sumDto->sum);
 

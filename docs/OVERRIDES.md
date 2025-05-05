@@ -1,9 +1,10 @@
 # Override methods (hooks)
 
 @override [public function rules(): array](#rules)
-@override [protected function mappings(): array](#mappings)
-@override [protected function defaults(): array](#defaults)
+
 @override [protected function casts(): array](#casts)
+@override [protected function defaults(): array](#defaults)
+@override [protected function mappings(): array](#mappings)
 @override [protected function exceptions(string \$messageCode, array \$messageItems): string](#exceptions)
 
 @override [protected function onCreating(mixed &amp;\$data): void](#onCreating)
@@ -33,18 +34,20 @@ public function rules(): array
 }
 ```
 
-## mappings
+## casts
 ```php
 /**
- * Возвращает массив маппинга свойств
- * @link https://github.com/atlcomgit/dto/blob/master/tests/Examples/Example06/Example06Test.php
+ * Возвращает массив преобразований типов
+ * @link https://github.com/atlcomgit/dto/blob/master/tests/Examples/Example08/Example08Test.php
  *
  * @return array
  */
 #[Override()]
-protected function mappings(): array
+protected function casts(): array
 {
-    return [];
+    return [
+        ...parent::casts(),
+    ];
 }
 ```
 
@@ -63,20 +66,18 @@ protected function defaults(): array
 }
 ```
 
-## casts
+## mappings
 ```php
 /**
- * Возвращает массив преобразований типов
- * @link https://github.com/atlcomgit/dto/blob/master/tests/Examples/Example08/Example08Test.php
+ * Возвращает массив маппинга свойств
+ * @link https://github.com/atlcomgit/dto/blob/master/tests/Examples/Example06/Example06Test.php
  *
  * @return array
  */
 #[Override()]
-protected function casts(): array
+protected function mappings(): array
 {
-    return [
-        ...parent::casts(),
-    ];
+    return [];
 }
 ```
 

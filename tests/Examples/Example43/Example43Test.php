@@ -27,6 +27,11 @@ class CarDto extends \Atlcom\Dto
             'price3' => 'integer',
         ];
     }
+
+    protected function onCreating(mixed &$data): void
+    {
+        $data['price0'] += 1;
+    }
 }
 
 /**
@@ -41,25 +46,26 @@ final class Example43Test extends TestCase
     {
         $carDto = CarDto::create(
             markName: 'Lexus',
+            price0: 0,
             price1: 1000000,
             price2: '2000000',
         )
             ->setCustomOption('markName', 'Toyota')
             ->setCustomOption('modelName', 'RX500');
         $carDto->price3 = '3000000';
-        // var_dump($carDto);
 
         $this->assertTrue($carDto->markName === 'Lexus');
         $this->assertTrue($carDto->modelName === 'RX500');
+        $this->assertTrue($carDto->price0 === 1);
         $this->assertTrue($carDto->price1 === 1000000);
         $this->assertTrue($carDto->price2 === 2000000);
         $this->assertTrue($carDto->price3 === 3000000);
 
         $carArray = $carDto->toArray();
-        // var_dump($carArray);
 
         $this->assertTrue($carArray['markName'] === 'Toyota');
         $this->assertTrue($carArray['modelName'] === 'RX500');
+        $this->assertTrue($carArray['price0'] === 1);
         $this->assertTrue($carArray['price1'] === 1000000);
         $this->assertTrue($carArray['price2'] === 2000000);
         $this->assertTrue($carArray['price3'] === 3000000);

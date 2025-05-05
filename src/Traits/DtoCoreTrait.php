@@ -15,6 +15,7 @@ use Throwable;
 
 /**
  * Трейт обработки dto
+ * @mixin \Atlcom\Dto
  */
 trait DtoCoreTrait
 {

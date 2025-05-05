@@ -9,6 +9,7 @@ use Throwable;
 
 /**
  * Трейт для реализации интерфейса JsonSerializable
+ * @mixin \Atlcom\Dto
  */
 trait DtoJsonSerializable
 {

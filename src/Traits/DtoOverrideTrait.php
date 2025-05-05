@@ -8,25 +8,26 @@ use Throwable;
 
 /**
  * Трейт переопределяемых методов
+ * @mixin \Atlcom\Dto
  */
 trait DtoOverrideTrait
 {
     /**
      * @override
-     * Возвращает массив для маппинга имен свойств
-     * @see ../../tests/Examples/Example06/Example06Test.php
-     * @see ../../tests/Examples/Example07/Example07Test.php
+     * Возвращает массив для преобразований типов
+     * @see ../../tests/Examples/Example08/Example08Test.php
+     * @see ../../tests/Examples/Example09/Example09Test.php
      * @see ../../tests/Examples/Example10/Example10Test.php
-     * @link https://github.com/atlcomgit/dto/blob/master/tests/Examples/Example06/Example06Test.php
-     * @link https://github.com/atlcomgit/dto/blob/master/tests/Examples/Example07/Example07Test.php
+     * @link https://github.com/atlcomgit/dto/blob/master/tests/Examples/Example08/Example08Test.php
+     * @link https://github.com/atlcomgit/dto/blob/master/tests/Examples/Example09/Example09Test.php
      * @link https://github.com/atlcomgit/dto/blob/master/tests/Examples/Example10/Example10Test.php
      *
      * @return array
      */
     // #[Override()]
-    protected function mappings(): array
+    protected function casts(): array
     {
-        return [];
+        return static::castDefault();
     }
 
 
@@ -47,20 +48,20 @@ trait DtoOverrideTrait
 
     /**
      * @override
-     * Возвращает массив для преобразований типов
-     * @see ../../tests/Examples/Example08/Example08Test.php
-     * @see ../../tests/Examples/Example09/Example09Test.php
+     * Возвращает массив для маппинга имен свойств
+     * @see ../../tests/Examples/Example06/Example06Test.php
+     * @see ../../tests/Examples/Example07/Example07Test.php
      * @see ../../tests/Examples/Example10/Example10Test.php
-     * @link https://github.com/atlcomgit/dto/blob/master/tests/Examples/Example08/Example08Test.php
-     * @link https://github.com/atlcomgit/dto/blob/master/tests/Examples/Example09/Example09Test.php
+     * @link https://github.com/atlcomgit/dto/blob/master/tests/Examples/Example06/Example06Test.php
+     * @link https://github.com/atlcomgit/dto/blob/master/tests/Examples/Example07/Example07Test.php
      * @link https://github.com/atlcomgit/dto/blob/master/tests/Examples/Example10/Example10Test.php
      *
      * @return array
      */
     // #[Override()]
-    protected function casts(): array
+    protected function mappings(): array
     {
-        return static::castDefault();
+        return [];
     }
 
 

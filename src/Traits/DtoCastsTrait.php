@@ -16,6 +16,7 @@ use UnitEnum;
 
 /**
  * Трейт преобразования типов
+ * @mixin \Atlcom\Dto
  */
 trait DtoCastsTrait
 {

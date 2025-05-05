@@ -9,6 +9,7 @@ use ReflectionProperty;
 
 /**
  * Трейт опций (скрытые свойства)
+ * @mixin \Atlcom\Dto
  */
 trait DtoOptionsTrait
 {

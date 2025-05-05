@@ -9,6 +9,7 @@ use Throwable;
 
 /**
  * Трейт магических методов
+ * @mixin \Atlcom\Dto
  */
 trait DtoMagicTrait
 {

@@ -30,7 +30,7 @@ use Stringable;
 /**
  * Абстрактный класс Dto
  * @abstract
- * @version 2.71
+ * @version 2.72
  * 
  * @static   @see self::create()
  * @static   @see self::fill()
@@ -38,6 +38,7 @@ use Stringable;
  * 
  *           @see self::merge()
  *           @see self::clear()
+ *           @see self::clone()
  *           @see self::transformToDto()
  *           @see self::toArray()
  *           @see self::toJson()
@@ -64,9 +65,9 @@ use Stringable;
  *           @see self::withCustomOptions()
  * 
  * @override @see self::rules()
- * @override @see self::mappings()
- * @override @see self::defaults()
  * @override @see self::casts()
+ * @override @see self::defaults()
+ * @override @see self::mappings()
  * @override @see self::exceptions()
  * 
  * @override @see self::onCreating()
