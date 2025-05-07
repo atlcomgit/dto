@@ -1,5 +1,8 @@
 # Changelog
 
+## _Версия 2.73_
+- Добавлен класс DtoValidateException
+
 ## _Версия 2.72_
 - Добавлен метод clone
 

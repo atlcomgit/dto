@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Atlcom\Traits;
 
 use Atlcom\Exceptions\DtoException;
+use Atlcom\Exceptions\DtoRequestException;
+use Atlcom\Exceptions\DtoValidateException;
 use BackedEnum;
 use Carbon\Carbon;
 use Closure;
@@ -98,7 +100,9 @@ trait DtoLaravelTrait
                     ->setAttributeNames($this->attributes())
                     ->validate();
             } catch (Throwable $exception) {
-                throw new DtoException($exception->getMessage(), $exception->getCode() ?: 400);
+                $this->onException(
+                    new DtoValidateException($exception->getMessage(), $exception->getCode() ?: 422, $exception)
+                );
             }
         } else {
             $dataNew = $data;

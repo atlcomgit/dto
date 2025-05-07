@@ -9,7 +9,6 @@
 namespace App\Providers;
 
 use Atlcom\Dto;
-use Atlcom\Exceptions\DtoException;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\ServiceProvider;
 
@@ -20,11 +19,7 @@ class DtoServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->resolving(Dto::class, function (Dto $dto, Application $app) {
-            try {
-                return $dto->fillFromRequest(request()->toArray());
-            } catch (Throwable $exception) {
-                throw new DtoException($exception->getMessage());
-            }
+            return $dto->fillFromRequest(request()->toArray());
         });
     }
 }

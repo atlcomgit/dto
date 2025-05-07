@@ -8,5 +8,5 @@ use Exception;
 
 class DtoException extends Exception
 {
-    public $code = 400;
+    public $code = 500;
 }

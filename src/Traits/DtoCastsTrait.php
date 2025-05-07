@@ -78,7 +78,7 @@ trait DtoCastsTrait
      *
      * @param string $key
      * @param string|array|callable|null $type
-     * @param mixed $value
+     * @param mixed|\Atlcom\Dto $value
      * @return mixed
      */
     protected function serializeValue(string $key, string|array|callable|null $type, mixed $value): mixed
