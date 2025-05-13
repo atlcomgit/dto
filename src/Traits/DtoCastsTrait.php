@@ -99,13 +99,17 @@ trait DtoCastsTrait
             $value instanceof BackedEnum => $value->value,
             is_null($type) => $value,
             is_callable($type) => $type($value, $key),
-            mb_strtolower($type) === Carbon::class
-            => $value->toDateTimeString(),
+            mb_strtolower($type) === Carbon::class => $value->toDateTimeString(),
             mb_strtolower($type) === 'libphonenumber\phonenumber'
             => 'libphonenumber\PhoneNumberUtil'::getInstance()
                 ->format($value, 'libphonenumber\PhoneNumberFormat'::E164),
             is_array($value) => array_map(fn ($item) => $this->serializeValue($key, $type, $item), $value),
-            is_object($value) && method_exists($value, 'toArray') => $value->toArray(),
+            is_object($value) => match (true) {
+                    method_exists($value, 'toArray') => $value->toArray(),
+                    method_exists($value, 'all') => $value->all(),
+
+                    default => $value,
+                },
 
             default => $value,
         };
@@ -130,11 +134,12 @@ trait DtoCastsTrait
         try {
             switch (true) {
                 case is_object($value) && $value::class === $class:
+
                     return $value;
-    
+
                 case is_null($value):
                     return null;
-    
+
                 case enum_exists($class):
                     return match (true) {
                         $value instanceof UnitEnum => $value,
@@ -154,19 +159,19 @@ trait DtoCastsTrait
                                     );
                                 }
                             })($class, $key, $value),
-    
+
                         default => throw new DtoException(
                             $this->exceptions('ScalarForCastNeed', ['property' => $key]),
                             409,
                         ),
                     };
-    
+
                 default:
                     $laravelClassCollection = 'Illuminate\Support\Collection';
                     $laravelClassModel = 'Illuminate\Database\Eloquent\Model';
                     $laravelClassFormRequest = 'Illuminate\Foundation\Http\FormRequest';
                     $laravelClassRequest = 'Illuminate\Http\Request';
-    
+
                     switch (true) {
                         case is_subclass_of($class, self::class):
                             $value = (is_object($value) && $value instanceof self)
@@ -174,7 +179,7 @@ trait DtoCastsTrait
                                 : (is_array($value) ? $value : null);
                             $object = !is_null($value) ? $class::create($value) : $value;
                             break;
-    
+
                         case is_array($value)
                         && (
                         $class === $laravelClassCollection
@@ -188,7 +193,7 @@ trait DtoCastsTrait
                         ):
                             $object = new $class($value);
                             break;
-    
+
                         case is_array($value):
                             try {
                                 $object = new $class($value);
@@ -200,11 +205,11 @@ trait DtoCastsTrait
                                 }
                             }
                             break;
-    
+
                         default:
                             $object = $value;
                     }
-    
+
                     return $object;
             }
 
@@ -243,9 +248,14 @@ trait DtoCastsTrait
                 $value->serializeKeys()->toArray(),
                 JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES
             ),
-            is_object($value) && method_exists($value, 'toArray') => $value->toArray(),
-            is_array($value), is_object($value) => json_encode(
-                $value,
+            is_array($value), is_object($value)
+            => json_encode(
+                    match (true) {
+                        method_exists($value, 'toArray') => $value->toArray(),
+                        method_exists($value, 'all') => $value->all(),
+
+                        default => $value,
+                    },
                 JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES
             ),
 
@@ -290,7 +300,12 @@ trait DtoCastsTrait
             is_null($value) => null,
             $value instanceof self => $value->serializeKeys()->toArray(),
             is_string($value) => self::jsonDecode($value, true),
-            is_object($value) && method_exists($value, 'toArray') => $value->toArray(),
+            is_object($value) => match (true) {
+                    method_exists($value, 'toArray') => $value->toArray(),
+                    method_exists($value, 'all') => $value->all(),
+
+                    default => (array)$value,
+                },
             is_array($value) => $value,
 
             default => (array)$value,
@@ -313,7 +328,14 @@ trait DtoCastsTrait
             return $value;
         }
 
-        $value = (is_object($value) && method_exists($value, 'toArray')) ? $value->all() : ($value ?? []);
+        $value = is_object($value)
+            ? match (true) {
+                method_exists($value, 'toArray') => $value->toArray(),
+                method_exists($value, 'all') => $value->all(),
+
+                default => $value,
+            }
+            : ($value ?? []);
 
         if (!is_array($value)) {
             throw new DtoException(
@@ -470,6 +492,7 @@ trait DtoCastsTrait
             )
             : [];
     }
+
 
     /**
      * Возвращает массив всех свойств dto с его первым типом

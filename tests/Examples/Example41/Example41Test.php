@@ -66,6 +66,17 @@ class CarDto2 extends \Atlcom\Dto
     public ?int $id;
 }
 
+class CarDto3 extends \Atlcom\Dto
+{
+    public ?int $id;
+    public ?string $name;
+
+    protected function casts(): array
+    {
+        return static::getPropertiesWithFirstType();
+    }
+}
+
 /**
  * Тест 41
  * Преобразование dto в массив его свойств с типами
@@ -152,5 +163,10 @@ final class Example41Test extends TestCase
         $this->assertEquals($carPropertiesWithAllTypes['closure'], ['null', Closure::class]);
         $this->assertEquals($carPropertiesWithAllTypes['carEnum'], ['null', CarEnum::class]);
         $this->assertEquals($carPropertiesWithAllTypes['car_mapping'], ['integer']);
+
+        $carDto3 = CarDto3::create(id: '123', name: 456);
+
+        $this->assertSame(123, $carDto3->id);
+        $this->assertSame('456', $carDto3->name);
     }
 }

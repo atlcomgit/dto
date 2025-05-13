@@ -1,5 +1,11 @@
 # Changelog
 
+## _Версия 2.74_
+- Обновлен метод castToArray
+- Обновлен метод castToArrayOfObjects
+- Обновлен метод castToString
+- Обновлен метод serializeValue
+
 ## _Версия 2.73_
 - Добавлен класс DtoValidateException
 
