@@ -15,6 +15,7 @@ trait DtoSerializeTrait
 {
     /**
      * Преобразование dto в массив
+     * @see ../../tests/Examples/Example26/Example26Test.php
      * @see ../../tests/Examples/Example29/Example29Test.php
      *
      * @param bool|null $onlyFilled = false
@@ -68,7 +69,7 @@ trait DtoSerializeTrait
         !($autoMappings && !$onlyKeys) ?: $onlyKeys = static::getProperties();
         !($includeStyles || $autoMappings) ?: $this->prepareStyles($keys, true);
 
-        $mappingKeysFlip = array_flip($mappingKeys);
+        $mappingKeysFlip = $this->getFlipArray($mappingKeys);
         foreach ($keys as $key => $value) {
             if (
                 $key
@@ -76,28 +77,32 @@ trait DtoSerializeTrait
                 && (!$onlyNotNull || !is_null($value))
                 && (
                     empty($onlyKeys)
-                    || in_array($mappingKeys[$key] ?? null, $onlyKeys, true)
-                    || in_array($mappingKeysFlip[$key] ?? null, $onlyKeys, true)
                     || in_array($key, $onlyKeys, true)
+                    || (is_string($mapKey = $mappingKeys[$key] ?? null) && in_array($mapKey, $onlyKeys, true))
+                    || in_array($mappingKeysFlip[$key] ?? null, $onlyKeys, true)
                 )
                 && (
                     empty($excludeKeys)
                     || !(
-                        in_array($mappingKeys[$key] ?? null, $excludeKeys, true)
+                        in_array($key, $excludeKeys, true)
+                        || (is_string($mapKey = $mappingKeys[$key] ?? null) && in_array($mapKey, $excludeKeys, true))
                         || in_array($mappingKeysFlip[$key] ?? null, $excludeKeys, true)
-                        || in_array($key, $excludeKeys, true)
                     )
                 )
             ) {
-                $key = $mappingKeys[$key] ?? $key;
-                $attributes = property_exists($this, $key)
-                    ? $this->getKeyAttributes($key)
-                    : (
-                        (isset($mappingKeys[$key]) && property_exists($this, $mappingKeys[$key]))
-                        ? $this->getKeyAttributes($mappingKeys[$key])
-                        : []
-                    );
-                in_array(Hidden::class, $attributes) ?: $array[$key] = $value;
+                $mappingValues = $mappingKeys[$key] ?: $key;
+                $mappingValues = is_array($mappingValues)
+                    ? array_values($mappingValues)
+                    : explode('|', $mappingValues ?? '');
+
+                foreach ($mappingValues as $mappingValue) {
+                    $key = $mappingValue;
+
+                    $attributes = property_exists($this, $key)
+                        ? $this->getKeyAttributes($key)
+                        : [];
+                    in_array(Hidden::class, $attributes) ?: $array[$key] = $value;
+                }
             }
         }
 
@@ -139,7 +144,7 @@ trait DtoSerializeTrait
             $array[$key] = static::convertTypeToEmptyValue(
                 (string)(new ReflectionProperty(static::class, $key))->getType() ?: 'mixed',
                 false,
-                $allValuesToNull
+                $allValuesToNull,
             );
         }
 
@@ -162,7 +167,7 @@ trait DtoSerializeTrait
             $array[$key] = static::convertTypeToEmptyValue(
                 (string)(new ReflectionProperty(static::class, $key))->getType() ?: 'mixed',
                 true,
-                $allValuesToNull
+                $allValuesToNull,
             );
         }
 
@@ -188,7 +193,7 @@ trait DtoSerializeTrait
             $keyPrefix
             . ':' . $this->toBasename($class)
             . ':' . hash('xxh128', $keyPrefix . $class . json_encode($array)),
-            ':'
+            ':',
         );
     }
 }

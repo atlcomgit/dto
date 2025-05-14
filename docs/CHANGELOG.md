@@ -1,10 +1,18 @@
 # Changelog
 
 ## _Версия 2.74_
+- Добавлен метод getFlipArray
+
+- Обновлен метод __get
+- Обновлен метод __set
 - Обновлен метод castToArray
 - Обновлен метод castToArrayOfObjects
 - Обновлен метод castToString
+- Обновлен метод prepareMappings
+- Обновлен метод prepareStyles
 - Обновлен метод serializeValue
+- Обновлен метод toArray
+- Обновлен метод validateCasts
 
 ## _Версия 2.73_
 - Добавлен класс DtoValidateException

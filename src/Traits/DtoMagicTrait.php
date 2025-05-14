@@ -63,26 +63,20 @@ trait DtoMagicTrait
                 return;
             }
 
-            if (
-                $mappings
-                && ($toName = array_search($name, $mappings, true))
-                && is_string($toName)
-                && property_exists($this, $toName)
-            ) {
-                $this->assignValue($toName, $value);
-                return;
+            if ($mappings) {
+                foreach ($mappings as $mappingKey => $mappingValues) {
+                    $mappingValues = is_array($mappingValues)
+                        ? array_values($mappingValues)
+                        : explode('|', $mappingValues ?? '');
+
+                    if (in_array($name, $mappingValues, true) && property_exists($this, $mappingKey)) {
+                        $this->assignValue($mappingKey, $value);
+                        return;
+                    }
+                }
             }
 
             if ($autoMappings) {
-                if (
-                    $mappings
-                    && array_key_exists($name, $mappings)
-                    && property_exists($this, $mappings[$name])
-                ) {
-                    $this->assignValue($mappings[$name], $value);
-                    return;
-                }
-
                 $keyCamelCase = $this->toCamelCase($name);
                 if ($name !== $keyCamelCase && property_exists($this, $keyCamelCase)) {
                     $this->assignValue($keyCamelCase, $value);
@@ -145,6 +139,18 @@ trait DtoMagicTrait
             $autoMappings = $this->options()['autoMappings'];
             $mappings = $this->mappings();
 
+            if ($mappings) {
+                foreach ($mappings as $mappingKey => $mappingValues) {
+                    $mappingValues = is_array($mappingValues)
+                        ? array_values($mappingValues)
+                        : explode('|', $mappingValues ?? '');
+
+                    if (in_array($name, $mappingValues, true) && property_exists($this, $mappingKey)) {
+                        return $this->$mappingKey;
+                    }
+                }
+            }
+
             if (
                 $mappings
                 && ($toName = array_search($name, $mappings, true))
@@ -155,14 +161,6 @@ trait DtoMagicTrait
             }
 
             if ($autoMappings) {
-                if (
-                    $mappings
-                    && array_key_exists($name, $mappings)
-                    && property_exists($this, $mappings[$name])
-                ) {
-                    return $this->{$mappings[$name]};
-                }
-
                 $keyCamelCase = $this->toCamelCase($name);
                 if ($keyCamelCase && property_exists($this, $keyCamelCase)) {
                     return $this->$keyCamelCase;

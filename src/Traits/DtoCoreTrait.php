@@ -47,34 +47,55 @@ trait DtoCoreTrait
      */
     protected function validateCasts(array &$array): void
     {
-        $casts = method_exists($this, 'casts') ? $this->casts() : [];
+        $casts = (method_exists($this, 'casts') ? $this->casts() : [])
+            ?: (static::AUTO_CASTS_ENABLED ? static::getPropertiesWithFirstType() : []);
         $mappings = $this->mappings();
         $autoMappings = $this->options()['autoMappings'];
         !$autoMappings ?: $this->prepareStyles($casts);
         $this->prepareMappings($casts);
 
         foreach ($casts as $key => $cast) {
-            if (
-                (($keyMapped = $key) && array_key_exists($key, $array))
-                || (($keyMapped = $mappings[$key] ?? null) && array_key_exists($mappings[$key], $array))
-                || (($keyMapped = array_search($key, $mappings, true)) && array_key_exists($keyMapped, $array))
-            ) {
-                $casted = $this->matchValue($keyMapped, $cast, $array[$keyMapped] ?? null);
-                $array[$keyMapped] = $casted;
-                continue;
+            $isCasted = false;
+
+            if ($key && array_key_exists($key, $array)) {
+                $castedValue = $this->matchValue($key, $cast, $array[$key] ?? null);
+                $array[$key] = $castedValue;
+                $isCasted = true;
             }
 
-            if ($autoMappings) {
+            if (!$isCasted) {
+                $mappingValues = $mappings[$key] ?? null;
+                $mappingValues = is_array($mappingValues)
+                    ? array_values($mappingValues)
+                    : explode('|', $mappingValues ?? '');
+
+                foreach ($mappingValues as $mappingValue) {
+                    if (($mappingValue && is_scalar($mappingValue) && array_key_exists($mappingValue, $array))) {
+                        $castedValue = $this->matchValue($mappingValue, $cast, $array[$mappingValue] ?? null);
+                        $array[$mappingValue] = $castedValue;
+                        $isCasted = true;
+                        break;
+                    }
+                }
+            }
+
+            // if (!$isCasted && (($keyMapped = array_search($key, $mappings, true)) && array_key_exists($keyMapped, $array))) {
+            //     $castedValue = $this->matchValue($keyMapped, $cast, $array[$keyMapped] ?? null);
+            //     $array[$keyMapped] = $castedValue;
+            //     $isCasted = true;
+            // }
+
+            if (!$isCasted && $autoMappings) {
                 $keyCamelCase = $this->toCamelCase($key);
                 if ($key !== $keyCamelCase && array_key_exists($keyCamelCase, $array)) {
-                    $casted = $this->matchValue($key, $cast, $array[$keyCamelCase] ?? null);
-                    $array[$keyCamelCase] = $casted;
+                    $castedValue = $this->matchValue($key, $cast, $array[$keyCamelCase] ?? null);
+                    $array[$keyCamelCase] = $castedValue;
                 }
 
                 $keySnakeCase = $this->toSnakeCase($key);
                 if ($key !== $keySnakeCase && array_key_exists($keySnakeCase, $array)) {
-                    $casted = $this->matchValue($key, $cast, $array[$keySnakeCase] ?? null);
-                    $array[$keySnakeCase] = $casted;
+                    $castedValue = $this->matchValue($key, $cast, $array[$keySnakeCase] ?? null);
+                    $array[$keySnakeCase] = $castedValue;
                 }
             }
         }
@@ -126,8 +147,36 @@ trait DtoCoreTrait
 
                 $keySnakeCase = $this->toSnakeCase($key);
                 isset($array[$keySnakeCase]) ?: $array[$keySnakeCase] = $value;
+
+                $keyDotCamelCase = $this->toCamelCase(str_replace('.', '_', $key));
+                isset($array[$keyDotCamelCase]) ?: $array[$keyDotCamelCase] = $value;
+
+                $keyDotSnakeCase = $this->toSnakeCase(str_replace('.', '_', $key));
+                isset($array[$keyDotSnakeCase]) ?: $array[$keyDotSnakeCase] = $value;
             }
         }
+    }
+
+
+    /**
+     * Меняет местами ключи с их значениями в массиве
+     *
+     * @param array $array
+     * @return array
+     */
+    protected function getFlipArray(array $array): array
+    {
+        $result = [];
+
+        foreach ($array as $key => $values) {
+            $values = is_array($values) ? array_values($values) : explode('|', $values ?? '');
+
+            foreach ($values as $value) {
+                $result[$value] = $key;
+            }
+        }
+
+        return $result;
     }
 
 
@@ -171,29 +220,52 @@ trait DtoCoreTrait
         $autoMappings = $this->options()['autoMappings'];
         $mappings = $this->mappings();
 
-        foreach ($mappings as $mapFrom => $mapTo) {
-            $value = null;
-            if (
-                $mapFrom
-                && is_string($mapFrom)
-                && $this->getMappingValue($array, explode('.', $mapTo), $value)
-                && property_exists($this, $mapFrom)
-            ) {
-                $array[$mapFrom] = $value;
-                continue;
+        foreach ($mappings as $mapFrom => $mapToList) {
+            $mapToList = is_array($mapToList) ? array_values($mapToList) : explode('|', $mapToList ?? '');
+
+            foreach ($mapToList as $mapTo) {
+                $isMapped = false;
+                $value = null;
+                if (
+                    !$isMapped
+                    && $mapFrom
+                    && is_string($mapFrom)
+                    && $this->getMappingValue($array, explode('.', $mapTo), $value)
+                    && property_exists($this, $mapFrom)
+                ) {
+                    $array[$mapFrom] = $value;
+                    $isMapped = true;
+                }
+
+                $value = null;
+                if (
+                    !$isMapped
+                    && $mapTo
+                    && $autoMappings
+                    && is_string($mapTo)
+                    && $this->getMappingValue($array, explode('.', $mapFrom), $value)
+                    && property_exists($this, $mapTo)
+                ) {
+                    $array[$mapTo] = $value;
+                    $isMapped = true;
+                }
+
+                $value = null;
+                if (
+                    !$isMapped
+                    && $mapFrom
+                    && $mapTo
+                    && $mapFrom !== $mapTo
+                    && is_string($mapTo)
+                    && !array_key_exists($mapFrom, $array)
+                    && array_key_exists($mapTo, $array)
+                    && property_exists($this, $mapFrom)
+                ) {
+                    $array[$mapFrom] = $array[$mapTo];
+                    $isMapped = true;
+                }
             }
 
-            $value = null;
-            if (
-                $mapTo
-                && $autoMappings
-                && is_string($mapTo)
-                && $this->getMappingValue($array, explode('.', $mapFrom), $value)
-                && property_exists($this, $mapTo)
-            ) {
-                $array[$mapTo] = $value;
-                continue;
-            }
         }
     }
 
@@ -322,7 +394,7 @@ trait DtoCoreTrait
 
                 throw new DtoException(
                     $this->exceptions('PropertyAssignType', ['property' => $key, 'type' => $type]),
-                    500
+                    500,
                 );
             }
 

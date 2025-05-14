@@ -15,12 +15,16 @@ class CarDto extends \Atlcom\Dto
 {
     public string $markName;
     public string $modelName;
+    public string $driverName;
+    public string $passengerName;
 
     protected function mappings(): array
     {
         return [
             'markName' => 'mark.name',
-            'modelName' => 'model.name',
+            'modelName' => ['model.name', 'model_name'],
+            'driverName' => ['driver.name', 'driver_name'],
+            'passengerName' => 'passenger.name',
         ];
     }
 }
@@ -36,17 +40,24 @@ final class Example07Test extends TestCase
     public function example(): void
     {
         $carDto = CarDto::create([
-            'mark' => [
-                'name' => 'Lexus',
-            ],
-            'model' => [
-                'name' => 'RX500',
-            ],
+            'mark' => ['name' => 'Lexus'],
+            'model' => ['name' => 'RX500'],
+            'driver_name' => 'Ivan',
+            'driver' => ['name' => 'Alek'],
+            'passenger.name' => 'Julia',
         ]);
 
         $this->assertObjectHasProperty('markName', $carDto);
         $this->assertObjectHasProperty('modelName', $carDto);
+        $this->assertObjectHasProperty('driverName', $carDto);
+        $this->assertObjectHasProperty('passengerName', $carDto);
         $this->assertEquals('Lexus', $carDto->markName);
         $this->assertEquals('RX500', $carDto->modelName);
+        $this->assertEquals('Ivan', $carDto->driverName);
+        $this->assertEquals('Julia', $carDto->passengerName);
+
+        $carDto->driver_name = 'Peter';
+
+        $this->assertEquals('Peter', $carDto->driver_name);
     }
 }

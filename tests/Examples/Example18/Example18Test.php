@@ -17,6 +17,7 @@ class CarDto extends \Atlcom\Dto
 
     public string $markName;
     public string $modelName;
+    public string $driverName;
 }
 
 /**
@@ -32,18 +33,23 @@ final class Example18Test extends TestCase
         $carDto = CarDto::create([
             'mark_name' => 'Lexus',
             'model_name' => 'RX500',
+            'driver.name' => 'Ivan',
         ]);
 
         $this->assertObjectHasProperty('markName', $carDto);
         $this->assertObjectHasProperty('modelName', $carDto);
+        $this->assertObjectHasProperty('driverName', $carDto);
         $this->assertEquals('Lexus', $carDto->markName);
         $this->assertEquals('RX500', $carDto->modelName);
+        $this->assertEquals('Ivan', $carDto->driverName);
 
         $carDtoArray = $carDto->toArray();
 
         $this->assertArrayHasKey('markName', $carDtoArray);
         $this->assertArrayHasKey('modelName', $carDtoArray);
+        $this->assertArrayHasKey('driverName', $carDtoArray);
         $this->assertArrayNotHasKey('mark_name', $carDtoArray);
         $this->assertArrayNotHasKey('model_name', $carDtoArray);
+        $this->assertArrayNotHasKey('driver.name', $carDtoArray);
     }
 }
