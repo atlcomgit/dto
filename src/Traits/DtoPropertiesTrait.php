@@ -137,4 +137,43 @@ trait DtoPropertiesTrait
 
         return true;
     }
+
+
+    /**
+     * Удаляет свойства из dto
+     * @see ../../tests/Examples/Example59/Example59Test.php
+     *
+     * @param string|array ...$data
+     * @return static
+     */
+    public function removeProperties(string|array ...$data): static
+    {
+        $removeKeys = [];
+
+        foreach ($data as $key) {
+            $removeKeys = [
+                ...$removeKeys,
+                ...(is_string($key)
+                    ? [$key]
+                    : (is_string(key($key)) ? [key($key)] : $key)
+                ),
+            ];
+        }
+
+        $customOptions = $this->options()['customOptions'] ?? [];
+
+        foreach ($removeKeys as $key) {
+            if (property_exists($this, $key)) {
+                unset($this->$key);
+            }
+
+            if (isset($customOptions[$key])) {
+                unset($customOptions[$key]);
+            }
+        }
+
+        $this->options(customOptions: $customOptions);
+
+        return $this;
+    }
 }

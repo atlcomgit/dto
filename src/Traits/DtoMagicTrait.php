@@ -133,7 +133,13 @@ trait DtoMagicTrait
     {
         try {
             if (property_exists($this, $name)) {
-                return $this->$name;
+                return isset($this->$name)
+                    ? $this->$name
+                    : throw new DtoException(
+                        $this->exceptions('PropertyNotInitialized', ['property' => $name]),
+                        500,
+                    )
+                ;
             }
 
             $autoMappings = $this->options()['autoMappings'];

@@ -131,14 +131,14 @@ trait DtoOptionsTrait
     final public function setOptions(
         array $options,
         ?array $onlyOptions = null,
-        ?array $excludeOptions = null
+        ?array $excludeOptions = null,
     ): static {
         $options = array_filter(
             $options,
             static fn ($optionKey)
             => (!$onlyOptions || in_array($optionKey, $onlyOptions))
             && (!$excludeOptions || !in_array($optionKey, $excludeOptions)),
-            ARRAY_FILTER_USE_KEY
+            ARRAY_FILTER_USE_KEY,
         );
 
         $this->options(...$options);
@@ -195,7 +195,15 @@ trait DtoOptionsTrait
      */
     final public function getCustomOption(string $optionName, mixed $defaultValue = null): mixed
     {
-        return $this->getOption('customOptions')[$optionName] ?? $defaultValue;
+        $customOptions = $this->getOption('customOptions');
+
+        return (static::AUTO_DYNAMIC_PROPERTIES_ENABLED || isset($customOptions[$optionName]))
+            ? ($customOptions[$optionName] ?? $defaultValue)
+            : throw new DtoException(
+                $this->exceptions('PropertyNotFound', ['property' => $optionName]),
+                500,
+            )
+        ;
     }
 
 
@@ -400,6 +408,7 @@ trait DtoOptionsTrait
                 ),
             ];
         }
+
         $this->options(serializeKeys: $serializeKeys);
 
         return $this;
@@ -431,6 +440,7 @@ trait DtoOptionsTrait
                 ),
             ];
         }
+
         $this->options(withProtectedKeys: $withProtectedKeys);
 
         return $this;
@@ -462,6 +472,7 @@ trait DtoOptionsTrait
                 ),
             ];
         }
+
         $this->options(withPrivateKeys: $withPrivateKeys);
 
         return $this;
@@ -493,6 +504,7 @@ trait DtoOptionsTrait
                 ),
             ];
         }
+
         $this->options(withCustomOptions: $withCustomOptions);
 
         return $this;
@@ -527,8 +539,8 @@ trait DtoOptionsTrait
                 $this->onException(
                     new DtoException(
                         $this->exceptions('ClassNotFound', ['class' => $object]),
-                        500
-                    )
+                        500,
+                    ),
                 );
 
                 return $this;

@@ -45,6 +45,7 @@ trait DtoConstsTrait
     /**
      * Включает опцию для работы с динамическими свойствами через опции
      * @see ../../tests/Examples/Example43/Example43Test.php
+     * @see ../../tests/Examples/Example59/Example59Test.php
      */
     public const AUTO_DYNAMIC_PROPERTIES_ENABLED = false;
 

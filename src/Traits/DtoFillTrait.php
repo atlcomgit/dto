@@ -186,11 +186,12 @@ trait DtoFillTrait
 
 
     /**
-     * Преобразует массив или коллекцию данных в коллекцию из dto
+     * Возвращает массив из dto
      * @see ../../tests/Examples/Example31/Example31Test.php
+     * @see ../../tests/Examples/Example58/Example58Test.php
      *
      * @param array $items
-     * @return array
+     * @return array<static>|static[]
      */
     public static function collect(array $items): array
     {
