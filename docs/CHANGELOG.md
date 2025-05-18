@@ -1,7 +1,9 @@
 # Changelog
 
 ## _Версия 2.74_
+- Добавлен метод consts
 - Добавлен метод getFlipArray
+- Добавлен метод hideProperties
 
 - Обновлен метод __get
 - Обновлен метод __set
@@ -13,6 +15,7 @@
 - Обновлен метод serializeValue
 - Обновлен метод toArray
 - Обновлен метод validateCasts
+- Обновлен принцип чтения констант
 
 ## _Версия 2.73_
 - Добавлен класс DtoValidateException

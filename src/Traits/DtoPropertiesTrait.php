@@ -176,4 +176,40 @@ trait DtoPropertiesTrait
 
         return $this;
     }
+
+
+    /**
+     * Скрывает свойства из dto
+     * @see ../../tests/Examples/Example61/Example61Test.php
+     *
+     * @param string|array ...$data
+     * @return static
+     */
+    public function hideProperties(string|array ...$data): static
+    {
+        $hideKeys = [];
+
+        foreach ($data as $key) {
+            $hideKeys = [
+                ...$hideKeys,
+                ...(is_string($key)
+                    ? [$key]
+                    : (is_string(key($key)) ? [key($key)] : $key)
+                ),
+            ];
+        }
+
+        $customOptions = $this->options()['customOptions'] ?? [];
+
+        foreach ($hideKeys as $key) {
+            if (property_exists($this, $key)) {
+                $customOptions[$key] = $this->{$key};
+                unset($this->$key);
+            }
+        }
+
+        $this->options(customOptions: $customOptions);
+
+        return $this;
+    }
 }

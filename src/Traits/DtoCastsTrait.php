@@ -387,21 +387,21 @@ trait DtoCastsTrait
     protected function castToDateTime(mixed $value): mixed
     {
         return match (true) {
-            is_integer($value) => match (static::AUTO_DATETIME_CLASS) {
+            is_integer($value) => match ($this->consts('AUTO_DATETIME_CLASS')) {
                     Carbon::class => Carbon::createFromTimestamp($value),
                     DateTime::class, DateTimeInterface::class => (new DateTime())->setTimestamp($value),
 
                     default => $value,
                 },
 
-            is_float($value) => match (static::AUTO_DATETIME_CLASS) {
+            is_float($value) => match ($this->consts('AUTO_DATETIME_CLASS')) {
                     Carbon::class => Carbon::createFromTimestamp($value),
                     DateTime::class, DateTimeInterface::class => $value,
 
                     default => $value,
                 },
 
-            is_string($value) => match (static::AUTO_DATETIME_CLASS) {
+            is_string($value) => match ($this->consts('AUTO_DATETIME_CLASS')) {
                     Carbon::class => Carbon::parse($value),
                     DateTime::class, DateTimeInterface::class => DateTime::createFromFormat('Y-m-d H:i:s', $value)
                     ?: DateTime::createFromFormat('Y-m-d/TH:i:s', $value)
@@ -417,14 +417,14 @@ trait DtoCastsTrait
                     default => $value,
                 },
 
-            $value instanceof Carbon => match (static::AUTO_DATETIME_CLASS) {
+            $value instanceof Carbon => match ($this->consts('AUTO_DATETIME_CLASS')) {
                     Carbon::class => $value,
                     DateTime::class, DateTimeInterface::class => $value->toDateTime(),
 
                     default => $value,
                 },
 
-            $value instanceof DateTimeInterface => match (static::AUTO_DATETIME_CLASS) {
+            $value instanceof DateTimeInterface => match ($this->consts('AUTO_DATETIME_CLASS')) {
                     Carbon::class => Carbon::instance($value),
                     DateTime::class, DateTimeInterface::class => DateTime::createFromInterface($value),
 
@@ -470,7 +470,7 @@ trait DtoCastsTrait
     {
         $laravelClassCollection = 'Illuminate\Support\Collection';
 
-        return static::AUTO_CASTS_OBJECTS_ENABLED
+        return $this->consts('AUTO_CASTS_OBJECTS_ENABLED')
             ? array_filter(
                 array_map(
                     static fn (string $type) => match (true) {

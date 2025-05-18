@@ -305,6 +305,10 @@ trait DtoOverrideTrait
                 $messageItems['property'],
                 $messageItems['method'],
             ),
+            'ConstantNotFound' => sprintf(
+                $this->toBasename($this) . '->%s(): константа не найдена',
+                $messageItems['name'],
+            ),
 
             default => 'Неизвестный код сообщения',
         };

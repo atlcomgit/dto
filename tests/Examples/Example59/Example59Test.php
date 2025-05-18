@@ -37,10 +37,12 @@ final class Example59Test extends TestCase
         $this->assertSame('Lexus', $carDto->markName);
         $this->assertSame('RX500', $carDto->modelName);
 
-        $carDto = $carDto->removeProperties(['markName', 'modelName']);
+        $carDto->removeProperties(['markName', 'modelName']);
 
         $this->assertObjectHasProperty('markName', $carDto);
         $this->assertObjectNotHasProperty('modelName', $carDto);
+        $this->assertFalse(isset($carDto->markName));
+        $this->assertFalse(isset($carDto->modelName));
 
         $carArray = $carDto->toArray();
         

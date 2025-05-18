@@ -23,7 +23,7 @@ trait DtoArrayAccess
     public function offsetExists(mixed $offset): bool
     {
         try {
-            static::INTERFACE_ARRAY_ACCESS_ENABLED ?: throw new DtoException(
+            $this->consts('INTERFACE_ARRAY_ACCESS_ENABLED') ?: throw new DtoException(
                 $this->exceptions('ArrayAccessDisabled', ['property' => $offset, 'method' => __FUNCTION__]),
                 500,
             );
@@ -33,7 +33,7 @@ trait DtoArrayAccess
         }
 
         return property_exists($this, $offset)
-            || (static::AUTO_DYNAMIC_PROPERTIES_ENABLED && isset($this->getOption('customOptions')[$offset]));
+            || ($this->consts('AUTO_DYNAMIC_PROPERTIES_ENABLED') && isset($this->getOption('customOptions')[$offset]));
     }
 
 
@@ -47,7 +47,7 @@ trait DtoArrayAccess
     public function offsetGet(mixed $offset): mixed
     {
         try {
-            static::INTERFACE_ARRAY_ACCESS_ENABLED ?: throw new DtoException(
+            $this->consts('INTERFACE_ARRAY_ACCESS_ENABLED') ?: throw new DtoException(
                 $this->exceptions('ArrayAccessDisabled', ['property' => $offset, 'method' => __FUNCTION__]),
                 500,
             );
@@ -71,7 +71,7 @@ trait DtoArrayAccess
     public function offsetSet(mixed $offset, mixed $value): void
     {
         try {
-            static::INTERFACE_ARRAY_ACCESS_ENABLED ?: throw new DtoException(
+            $this->consts('INTERFACE_ARRAY_ACCESS_ENABLED') ?: throw new DtoException(
                 $this->exceptions('ArrayAccessDisabled', ['property' => $offset, 'method' => __FUNCTION__]),
                 500,
             );
@@ -94,7 +94,7 @@ trait DtoArrayAccess
     public function offsetUnset(mixed $offset): void
     {
         try {
-            static::INTERFACE_ARRAY_ACCESS_ENABLED ?: throw new DtoException(
+            $this->consts('INTERFACE_ARRAY_ACCESS_ENABLED') ?: throw new DtoException(
                 $this->exceptions('ArrayAccessDisabled', ['property' => $offset, 'method' => __FUNCTION__]),
                 500,
             );
@@ -105,7 +105,7 @@ trait DtoArrayAccess
 
         if (property_exists($this, $offset)) {
             $this->{$offset} = null;
-        } else if (static::AUTO_DYNAMIC_PROPERTIES_ENABLED) {
+        } else if ($this->consts('AUTO_DYNAMIC_PROPERTIES_ENABLED')) {
             $customOptions = $this->options()['customOptions'] ?? [];
             unset($customOptions[$offset]);
             $this->options(customOptions: $customOptions);

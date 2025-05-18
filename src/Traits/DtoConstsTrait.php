@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Atlcom\Traits;
 
+use Atlcom\Exceptions\DtoException;
 use Carbon\Carbon;
 
 /**
@@ -90,4 +91,40 @@ trait DtoConstsTrait
      * @see ../../tests/Examples/Example54/Example54Test.php
      */
     public const INTERFACE_STRINGABLE_ENABLED = true;
+
+
+    /**
+     * Возвращает или устанавливает значение константы dto
+     * @see ../../tests/Examples/Example60/Example60Test.php
+     *
+     * @param string $name
+     * @param bool|null $value
+     * @return static|bool
+     */
+    public function consts(string $name, ?bool $value = null): static|bool|string
+    {
+        $class = $this::class;
+
+        if (!defined("$class::$name")) {
+            $this->onException(
+                new DtoException(
+                    $this->exceptions('ConstantNotFound', ['name' => $name]),
+                    500,
+                ),
+            );
+
+            return false;
+        }
+
+        $consts = $this->options()['consts'] ?? [];
+
+        if (is_null($value)) {
+            return $consts[$name] ?? constant("$class::$name");
+        }
+
+        $consts[$name] = $value;
+        $this->options(consts: $consts);
+
+        return $this;
+    }
 }

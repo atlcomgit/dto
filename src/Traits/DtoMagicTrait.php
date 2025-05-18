@@ -90,7 +90,7 @@ trait DtoMagicTrait
                 }
             }
 
-            if (static::AUTO_DYNAMIC_PROPERTIES_ENABLED) {
+            if ($this->consts('AUTO_DYNAMIC_PROPERTIES_ENABLED')) {
                 $array = [$name => $value];
                 $this->validateCasts($array);
                 $this->assignValue($name, $array[$name]);
@@ -178,7 +178,7 @@ trait DtoMagicTrait
                 }
             }
 
-            if (static::AUTO_DYNAMIC_PROPERTIES_ENABLED) {
+            if ($this->consts('AUTO_DYNAMIC_PROPERTIES_ENABLED')) {
                 return $this->getCustomOption($name);
             }
 
@@ -204,7 +204,7 @@ trait DtoMagicTrait
     public function __call(string $name, array $arguments): mixed
     {
         try {
-            static::AUTO_PROPERTIES_AS_METHODS_ENABLED ?: throw new DtoException(
+            $this->consts('AUTO_PROPERTIES_AS_METHODS_ENABLED') ?: throw new DtoException(
                 $this->exceptions('PropertiesAsMethodsDisabled', ['method' => __FUNCTION__, 'property' => $name]),
                 500,
             );
@@ -213,8 +213,8 @@ trait DtoMagicTrait
             $this->onException($exception);
         }
 
-        if ($arguments && isset($arguments[0])) {
-            $this->__set($name, $arguments[0]);
+        if ($arguments && !empty($arguments)) {
+            $this->__set($name, count($arguments) === 1 ? $arguments[0] : $arguments);
 
             return $this;
         }
@@ -233,7 +233,7 @@ trait DtoMagicTrait
     {
         return [
             ...(array)$this,
-            ...(static::AUTO_DYNAMIC_PROPERTIES_ENABLED ? ($this->options()['customOptions'] ?? []) : []),
+            ...($this->consts('AUTO_DYNAMIC_PROPERTIES_ENABLED') ? ($this->options()['customOptions'] ?? []) : []),
         ];
     }
 
@@ -247,7 +247,7 @@ trait DtoMagicTrait
     public function __serialize(): array
     {
         try {
-            static::INTERFACE_SERIALIZABLE_ENABLED ?: throw new DtoException(
+            $this->consts('INTERFACE_SERIALIZABLE_ENABLED') ?: throw new DtoException(
                 $this->exceptions('SerializableDisabled', ['method' => __FUNCTION__]),
                 500,
             );
@@ -258,7 +258,7 @@ trait DtoMagicTrait
 
         return [
             ...(array)$this,
-            ...(static::AUTO_DYNAMIC_PROPERTIES_ENABLED ? ($this->options()['customOptions'] ?? []) : []),
+            ...($this->consts('AUTO_DYNAMIC_PROPERTIES_ENABLED') ? ($this->options()['customOptions'] ?? []) : []),
         ];
     }
 
@@ -273,7 +273,7 @@ trait DtoMagicTrait
     public function __unserialize(array $data): void
     {
         try {
-            static::INTERFACE_SERIALIZABLE_ENABLED ?: throw new DtoException(
+            $this->consts('INTERFACE_SERIALIZABLE_ENABLED') ?: throw new DtoException(
                 $this->exceptions('SerializableDisabled', ['method' => __FUNCTION__]),
                 500,
             );

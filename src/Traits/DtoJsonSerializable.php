@@ -23,7 +23,7 @@ trait DtoJsonSerializable
     public function jsonSerialize(): mixed
     {
         try {
-            static::INTERFACE_JSON_SERIALIZABLE_ENABLED ?: throw new DtoException(
+            $this->consts('INTERFACE_JSON_SERIALIZABLE_ENABLED') ?: throw new DtoException(
                 $this->exceptions('JsonSerializableDisabled', ['method' => __FUNCTION__]),
                 500,
             );
@@ -34,7 +34,7 @@ trait DtoJsonSerializable
 
         return [
             ...(array)$this,
-            ...(static::AUTO_DYNAMIC_PROPERTIES_ENABLED ? ($this->options()['customOptions'] ?? []) : []),
+            ...($this->consts('AUTO_DYNAMIC_PROPERTIES_ENABLED') ? ($this->options()['customOptions'] ?? []) : []),
         ];
     }
 }

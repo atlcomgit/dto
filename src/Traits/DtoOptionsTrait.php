@@ -50,6 +50,7 @@ trait DtoOptionsTrait
         array|string|bool|null $withCustomOptions = null,
         bool|null $withoutOptions = null,
         array|null $customOptions = null,
+        array|null $consts = null,
     ): array {
         static $options = [];
         $instance = md5(static::class . spl_object_id($this));
@@ -77,6 +78,7 @@ trait DtoOptionsTrait
         is_null($withCustomOptions) ?: $result['withCustomOptions'] = $withCustomOptions;
         is_null($withoutOptions) ?: $result['withoutOptions'] = $withoutOptions;
         is_null($customOptions) ?: $result['customOptions'] = $customOptions;
+        is_null($consts) ?: $result['consts'] = $consts;
 
         $options[$instance] = $result;
 
@@ -85,8 +87,12 @@ trait DtoOptionsTrait
         }
 
         return [
-            'autoCasts' => $result['autoCasts'] ?? static::AUTO_CASTS_ENABLED,
-            'autoMappings' => $result['autoMappings'] ?? static::AUTO_MAPPINGS_ENABLED,
+            'autoCasts' => $result['autoCasts']
+                ?? $result['consts']['AUTO_CASTS_ENABLED']
+                ?? static::AUTO_CASTS_ENABLED,
+            'autoMappings' => $result['autoMappings']
+                ?? $result['consts']['AUTO_MAPPINGS_ENABLED']
+                ?? static::AUTO_MAPPINGS_ENABLED,
             'onlyFilled' => $result['onlyFilled'] ?? false,
             'onlyNotNull' => $result['onlyNotNull'] ?? false,
             'onlyKeys' => $result['onlyKeys'] ?? [],
@@ -94,12 +100,17 @@ trait DtoOptionsTrait
             'includeArray' => $result['includeArray'] ?? [],
             'excludeKeys' => $result['excludeKeys'] ?? [],
             'mappingKeys' => $result['mappingKeys'] ?? [],
-            'serializeKeys' => $result['serializeKeys'] ?? static::AUTO_SERIALIZE_ENABLED,
+            'serializeKeys' => $result['serializeKeys']
+                ?? $result['consts']['AUTO_SERIALIZE_ENABLED']
+                ?? static::AUTO_SERIALIZE_ENABLED,
             'withProtectedKeys' => $result['withProtectedKeys'] ?? false,
             'withPrivateKeys' => $result['withPrivateKeys'] ?? false,
-            'withCustomOptions' => $result['withCustomOptions'] ?? static::AUTO_DYNAMIC_PROPERTIES_ENABLED,
+            'withCustomOptions' => $result['withCustomOptions']
+                ?? $result['consts']['AUTO_DYNAMIC_PROPERTIES_ENABLED']
+                ?? static::AUTO_DYNAMIC_PROPERTIES_ENABLED,
             'withoutOptions' => $result['withoutOptions'] ?? false,
             'customOptions' => $result['customOptions'] ?? [],
+            'consts' => $result['consts'] ?? [],
         ];
     }
 
@@ -197,11 +208,13 @@ trait DtoOptionsTrait
     {
         $customOptions = $this->getOption('customOptions');
 
-        return (static::AUTO_DYNAMIC_PROPERTIES_ENABLED || isset($customOptions[$optionName]))
+        return ($this->consts('AUTO_DYNAMIC_PROPERTIES_ENABLED') || isset($customOptions[$optionName]))
             ? ($customOptions[$optionName] ?? $defaultValue)
-            : throw new DtoException(
-                $this->exceptions('PropertyNotFound', ['property' => $optionName]),
-                500,
+            : $this->onException(
+                throw new DtoException(
+                    $this->exceptions('PropertyNotFound', ['property' => $optionName]),
+                    500,
+                )
             )
         ;
     }

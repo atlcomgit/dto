@@ -15,6 +15,7 @@ class CarDto extends \Atlcom\Dto
 {
     public string $markName;
     public ?string $modelName;
+    public ?array $years;
 }
 
 /**
@@ -34,15 +35,20 @@ final class Example56Test extends TestCase
 
         $carDto
             ->markName('Toyota')
-            ->modelName('Allion');
+            ->modelName('Allion')
+            ->years(2025, 2026);
 
         $this->assertTrue($carDto->markName === 'Toyota');
         $this->assertTrue($carDto->markName() === 'Toyota');
+        $this->assertTrue($carDto->years() === [2025, 2026]);
 
         $this->assertTrue($carDto->modelName === 'Allion');
         $this->assertTrue($carDto->modelName() === 'Allion');
 
         $markName = $carDto->markName('Nissan')->markName();
+
+        $carDto->years([2025]);
+        $this->assertTrue($carDto->years() === [2025]);
 
         $this->assertTrue($markName === 'Nissan');
     }

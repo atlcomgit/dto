@@ -207,6 +207,8 @@ trait DtoFillTrait
      */
     public function clear(): static
     {
+        $this->options(customOptions: []);
+
         return $this
             ->autoCasts()
             ->fillFromData(static::toArrayBlank(false))

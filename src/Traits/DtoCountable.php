@@ -23,7 +23,7 @@ trait DtoCountable
     public function count(): int
     {
         try {
-            static::INTERFACE_COUNTABLE_ENABLED ?: throw new DtoException(
+            $this->consts('INTERFACE_COUNTABLE_ENABLED') ?: throw new DtoException(
                 $this->exceptions('CountableDisabled', ['method' => __FUNCTION__]),
                 500,
             );
@@ -34,7 +34,7 @@ trait DtoCountable
 
         return count([
             ...(array)$this,
-            ...(static::AUTO_DYNAMIC_PROPERTIES_ENABLED ? ($this->options()['customOptions'] ?? []) : []),
+            ...($this->consts('AUTO_DYNAMIC_PROPERTIES_ENABLED') ? ($this->options()['customOptions'] ?? []) : []),
         ]);
     }
 }

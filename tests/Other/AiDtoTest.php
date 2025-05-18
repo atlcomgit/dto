@@ -88,12 +88,10 @@ final class AiDtoTest extends TestCase
     #[Test]
     public function testArrayAccess(): void
     {
-        $dto = AiTestDto::create(['name' => 'F', 'age' => 70]);//->enableConst(INTERFACE_ARRAY_ACCESS_ENABLED);
-        // $this->assertEquals('F', $dto['name']);
-        // $dto['name'] = 'G';
-        // $this->assertEquals('G', $dto->name);
-        unset($dto['name']);
-        $this->assertNull($dto->name);
+        $dto = AiTestDto::create(['name' => 'F', 'age' => 70])->consts('INTERFACE_ARRAY_ACCESS_ENABLED', true);
+        $this->assertEquals('F', $dto['name']);
+        $dto['name'] = 'G';
+        $this->assertEquals('G', $dto->name);
     }
 
     #[Test]

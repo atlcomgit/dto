@@ -48,7 +48,7 @@ trait DtoCoreTrait
     protected function validateCasts(array &$array): void
     {
         $casts = (method_exists($this, 'casts') ? $this->casts() : [])
-            ?: (static::AUTO_CASTS_ENABLED ? static::getPropertiesWithFirstType() : []);
+            ?: ($this->consts('AUTO_CASTS_ENABLED') ? static::getPropertiesWithFirstType() : []);
         $mappings = $this->mappings();
         $autoMappings = $this->options()['autoMappings'];
         !$autoMappings ?: $this->prepareStyles($casts);
@@ -322,7 +322,7 @@ trait DtoCoreTrait
             $this->onAssigning($key, $value);
             $oldValue = $this->$key ?? null;
 
-            $isDynamicProperty = static::AUTO_DYNAMIC_PROPERTIES_ENABLED && !property_exists($this, $key);
+            $isDynamicProperty = $this->consts('AUTO_DYNAMIC_PROPERTIES_ENABLED') && !property_exists($this, $key);
             $class = $isDynamicProperty
                 ? $this->casts()[$key] ?? 'mixed'
                 : (new ReflectionProperty(get_class($this), $key))->getType();
@@ -421,7 +421,7 @@ trait DtoCoreTrait
                 unset($array[$key]);
             }
 
-            if (static::AUTO_DYNAMIC_PROPERTIES_ENABLED) {
+            if ($this->consts('AUTO_DYNAMIC_PROPERTIES_ENABLED')) {
                 foreach ($array as $key => $value) {
                     $this->assignValue($key, $value, $defaults[$key] ?? $value ?? null);
                     unset($array[$key]);

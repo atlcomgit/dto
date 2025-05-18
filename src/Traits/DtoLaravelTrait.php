@@ -94,7 +94,7 @@ trait DtoLaravelTrait
         if ($rules && class_exists($validator)) {
             try {
                 !$this->mappings() ?: $this->prepareMappings($data);
-                !static::AUTO_MAPPINGS_ENABLED ?: $this->prepareStyles($data);
+                !$this->consts('AUTO_MAPPINGS_ENABLED') ?: $this->prepareStyles($data);
 
                 $dataNew = $validator::make($data, $rules, $this->validatorMessages())
                     ->setAttributeNames($this->attributes())

@@ -24,7 +24,7 @@ trait DtoIteratorAggregate
     public function getIterator(): Traversable
     {
         try {
-            static::INTERFACE_ITERATOR_AGGREGATE_ENABLED ?: throw new DtoException(
+            $this->consts('INTERFACE_ITERATOR_AGGREGATE_ENABLED') ?: throw new DtoException(
                 $this->exceptions('IteratorAggregateDisabled', ['method' => __FUNCTION__]),
                 500,
             );
@@ -35,7 +35,7 @@ trait DtoIteratorAggregate
 
         return new ArrayIterator([
             ...(array)$this,
-            ...(static::AUTO_DYNAMIC_PROPERTIES_ENABLED ? ($this->options()['customOptions'] ?? []) : []),
+            ...($this->consts('AUTO_DYNAMIC_PROPERTIES_ENABLED') ? ($this->options()['customOptions'] ?? []) : []),
         ]);
     }
 }
