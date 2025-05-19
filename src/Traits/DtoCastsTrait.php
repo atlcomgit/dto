@@ -22,6 +22,16 @@ trait DtoCastsTrait
 {
     /**
      * Проверяет значение на соответствие типу
+     * @see ../../tests/Examples/Example06/Example06Test.php
+     * @see ../../tests/Examples/Example08/Example08Test.php
+     * @see ../../tests/Examples/Example09/Example09Test.php
+     * @see ../../tests/Examples/Example10/Example10Test.php
+     * @see ../../tests/Examples/Example31/Example31Test.php
+     * @see ../../tests/Examples/Example35/Example35Test.php
+     * @see ../../tests/Examples/Example41/Example41Test.php
+     * @see ../../tests/Examples/Example43/Example43Test.php
+     * @see ../../tests/Examples/Example46/Example46Test.php
+     * @see ../../tests/Examples/Example63/Example63Test.php
      *
      * @param string $key
      * @param string|array|callable $type
@@ -32,28 +42,33 @@ trait DtoCastsTrait
     protected function matchValue(string $key, string|array|callable $type, mixed $value): mixed
     {
         try {
+            $canNull = in_array('null', $this->getPropertyTypes($key));
+
             return match (true) {
-                is_null($value) => null,
+                // is_null($value) => null, - не нужен
                 $type === gettype($value) => $value,
-                $type === DateTime::class => new DateTime($value),
-                $type === Carbon::class => Carbon::parse($value),
-                $type === DateTimeInterface::class => $this->castToDateTime($value),
+                is_object($value) && $type === $value::class => $value,
+                // $type === DateTime::class => new DateTime($value),
+
+                is_string($type) && in_array($type, [Carbon::class, DateTime::class, DateTimeInterface::class])
+                => $this->castToDateTime($value, $type, $canNull),
 
                 default =>
                     match (is_string($type) ? mb_strtolower($type) : null) {
-                        'boolean', 'bool' => $this->castToBoolean($value),
-                        'string', 'str' => $this->castToString($value),
-                        'integer', 'int' => $this->castToInt($value),
-                        'float', 'numeric' => $this->castToFloat($value),
-                        'array', 'arr' => $this->castToArray($value),
-                        'object', 'obj' => $this->castToObject($key, stdClass::class, $value),
-                        'datetime', 'date' => $this->castToDateTime($value),
-                        'positive' => $this->castToPositive($value),
+                        'boolean', 'bool' => $this->castToBoolean($value, $canNull),
+                        'string', 'str' => $this->castToString($value, $canNull),
+                        'integer', 'int' => $this->castToInt($value, $canNull),
+                        'float', 'numeric' => $this->castToFloat($value, $canNull),
+                        'array', 'arr' => $this->castToArray($value, $canNull),
+                        'object', 'obj' => $this->castToObject($key, stdClass::class, $value, $canNull),
+                        'datetime', 'date' => $this->castToDateTime($value, $type, $canNull),
+                        'positive' => $this->castToPositive($value, $canNull),
                         'mixed', 'any' => $value,
 
                         default =>
                             match (true) {
-                                is_string($type) && class_exists($type) => $this->castToObject($key, $type, $value),
+                                is_string($type) && class_exists($type)
+                                => $this->castToObject($key, $type, $value, $canNull),
                                 is_array($type),
                                 is_string($type) && preg_match('/array\<.*\>/', $type)
                                 => $this->castToArrayOfObjects($key, $type, $value),
@@ -122,10 +137,11 @@ trait DtoCastsTrait
      * @param string $key
      * @param string $class
      * @param mixed $value
+     * @param bool $canNull
      * @return mixed
      * @throws DtoException
      */
-    protected function castToObject(string $key, string $class, mixed $value): mixed
+    protected function castToObject(string $key, string $class, mixed $value, bool $canNull = false): mixed
     {
         if (!property_exists($this, $key)) {
             return $value;
@@ -138,7 +154,10 @@ trait DtoCastsTrait
                     return $value;
 
                 case is_null($value):
-                    return null;
+                    return $canNull ? null : new $class();
+
+                case $value === '':
+                    return $canNull ? null : new $class();
 
                 case enum_exists($class):
                     return match (true) {
@@ -224,26 +243,41 @@ trait DtoCastsTrait
 
     /**
      * Преобразование значения к типу: boolean
+     * @see ../../tests/Examples/Example63/Example63Test.php
      *
      * @param mixed $value
+     * @param bool $canNull
      * @return mixed
      */
-    protected function castToBoolean(mixed $value): mixed
+    protected function castToBoolean(mixed $value, bool $canNull = false): mixed
     {
-        return !is_null($value) ? filter_var($value, FILTER_VALIDATE_BOOLEAN) : $value;
+        return match (true) {
+            is_null($value) => $canNull ? null : false,
+            is_bool($value) => $value,
+            $value === '' => $canNull ? null : false,
+            in_array($value, ['true', 'True', 'TRUE', true, '1', 1], true) => true,
+            in_array($value, ['false', 'False', 'FALSE', false, '0', 0, null], true) => false,
+            is_numeric($value) => (bool)$value,
+            is_callable($value) => static::castToBoolean($value(), $canNull),
+
+            default => $value,
+        };
     }
 
 
     /**
      * Преобразование значения к типу: string
+     * @see ../../tests/Examples/Example63/Example63Test.php
      *
      * @param mixed $value
+     * @param bool $canNull
      * @return mixed
      */
-    protected function castToString(mixed $value): mixed
+    protected function castToString(mixed $value, bool $canNull = false): mixed
     {
         return match (true) {
-            is_null($value) => null,
+            is_null($value) => $canNull ? null : '',
+            $value === '' => '',
             $value instanceof self => json_encode(
                 $value->serializeKeys()->toArray(),
                 JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES
@@ -266,39 +300,62 @@ trait DtoCastsTrait
 
     /**
      * Преобразование значения к типу: integer
+     * @see ../../tests/Examples/Example63/Example63Test.php
      *
      * @param mixed $value
+     * @param bool $canNull
      * @return mixed
      */
-    protected function castToInt(mixed $value): mixed
+    protected function castToInt(mixed $value, bool $canNull = false): mixed
     {
-        return (!is_null($value) && is_numeric($value)) ? (int)$value : $value;
+        return match (true) {
+            is_null($value) => $canNull ? null : 0,
+            is_integer($value) => $value,
+            $value === '' => $canNull ? null : 0,
+            is_numeric($value) => (int)$value,
+            is_callable($value) => static::castToInt($value(), $canNull),
+
+            default => $value,
+        };
     }
 
 
     /**
      * Преобразование значения к типу: float
+     * @see ../../tests/Examples/Example63/Example63Test.php
      *
      * @param mixed $value
+     * @param bool $canNull
      * @return mixed
      */
-    protected function castToFloat(mixed $value): mixed
+    protected function castToFloat(mixed $value, bool $canNull = false): mixed
     {
-        return (!is_null($value) && is_numeric($value)) ? (float)$value : $value;
+        return match (true) {
+            is_null($value) => $canNull ? null : 0.0,
+            is_float($value) => $value,
+            $value === '' => $canNull ? null : 0.0,
+            is_numeric($value) => (float)$value,
+            is_callable($value) => static::castToFloat($value(), $canNull),
+
+            default => $value,
+        };
     }
 
 
     /**
      * Преобразование значения к типу: array
+     * @see ../../tests/Examples/Example63/Example63Test.php
      *
      * @param mixed $value
+     * @param bool $canNull
      * @return array|null
      */
-    protected function castToArray(mixed $value): array|null
+    protected function castToArray(mixed $value, bool $canNull = false): array|null
     {
         return match (true) {
-            is_null($value) => null,
+            is_null($value) => $canNull ? null : [],
             $value instanceof self => $value->serializeKeys()->toArray(),
+            $value === '' => $canNull ? null : [],
             is_string($value) => self::jsonDecode($value, true),
             is_object($value) => match (true) {
                     method_exists($value, 'toArray') => $value->toArray(),
@@ -315,6 +372,7 @@ trait DtoCastsTrait
 
     /**
      * Преобразование значения к типу: array<type>|Collection<type>
+     * @see ../../tests/Examples/Example63/Example63Test.php
      * 
      * @param string $key
      * @param array|string $type
@@ -380,28 +438,44 @@ trait DtoCastsTrait
 
     /**
      * Преобразование значения к типу: DateTime|Carbon
+     * @see ../../tests/Examples/Example63/Example63Test.php
      *
      * @param mixed $value
+     * @param string $type
+     * @param bool $canNull
      * @return mixed
      */
-    protected function castToDateTime(mixed $value): mixed
+    protected function castToDateTime(mixed $value, string $type, bool $canNull = false): mixed
     {
+        $type = in_array($type, [Carbon::class, DateTime::class, DateTimeInterface::class])
+            ? $type
+            : $this->consts('AUTO_DATETIME_CLASS');
+
         return match (true) {
-            is_integer($value) => match ($this->consts('AUTO_DATETIME_CLASS')) {
+            is_null($value) || $value === '' => $canNull
+            ? null
+            : match ($type) {
+                    Carbon::class => Carbon::now(),
+                    DateTime::class, DateTimeInterface::class => new DateTime(),
+
+                    default => $value,
+                },
+
+            is_integer($value) => match ($type) {
                     Carbon::class => Carbon::createFromTimestamp($value),
                     DateTime::class, DateTimeInterface::class => (new DateTime())->setTimestamp($value),
 
                     default => $value,
                 },
 
-            is_float($value) => match ($this->consts('AUTO_DATETIME_CLASS')) {
+            is_float($value) => match ($type) {
                     Carbon::class => Carbon::createFromTimestamp($value),
                     DateTime::class, DateTimeInterface::class => $value,
 
                     default => $value,
                 },
 
-            is_string($value) => match ($this->consts('AUTO_DATETIME_CLASS')) {
+            is_string($value) => match ($type) {
                     Carbon::class => Carbon::parse($value),
                     DateTime::class, DateTimeInterface::class => DateTime::createFromFormat('Y-m-d H:i:s', $value)
                     ?: DateTime::createFromFormat('Y-m-d/TH:i:s', $value)
@@ -417,21 +491,28 @@ trait DtoCastsTrait
                     default => $value,
                 },
 
-            $value instanceof Carbon => match ($this->consts('AUTO_DATETIME_CLASS')) {
+            $value instanceof Carbon => match ($type) {
                     Carbon::class => $value,
                     DateTime::class, DateTimeInterface::class => $value->toDateTime(),
 
                     default => $value,
                 },
 
-            $value instanceof DateTimeInterface => match ($this->consts('AUTO_DATETIME_CLASS')) {
+            $value instanceof DateTimeInterface => match ($type) {
                     Carbon::class => Carbon::instance($value),
                     DateTime::class, DateTimeInterface::class => DateTime::createFromInterface($value),
 
                     default => $value,
                 },
 
-            empty($value) || $value == '-' => null,
+            empty($value) || $value == '-' => $canNull
+            ? null
+            : match ($type) {
+                    Carbon::class => Carbon::now(),
+                    DateTime::class, DateTimeInterface::class => new DateTime(),
+
+                    default => $value,
+                },
 
             default => $value,
         };
@@ -442,19 +523,20 @@ trait DtoCastsTrait
      * Преобразование значения к типу с положительным значением: float|int
      *
      * @param mixed $value
+     * @param bool $canNull
      * @return mixed
      */
-    protected function castToPositive(mixed $value): mixed
+    protected function castToPositive(mixed $value, bool $canNull = false): mixed
     {
         return match (true) {
-            is_null($value) => null,
+            is_null($value) => $canNull ? null : 0,
             is_integer($value) && is_numeric($value) => filter_var($value, FILTER_VALIDATE_INT, [
                 'options' => ['min_range' => 0],
             ]),
             is_float($value) && is_numeric($value) => filter_var($value, FILTER_VALIDATE_FLOAT, [
                 'options' => ['min_range' => 0],
             ]),
-            is_bool($value) => (int)$this->castToBoolean($value),
+            is_bool($value) => (int)$this->castToBoolean($value, $canNull),
 
             default => $value,
         };
@@ -463,6 +545,7 @@ trait DtoCastsTrait
 
     /**
      * Возвращает массив для преобразований типов по умолчанию
+     * @see ../../tests/Examples/Example63/Example63Test.php
      *
      * @return array
      */
@@ -496,6 +579,7 @@ trait DtoCastsTrait
 
     /**
      * Возвращает массив всех свойств dto с его первым типом
+     * @see ../../tests/Examples/Example63/Example63Test.php
      *
      * @return array
      */

@@ -19,10 +19,12 @@ trait DtoOverrideTrait
      * @see ../../tests/Examples/Example09/Example09Test.php
      * @see ../../tests/Examples/Example10/Example10Test.php
      * @see ../../tests/Examples/Example41/Example41Test.php
+     * @see ../../tests/Examples/Example63/Example63Test.php
      * @link https://github.com/atlcomgit/dto/blob/master/tests/Examples/Example08/Example08Test.php
      * @link https://github.com/atlcomgit/dto/blob/master/tests/Examples/Example09/Example09Test.php
      * @link https://github.com/atlcomgit/dto/blob/master/tests/Examples/Example10/Example10Test.php
      * @link https://github.com/atlcomgit/dto/blob/master/tests/Examples/Example41/Example41Test.php
+     * @link https://github.com/atlcomgit/dto/blob/master/tests/Examples/Example63/Example63Test.php
      *
      * @return array
      */

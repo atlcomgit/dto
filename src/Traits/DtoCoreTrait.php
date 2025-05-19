@@ -336,7 +336,7 @@ trait DtoCoreTrait
                     case $class === DateTime::class:
                     case $class === DateTimeInterface::class:
                     case $class === Carbon::class:
-                        $value = $this->castToDateTime($value);
+                        $value = $this->castToDateTime($value, $class, false);
                         $isDynamicProperty ? $this->setCustomOption($key, $value) : $this->$key = $value;
                         break;
 

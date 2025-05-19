@@ -3,18 +3,17 @@
 ## _Версия 2.74_
 - Добавлен метод consts
 - Добавлен метод getFlipArray
+- Добавлен метод getPropertyTypes
 - Добавлен метод hideProperties
 
 - Обновлен метод __get
 - Обновлен метод __set
-- Обновлен метод castToArray
-- Обновлен метод castToArrayOfObjects
-- Обновлен метод castToString
 - Обновлен метод prepareMappings
 - Обновлен метод prepareStyles
 - Обновлен метод serializeValue
 - Обновлен метод toArray
 - Обновлен метод validateCasts
+- Обновлен трейт DtoCastsTrait
 - Обновлен принцип чтения констант
 
 ## _Версия 2.73_

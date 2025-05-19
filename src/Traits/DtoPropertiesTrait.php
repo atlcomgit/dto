@@ -104,6 +104,46 @@ trait DtoPropertiesTrait
 
 
     /**
+     * Возвращает массив типов свойства dto
+     * @see ../../tests/Examples/Example62/Example62Test.php
+     *
+     * @param string $key
+     * @return array
+     */
+    public function getPropertyTypes(string $key): array
+    {
+        return match (true) {
+            property_exists($this, $key) => array_filter(
+                explode(
+                    '|',
+                    trim(
+                        str_replace(
+                            ['?', ' '],
+                            ['|null|', ''],
+                            (string)(new ReflectionProperty(static::class, $key))->getType() ?: 'mixed'
+                        ),
+                        '|',
+                    ),
+                ),
+            ),
+
+            default => match ($type = gettype($this->getCustomOption($key))) {
+                'null', 'NULL' => ['null'],
+                'integer', 'int' => ['int'],
+                'double', 'float' => ['float'],
+                'boolean', 'bool' => ['bool'],
+                'string' => ['string'],
+                'array' => ['array'],
+                'object' => ['object'],
+                'mixed' => ['mixed'],
+
+                default => [$type],
+            },
+        };
+    }
+
+
+    /**
      * Проверяет dto на заполнение хотя бы одного свойства
      * @see ../../tests/Examples/Example39/Example39Test.php
      *
@@ -126,7 +166,7 @@ trait DtoPropertiesTrait
 
                         default => empty($value),
                     },
-                    
+
                 default => true,
             };
 
