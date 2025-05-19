@@ -90,7 +90,7 @@ trait DtoSerializeTrait
                     )
                 )
             ) {
-                $mappingValues = $mappingKeys[$key] ?: $key;
+                $mappingValues = ($mappingKeys[$key] ?? null) ?: $key;
                 $mappingValues = is_array($mappingValues)
                     ? array_values($mappingValues)
                     : explode('|', $mappingValues ?? '');
