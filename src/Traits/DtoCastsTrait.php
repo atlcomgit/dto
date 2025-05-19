@@ -46,7 +46,7 @@ trait DtoCastsTrait
 
             return match (true) {
                 // is_null($value) => null, - не нужен
-                $type === gettype($value) => $value,
+                // $type === gettype($value) => $value,
                 is_object($value) && $type === $value::class => $value,
                 // $type === DateTime::class => new DateTime($value),
 
@@ -277,7 +277,7 @@ trait DtoCastsTrait
     {
         return match (true) {
             is_null($value) => $canNull ? null : '',
-            $value === '' => '',
+            $value === '' => $canNull ? null : '',
             $value instanceof self => json_encode(
                 $value->serializeKeys()->toArray(),
                 JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES

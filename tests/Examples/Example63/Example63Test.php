@@ -68,7 +68,7 @@ final class Example63Test extends TestCase
         $this->assertSame(0.0, $carDto->float);
         $this->assertSame(null, $carDto->floatNull);
         $this->assertSame('', $carDto->string);
-        $this->assertSame('', $carDto->stringNull);
+        $this->assertSame(null, $carDto->stringNull);
         $this->assertSame(false, $carDto->bool);
         $this->assertSame(null, $carDto->boolNull);
         $this->assertSame([], $carDto->array);
