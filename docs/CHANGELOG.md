@@ -5,6 +5,7 @@
 - Добавлен метод getFlipArray
 - Добавлен метод getPropertyTypes
 - Добавлен метод hideProperties
+- Добавлен метод resolvePropertyName
 
 - Обновлен метод __get
 - Обновлен метод __set

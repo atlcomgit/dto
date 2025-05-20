@@ -107,39 +107,69 @@ trait DtoPropertiesTrait
      * Возвращает массив типов свойства dto
      * @see ../../tests/Examples/Example62/Example62Test.php
      *
-     * @param string $key
+     * @param string $name
      * @return array
      */
-    public function getPropertyTypes(string $key): array
+    public function getPropertyTypes(string $name): array
     {
+        $name = $this->resolvePropertyName($name);
+
         return match (true) {
-            property_exists($this, $key) => array_filter(
+            property_exists($this, $name)
+            => array_filter(
                 explode(
                     '|',
                     trim(
                         str_replace(
                             ['?', ' '],
                             ['|null|', ''],
-                            (string)(new ReflectionProperty(static::class, $key))->getType() ?: 'mixed'
+                            (string)(new ReflectionProperty(static::class, $name))->getType() ?: 'mixed'
                         ),
                         '|',
                     ),
                 ),
             ),
 
-            default => match ($type = gettype($this->getCustomOption($key))) {
-                'null', 'NULL' => ['null'],
-                'integer', 'int' => ['int'],
-                'double', 'float' => ['float'],
-                'boolean', 'bool' => ['bool'],
-                'string' => ['string'],
-                'array' => ['array'],
-                'object' => ['object'],
-                'mixed' => ['mixed'],
+            $this->consts('AUTO_DYNAMIC_PROPERTIES_ENABLED') === true
+            => match (
+                $type = gettype($this->getCustomOption($name))
+                ) {
+                    'null', 'NULL' => ['null'],
+                    'integer', 'int' => ['int'],
+                    'double', 'float' => ['float'],
+                    'boolean', 'bool' => ['bool'],
+                    'string' => ['string'],
+                    'array' => ['array'],
+                    'object' => ['object'],
+                    'mixed' => ['mixed'],
 
-                default => [$type],
-            },
+                    default => [$type],
+                },
+
+
+            default => [],
         };
+    }
+
+
+    /**
+     * Возвращает имя свойства после резолвинга
+     *
+     * @param string $name
+     * @return string
+     */
+    public function resolvePropertyName(string $name): string
+    {
+        return (property_exists($this, $name) ? $name : null)
+            ?? ($this->getFlipArray($this->mappings())[$name] ?? null)
+            ?? (
+                $this->consts('AUTO_MAPPINGS_ENABLED')
+                ? ((property_exists($this, $name = $this->toCamelCase($name)) ? $name : null)
+                    ?? (property_exists($this, $name = $this->toSnakeCase($name)) ? $name : null)
+                )
+                : null
+            )
+            ?? $name;
     }
 
 

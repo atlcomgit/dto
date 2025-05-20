@@ -21,6 +21,7 @@ use UnitEnum;
 trait DtoCastsTrait
 {
     /**
+     * @internal
      * Проверяет значение на соответствие типу
      * @see ../../tests/Examples/Example06/Example06Test.php
      * @see ../../tests/Examples/Example08/Example08Test.php
@@ -89,6 +90,7 @@ trait DtoCastsTrait
 
 
     /**
+     * @internal
      * Сериализация значения для массива
      *
      * @param string $key
@@ -132,6 +134,7 @@ trait DtoCastsTrait
 
 
     /**
+     * @internal
      * Преобразование значения к типу: object
      *
      * @param string $key
@@ -242,6 +245,7 @@ trait DtoCastsTrait
 
 
     /**
+     * @internal
      * Преобразование значения к типу: boolean
      * @see ../../tests/Examples/Example63/Example63Test.php
      *
@@ -266,6 +270,7 @@ trait DtoCastsTrait
 
 
     /**
+     * @internal
      * Преобразование значения к типу: string
      * @see ../../tests/Examples/Example63/Example63Test.php
      *
@@ -299,6 +304,7 @@ trait DtoCastsTrait
 
 
     /**
+     * @internal
      * Преобразование значения к типу: integer
      * @see ../../tests/Examples/Example63/Example63Test.php
      *
@@ -321,6 +327,7 @@ trait DtoCastsTrait
 
 
     /**
+     * @internal
      * Преобразование значения к типу: float
      * @see ../../tests/Examples/Example63/Example63Test.php
      *
@@ -343,6 +350,7 @@ trait DtoCastsTrait
 
 
     /**
+     * @internal
      * Преобразование значения к типу: array
      * @see ../../tests/Examples/Example63/Example63Test.php
      *
@@ -371,6 +379,7 @@ trait DtoCastsTrait
 
 
     /**
+     * @internal
      * Преобразование значения к типу: array<type>|Collection<type>
      * @see ../../tests/Examples/Example63/Example63Test.php
      * 
@@ -437,6 +446,7 @@ trait DtoCastsTrait
 
 
     /**
+     * @internal
      * Преобразование значения к типу: DateTime|Carbon
      * @see ../../tests/Examples/Example63/Example63Test.php
      *
@@ -520,6 +530,7 @@ trait DtoCastsTrait
 
 
     /**
+     * @internal
      * Преобразование значения к типу с положительным значением: float|int
      *
      * @param mixed $value

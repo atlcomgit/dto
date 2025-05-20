@@ -16,6 +16,7 @@ use Traversable;
 trait DtoIteratorAggregate
 {
     /**
+     * @internal
      * Возвращает внешний итератор
      * @see ../../tests/Examples/Example51/Example51Test.php
      * 

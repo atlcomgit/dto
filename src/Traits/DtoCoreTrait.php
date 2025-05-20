@@ -20,6 +20,7 @@ use Throwable;
 trait DtoCoreTrait
 {
     /**
+     * @internal
      * Преобразование данных из строки json в массив
      *
      * @param string $data
@@ -40,6 +41,7 @@ trait DtoCoreTrait
 
 
     /**
+     * @internal
      * Применение преобразований типов
      *
      * @param array $array
@@ -103,6 +105,7 @@ trait DtoCoreTrait
 
 
     /**
+     * @internal
      * Сериализация массива
      *
      * @param array $array
@@ -130,6 +133,7 @@ trait DtoCoreTrait
 
 
     /**
+     * @internal
      * Подготовка свойств по PSR (camelCase, snake_case)
      *
      * @param array $array
@@ -159,6 +163,7 @@ trait DtoCoreTrait
 
 
     /**
+     * @internal
      * Меняет местами ключи с их значениями в массиве
      *
      * @param array $array
@@ -181,6 +186,7 @@ trait DtoCoreTrait
 
 
     /**
+     * @internal
      * Получение значения маппинга
      * 
      * @param array $array
@@ -210,6 +216,7 @@ trait DtoCoreTrait
 
 
     /**
+     * @internal
      * Маппинг свойств
      *
      * @param array $array
@@ -271,6 +278,7 @@ trait DtoCoreTrait
 
 
     /**
+     * @internal
      * Присвоение значения свойству
      *
      * @param string $key
@@ -403,6 +411,13 @@ trait DtoCoreTrait
     }
 
 
+    /**
+     * @internal
+     * Заполняет dto
+     *
+     * @param array $array
+     * @return static
+     */
     private function fillDto(array $array): static
     {
         try {

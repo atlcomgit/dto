@@ -14,6 +14,7 @@ use Throwable;
 trait DtoArrayAccess
 {
     /**
+     * @internal
      * Определяет, существует или нет данное смещение (ключ)
      * @see ../../tests/Examples/Example49/Example49Test.php
      *
@@ -38,6 +39,7 @@ trait DtoArrayAccess
 
 
     /**
+     * @internal
      * Возвращает заданное смещение (ключ)
      * @see ../../tests/Examples/Example49/Example49Test.php
      *
@@ -61,6 +63,7 @@ trait DtoArrayAccess
 
 
     /**
+     * @internal
      * Присваивает значение указанному смещению (ключу)
      * @see ../../tests/Examples/Example49/Example49Test.php
      *
@@ -85,6 +88,7 @@ trait DtoArrayAccess
 
 
     /**
+     * @internal
      * Удаляет смещение (ключ)
      * @see ../../tests/Examples/Example49/Example49Test.php
      *

@@ -207,6 +207,7 @@ trait DtoOptionsTrait
     final public function getCustomOption(string $optionName, mixed $defaultValue = null): mixed
     {
         $customOptions = $this->getOption('customOptions');
+        $optionName = $this->resolvePropertyName($optionName);
 
         return ($this->consts('AUTO_DYNAMIC_PROPERTIES_ENABLED') || isset($customOptions[$optionName]))
             ? ($customOptions[$optionName] ?? $defaultValue)
@@ -592,6 +593,7 @@ trait DtoOptionsTrait
 
 
     /**
+     * @internal
      * Сбрасывает все опции при преобразовании
      *
      * @return static
