@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Atlcom\Traits;
 
 use Atlcom\Exceptions\DtoException;
-use Throwable;
 
 /**
  * Трейт для реализации интерфейса Countable
@@ -22,15 +21,13 @@ trait DtoCountable
      */
     public function count(): int
     {
-        try {
-            $this->consts('INTERFACE_COUNTABLE_ENABLED') ?: throw new DtoException(
-                $this->exceptions('CountableDisabled', ['method' => __FUNCTION__]),
-                500,
+        $this->consts('INTERFACE_COUNTABLE_ENABLED') ?:
+            $this->onException(
+                new DtoException(
+                    $this->exceptions('CountableDisabled', ['method' => __FUNCTION__]),
+                    500,
+                ),
             );
-
-        } catch (Throwable $exception) {
-            $this->onException($exception);
-        }
 
         return count([
             ...(array)$this,

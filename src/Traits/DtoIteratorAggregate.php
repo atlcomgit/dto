@@ -6,7 +6,6 @@ namespace Atlcom\Traits;
 
 use ArrayIterator;
 use Atlcom\Exceptions\DtoException;
-use Throwable;
 use Traversable;
 
 /**
@@ -24,15 +23,13 @@ trait DtoIteratorAggregate
      */
     public function getIterator(): Traversable
     {
-        try {
-            $this->consts('INTERFACE_ITERATOR_AGGREGATE_ENABLED') ?: throw new DtoException(
-                $this->exceptions('IteratorAggregateDisabled', ['method' => __FUNCTION__]),
-                500,
+        $this->consts('INTERFACE_ITERATOR_AGGREGATE_ENABLED') ?:
+            $this->onException(
+                new DtoException(
+                    $this->exceptions('IteratorAggregateDisabled', ['method' => __FUNCTION__]),
+                    500,
+                ),
             );
-
-        } catch (Throwable $exception) {
-            $this->onException($exception);
-        }
 
         return new ArrayIterator([
             ...(array)$this,

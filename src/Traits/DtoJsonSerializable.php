@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Atlcom\Traits;
 
 use Atlcom\Exceptions\DtoException;
-use Throwable;
 
 /**
  * Трейт для реализации интерфейса JsonSerializable
@@ -23,15 +22,13 @@ trait DtoJsonSerializable
      */
     public function jsonSerialize(): mixed
     {
-        try {
-            $this->consts('INTERFACE_JSON_SERIALIZABLE_ENABLED') ?: throw new DtoException(
-                $this->exceptions('JsonSerializableDisabled', ['method' => __FUNCTION__]),
-                500,
+        $this->consts('INTERFACE_JSON_SERIALIZABLE_ENABLED') ?:
+            $this->onException(
+                new DtoException(
+                    $this->exceptions('JsonSerializableDisabled', ['method' => __FUNCTION__]),
+                    500,
+                ),
             );
-
-        } catch (Throwable $exception) {
-            $this->onException($exception);
-        }
 
         return [
             ...(array)$this,

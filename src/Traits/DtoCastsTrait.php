@@ -85,9 +85,11 @@ trait DtoCastsTrait
                             },
                     }
             };
-        } catch (Throwable $e) {
-            throw $e;
+        } catch (Throwable $exception) {
+            $this->onException($exception);
         }
+
+        return $value;
     }
 
 
@@ -155,14 +157,13 @@ trait DtoCastsTrait
         try {
             switch (true) {
                 case is_object($value) && $value::class === $class:
-
                     return $value;
 
-                case is_null($value):
-                    return $canNull ? null : new $class();
+                case is_null($value) && $canNull:
+                    return null;
 
-                case $value === '':
-                    return $canNull ? null : new $class();
+                case $value === '' && $canNull:
+                    return null;
 
                 case enum_exists($class):
                     return match (true) {
@@ -184,10 +185,11 @@ trait DtoCastsTrait
                                 }
                             })($class, $key, $value),
 
-                        default => throw new DtoException(
-                            $this->exceptions('ScalarForCastNeed', ['property' => $key]),
-                            409,
-                        ),
+                        default => $value,
+                    // default => throw new DtoException(
+                    //     $this->exceptions('ScalarForCastNeed', ['property' => $key]),
+                    //     409,
+                    // ),
                     };
 
                 default:
@@ -229,20 +231,30 @@ trait DtoCastsTrait
                                 }
                             }
                             break;
-
+                        
                         default:
-                            $object = $value;
+                            try {
+                                $object = new $class();
+                            } catch (Throwable $exception) {
+                                $object = $value;
+                            }
                     }
 
                     return $object;
             }
 
         } catch (Throwable $exception) {
-            throw new DtoException(
-                $this->exceptions('ClassCanNotBeCasted', ['class' => $class]),
-                500,
+            $this->onException(
+                $exception instanceof DtoException
+                ? throw $exception
+                : throw new DtoException(
+                    $this->exceptions('ClassCanNotBeCasted', ['class' => $class]),
+                    500,
+                )
             );
         }
+
+        return $value;
     }
 
 
@@ -407,9 +419,11 @@ trait DtoCastsTrait
             : ($value ?? []);
 
         if (!is_array($value)) {
-            throw new DtoException(
-                $this->exceptions('ArrayForCastNeed', ['property' => $key]),
-                409,
+            $this->onException(
+                new DtoException(
+                    $this->exceptions('ArrayForCastNeed', ['property' => $key]),
+                    409,
+                ),
             );
         }
 
@@ -419,9 +433,11 @@ trait DtoCastsTrait
 
         if ($class) {
             if (!class_exists($class)) {
-                throw new DtoException(
-                    $this->exceptions('ClassNotFound', ['class' => $class]),
-                    500,
+                $this->onException(
+                    throw new DtoException(
+                        $this->exceptions('ClassNotFound', ['class' => $class]),
+                        500,
+                    )
                 );
             }
 
@@ -439,9 +455,11 @@ trait DtoCastsTrait
             };
 
         } else {
-            throw new DtoException(
-                $this->exceptions('TypeForCastNotSpecified', ['property' => $key]),
-                500,
+            $this->onException(
+                new DtoException(
+                    $this->exceptions('TypeForCastNotSpecified', ['property' => $key]),
+                    500,
+                ),
             );
         }
     }

@@ -23,7 +23,7 @@ class MappingsDto extends Dto
 class MappingsDtoTest extends TestCase
 {
     #[Test]
-    public function mappings(): void
+    public function mappings1(): void
     {
         $dto = MappingsDto::create(userId: 1, userName: 'test');
 
@@ -43,5 +43,15 @@ class MappingsDtoTest extends TestCase
 
         $this->expectException(DtoException::class);
         $this->assertSame(null, $dto->user_id);
+    }
+
+
+    #[Test]
+    public function mappings2(): void
+    {
+        $dto = MappingsDto::create(userId: 1)->consts('AUTO_DYNAMIC_PROPERTIES_ENABLED', false);
+
+        $this->assertSame(1, $dto->userId);
+        $this->assertSame(1, $dto->user_id);
     }
 }
