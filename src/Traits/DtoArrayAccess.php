@@ -24,10 +24,13 @@ trait DtoArrayAccess
     public function offsetExists(mixed $offset): bool
     {
         try {
-            $this->consts('INTERFACE_ARRAY_ACCESS_ENABLED') ?: throw new DtoException(
-                $this->exceptions('ArrayAccessDisabled', ['property' => $offset, 'method' => __FUNCTION__]),
-                500,
-            );
+            $this->consts('INTERFACE_ARRAY_ACCESS_ENABLED')
+                ?: $this->onException(
+                    throw new DtoException(
+                        $this->exceptions('ArrayAccessDisabled', ['property' => $offset, 'method' => __FUNCTION__]),
+                        500,
+                    )
+                );
 
         } catch (Throwable $exception) {
             $this->onException($exception);
@@ -49,10 +52,13 @@ trait DtoArrayAccess
     public function offsetGet(mixed $offset): mixed
     {
         try {
-            $this->consts('INTERFACE_ARRAY_ACCESS_ENABLED') ?: throw new DtoException(
-                $this->exceptions('ArrayAccessDisabled', ['property' => $offset, 'method' => __FUNCTION__]),
-                500,
-            );
+            $this->consts('INTERFACE_ARRAY_ACCESS_ENABLED')
+                ?: $this->onException(
+                    throw new DtoException(
+                        $this->exceptions('ArrayAccessDisabled', ['property' => $offset, 'method' => __FUNCTION__]),
+                        500,
+                    )
+                );
 
         } catch (Throwable $exception) {
             $this->onException($exception);
@@ -74,10 +80,13 @@ trait DtoArrayAccess
     public function offsetSet(mixed $offset, mixed $value): void
     {
         try {
-            $this->consts('INTERFACE_ARRAY_ACCESS_ENABLED') ?: throw new DtoException(
-                $this->exceptions('ArrayAccessDisabled', ['property' => $offset, 'method' => __FUNCTION__]),
-                500,
-            );
+            $this->consts('INTERFACE_ARRAY_ACCESS_ENABLED')
+                ?: $this->onException(
+                    throw new DtoException(
+                        $this->exceptions('ArrayAccessDisabled', ['property' => $offset, 'method' => __FUNCTION__]),
+                        500,
+                    )
+                );
 
         } catch (Throwable $exception) {
             $this->onException($exception);
@@ -98,10 +107,13 @@ trait DtoArrayAccess
     public function offsetUnset(mixed $offset): void
     {
         try {
-            $this->consts('INTERFACE_ARRAY_ACCESS_ENABLED') ?: throw new DtoException(
-                $this->exceptions('ArrayAccessDisabled', ['property' => $offset, 'method' => __FUNCTION__]),
-                500,
-            );
+            $this->consts('INTERFACE_ARRAY_ACCESS_ENABLED')
+                ?: $this->onException(
+                    throw new DtoException(
+                        $this->exceptions('ArrayAccessDisabled', ['property' => $offset, 'method' => __FUNCTION__]),
+                        500,
+                    )
+                );
 
         } catch (Throwable $exception) {
             $this->onException($exception);

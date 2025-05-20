@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace Atlcom\Tests\Examples\Example63;
 
 use Carbon\Carbon;
+use Exception;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use stdClass;
+use Throwable;
 
 /**
  * Примеры классов dto для теста
@@ -29,6 +31,8 @@ class CarDto extends \Atlcom\Dto
     public ?object $objectNull;
     public Carbon $carbon;
     public ?Carbon $carbonNull;
+    public Exception $exception;
+    public ?Exception $exceptionNull;
 
     protected function casts(): array
     {
@@ -61,6 +65,8 @@ final class Example63Test extends TestCase
             objectNull: '',
             carbon: '',
             carbonNull: '',
+            exception: '',
+            exceptionNull: '',
         );
 
         $this->assertSame(0, $carDto->int);
@@ -77,6 +83,8 @@ final class Example63Test extends TestCase
         $this->assertSame(null, $carDto->objectNull);
         $this->assertInstanceOf(Carbon::class, $carDto->carbon);
         $this->assertSame(null, $carDto->carbonNull);
+        $this->assertInstanceOf(Exception::class, $carDto->exception);
+        $this->assertSame(null, $carDto->exceptionNull);
 
         $carDto = CarDto::create(
             int: null,
@@ -93,6 +101,8 @@ final class Example63Test extends TestCase
             objectNull: null,
             carbon: null,
             carbonNull: null,
+            exception: null,
+            exceptionNull: null,
         );
 
         $this->assertSame(0, $carDto->int);
@@ -109,5 +119,7 @@ final class Example63Test extends TestCase
         $this->assertSame(null, $carDto->objectNull);
         $this->assertInstanceOf(Carbon::class, $carDto->carbon);
         $this->assertSame(null, $carDto->carbonNull);
+        $this->assertInstanceOf(Exception::class, $carDto->exception);
+        $this->assertSame(null, $carDto->exceptionNull);
     }
 }

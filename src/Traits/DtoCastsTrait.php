@@ -48,8 +48,9 @@ trait DtoCastsTrait
             return match (true) {
                 // is_null($value) => null, - не нужен
                 // $type === gettype($value) => $value,
-                is_object($value) && $type === $value::class => $value,
                 // $type === DateTime::class => new DateTime($value),
+
+                is_object($value) && $type === $value::class => $value,
 
                 is_string($type) && in_array($type, [Carbon::class, DateTime::class, DateTimeInterface::class])
                 => $this->castToDateTime($value, $type, $canNull),
@@ -75,9 +76,10 @@ trait DtoCastsTrait
                                 => $this->castToArrayOfObjects($key, $type, $value),
                                 is_callable($type) => $type($value, $key),
                                 is_object($value) && $value instanceof $type => $value,
+                                is_object($value) && is_subclass_of($value, $type) => $value,
 
                                 default => throw new DtoException(
-                                    $this->exceptions('TypeForCastNotFound', ['type' => $type]),
+                                    $this->exceptions('TypeForCastNotFound', ['property' => $key, 'type' => $type]),
                                     500,
                                 ),
                             },

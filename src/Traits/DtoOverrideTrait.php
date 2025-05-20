@@ -271,7 +271,8 @@ trait DtoOverrideTrait
                 $messageItems['class'],
             ),
             'TypeForCastNotFound' => sprintf(
-                "Тип приведения не найден: %s",
+                $this->toBasename($this) . '->%s: не найден тип/класс для преобразования %s',
+                $messageItems['property'],
                 $messageItems['type'],
             ),
             'ScalarForCastNeed' => sprintf(
