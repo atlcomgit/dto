@@ -162,7 +162,7 @@ trait DtoCastsTrait
                 case is_null($value) && $canNull:
                     return null;
 
-                case $value === '' && $canNull:
+                case $value === '' && $canNull && $this->consts('AUTO_EMPTY_STRING_TO_NULL_ENABLED'):
                     return null;
 
                 case enum_exists($class):
@@ -231,7 +231,7 @@ trait DtoCastsTrait
                                 }
                             }
                             break;
-                        
+
                         default:
                             try {
                                 $object = new $class();
@@ -272,7 +272,7 @@ trait DtoCastsTrait
         return match (true) {
             is_null($value) => $canNull ? null : false,
             is_bool($value) => $value,
-            $value === '' => $canNull ? null : false,
+            $value === '' => ($canNull && $this->consts('AUTO_EMPTY_STRING_TO_NULL_ENABLED')) ? null : false,
             in_array($value, ['true', 'True', 'TRUE', true, '1', 1], true) => true,
             in_array($value, ['false', 'False', 'FALSE', false, '0', 0, null], true) => false,
             is_numeric($value) => (bool)$value,
@@ -296,7 +296,7 @@ trait DtoCastsTrait
     {
         return match (true) {
             is_null($value) => $canNull ? null : '',
-            $value === '' => $canNull ? null : '',
+            $value === '' => ($canNull && $this->consts('AUTO_EMPTY_STRING_TO_NULL_ENABLED')) ? null : '',
             $value instanceof self => json_encode(
                 $value->serializeKeys()->toArray(),
                 JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES
@@ -328,10 +328,11 @@ trait DtoCastsTrait
      */
     protected function castToInt(mixed $value, bool $canNull = false): mixed
     {
+        $a = $this->consts('AUTO_EMPTY_STRING_TO_NULL_ENABLED');
         return match (true) {
             is_null($value) => $canNull ? null : 0,
             is_integer($value) => $value,
-            $value === '' => $canNull ? null : 0,
+            $value === '' => ($canNull && $this->consts('AUTO_EMPTY_STRING_TO_NULL_ENABLED')) ? null : 0,
             is_numeric($value) => (int)$value,
             is_callable($value) => static::castToInt($value(), $canNull),
 
@@ -354,7 +355,7 @@ trait DtoCastsTrait
         return match (true) {
             is_null($value) => $canNull ? null : 0.0,
             is_float($value) => $value,
-            $value === '' => $canNull ? null : 0.0,
+            $value === '' => ($canNull && $this->consts('AUTO_EMPTY_STRING_TO_NULL_ENABLED')) ? null : 0.0,
             is_numeric($value) => (float)$value,
             is_callable($value) => static::castToFloat($value(), $canNull),
 
@@ -377,7 +378,7 @@ trait DtoCastsTrait
         return match (true) {
             is_null($value) => $canNull ? null : [],
             $value instanceof self => $value->serializeKeys()->toArray(),
-            $value === '' => $canNull ? null : [],
+            $value === '' => ($canNull && $this->consts('AUTO_EMPTY_STRING_TO_NULL_ENABLED')) ? null : [],
             is_string($value) => self::jsonDecode($value, true),
             is_object($value) => match (true) {
                     method_exists($value, 'toArray') => $value->toArray(),
@@ -462,6 +463,8 @@ trait DtoCastsTrait
                 ),
             );
         }
+
+        return [];
     }
 
 
@@ -482,7 +485,16 @@ trait DtoCastsTrait
             : $this->consts('AUTO_DATETIME_CLASS');
 
         return match (true) {
-            is_null($value) || $value === '' => $canNull
+            is_null($value) => $canNull
+            ? null
+            : match ($type) {
+                    Carbon::class => Carbon::now(),
+                    DateTime::class, DateTimeInterface::class => new DateTime(),
+
+                    default => $value,
+                },
+
+            $value === '' || $value == '-' => ($canNull && $this->consts('AUTO_EMPTY_STRING_TO_NULL_ENABLED'))
             ? null
             : match ($type) {
                     Carbon::class => Carbon::now(),
@@ -535,15 +547,6 @@ trait DtoCastsTrait
                     default => $value,
                 },
 
-            empty($value) || $value == '-' => $canNull
-            ? null
-            : match ($type) {
-                    Carbon::class => Carbon::now(),
-                    DateTime::class, DateTimeInterface::class => new DateTime(),
-
-                    default => $value,
-                },
-
             default => $value,
         };
     }
@@ -561,6 +564,7 @@ trait DtoCastsTrait
     {
         return match (true) {
             is_null($value) => $canNull ? null : 0,
+            $value === '' => ($canNull && $this->consts('AUTO_EMPTY_STRING_TO_NULL_ENABLED')) ? null : 0,
             is_integer($value) && is_numeric($value) => filter_var($value, FILTER_VALIDATE_INT, [
                 'options' => ['min_range' => 0],
             ]),

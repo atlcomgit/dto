@@ -57,6 +57,12 @@ trait DtoConstsTrait
     public const AUTO_PROPERTIES_AS_METHODS_ENABLED = true;
 
     /**
+     * Включает опцию для преобразования пустой строки в null
+     * @see ../../tests/Examples/Example63/Example63Test.php
+     */
+    public const AUTO_EMPTY_STRING_TO_NULL_ENABLED = true;
+
+    /**
      * Включает реализацию интерфейса ArrayAccess для работы с dto как с массивом
      * @see ../../tests/Examples/Example49/Example49Test.php
      */

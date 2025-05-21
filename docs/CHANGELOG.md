@@ -1,11 +1,14 @@
 # Changelog
 
 ## _Версия 2.74_
+
 - Добавлен метод consts
 - Добавлен метод getFlipArray
 - Добавлен метод getPropertyTypes
 - Добавлен метод hideProperties
 - Добавлен метод resolvePropertyName
+
+- Добавлена константа AUTO_EMPTY_STRING_TO_NULL_ENABLED
 
 - Обновлен метод __get
 - Обновлен метод __set

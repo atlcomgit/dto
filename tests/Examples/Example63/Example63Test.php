@@ -9,7 +9,6 @@ use Exception;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use stdClass;
-use Throwable;
 
 /**
  * Примеры классов dto для теста
@@ -17,6 +16,8 @@ use Throwable;
 
 class CarDto extends \Atlcom\Dto
 {
+    public const AUTO_EMPTY_STRING_TO_NULL_ENABLED = true;
+
     public int $int;
     public ?int $intNull;
     public float $float;
@@ -48,7 +49,7 @@ class CarDto extends \Atlcom\Dto
 final class Example63Test extends TestCase
 {
     #[Test]
-    public function example(): void
+    public function example1(): void
     {
         $carDto = CarDto::create(
             int: '',
@@ -85,7 +86,12 @@ final class Example63Test extends TestCase
         $this->assertSame(null, $carDto->carbonNull);
         $this->assertInstanceOf(Exception::class, $carDto->exception);
         $this->assertSame(null, $carDto->exceptionNull);
+    }
 
+
+    #[Test]
+    public function example2(): void
+    {
         $carDto = CarDto::create(
             int: null,
             intNull: null,
@@ -121,5 +127,48 @@ final class Example63Test extends TestCase
         $this->assertSame(null, $carDto->carbonNull);
         $this->assertInstanceOf(Exception::class, $carDto->exception);
         $this->assertSame(null, $carDto->exceptionNull);
+    }
+
+
+    #[Test]
+    public function example3(): void
+    {
+        $carDto = (new CarDto())
+            ->consts('AUTO_EMPTY_STRING_TO_NULL_ENABLED', false)
+            ->fillFromArray([
+                'int' => '',
+                'intNull' => '',
+                'float' => '',
+                'floatNull' => '',
+                'string' => '',
+                'stringNull' => '',
+                'bool' => '',
+                'boolNull' => '',
+                'array' => '',
+                'arrayNull' => '',
+                'object' => '',
+                'objectNull' => '',
+                'carbon' => '',
+                'carbonNull' => '',
+                'exception' => '',
+                'exceptionNull' => '',
+            ]);
+
+        $this->assertSame(0, $carDto->int);
+        $this->assertSame(0, $carDto->intNull);
+        $this->assertSame(0.0, $carDto->float);
+        $this->assertSame(0.0, $carDto->floatNull);
+        $this->assertSame('', $carDto->string);
+        $this->assertSame('', $carDto->stringNull);
+        $this->assertSame(false, $carDto->bool);
+        $this->assertSame(false, $carDto->boolNull);
+        $this->assertSame([], $carDto->array);
+        $this->assertSame([], $carDto->arrayNull);
+        $this->assertInstanceOf(stdClass::class, $carDto->object);
+        $this->assertInstanceOf(stdClass::class, $carDto->objectNull);
+        $this->assertInstanceOf(Carbon::class, $carDto->carbon);
+        $this->assertInstanceOf(Carbon::class, $carDto->carbonNull);
+        $this->assertInstanceOf(Exception::class, $carDto->exception);
+        $this->assertInstanceOf(Exception::class, $carDto->exceptionNull);
     }
 }
