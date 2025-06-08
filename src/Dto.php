@@ -30,7 +30,7 @@ use Stringable;
 /**
  * Абстрактный класс Dto
  * @abstract
- * @version 2.74
+ * @version 2.75
  * 
  * @static   @see self::create()
  * @static   @see self::fill()

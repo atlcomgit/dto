@@ -159,6 +159,9 @@ trait DtoCastsTrait
                 case is_object($value) && $value::class === $class:
                     return $value;
 
+                case is_object($value) && $value instanceof $class:
+                    return $value;
+
                 case is_null($value) && $canNull:
                     return null;
 
