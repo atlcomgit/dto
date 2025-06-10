@@ -69,12 +69,12 @@ trait DtoPropertiesTrait
         bool|array|null $useMappings = false,
     ): array {
         $array = [];
-        $dto = new static();
+        $dto = null;
         $casts = $useCasts
-            ? [...$dto->casts(), ...(is_array($useCasts) ? $useCasts : [])]
+            ? [...($dto ??= new static())->casts(), ...(is_array($useCasts) ? $useCasts : [])]
             : [];
         $mappings = $useMappings
-            ? [...$dto->mappings(), ...(is_array($useMappings) ? $useMappings : [])]
+            ? [...($dto ??= new static())->mappings(), ...(is_array($useMappings) ? $useMappings : [])]
             : [];
 
         foreach (static::getProperties() as $key) {

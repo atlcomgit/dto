@@ -189,10 +189,10 @@ trait DtoCastsTrait
                             })($class, $key, $value),
 
                         default => $value,
-                    // default => throw new DtoException(
-                    //     $this->exceptions('ScalarForCastNeed', ['property' => $key]),
-                    //     409,
-                    // ),
+                        // default => throw new DtoException(
+                        //     $this->exceptions('ScalarForCastNeed', ['property' => $key]),
+                        //     409,
+                        // ),
                     };
 
                 default:
@@ -236,8 +236,22 @@ trait DtoCastsTrait
                             break;
 
                         default:
+                            $object = null;
+                            $keyTypes = static::getPropertiesWithAllTypes(useMappings: true)[$key] ?? [];
+                            $valueType = mb_strtolower(gettype($value));
+
+                            foreach ($keyTypes as $keyType) {
+                                if (
+                                    mb_strtolower($keyType) === $valueType
+                                    || (is_object($value) && $value instanceof $keyType)
+                                ) {
+                                    $object = $value;
+                                    break;
+                                }
+                            }
+                            
                             try {
-                                $object = new $class();
+                                !is_null($object) ?: $object = new $class();
                             } catch (Throwable $exception) {
                                 $object = $value;
                             }
