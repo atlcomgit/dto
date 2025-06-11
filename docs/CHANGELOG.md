@@ -3,6 +3,7 @@
 ## _Версия 2.75_
 - Обновлен метод castToObject
 - Обновлен метод getPropertiesWithAllTypes
+- Обновлен метод serializeValue
 
 ## _Версия 2.74_
 - Добавлен метод consts

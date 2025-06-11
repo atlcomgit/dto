@@ -120,8 +120,8 @@ trait DtoCastsTrait
             $value instanceof BackedEnum => $value->value,
             is_null($type) => $value,
             is_callable($type) => $type($value, $key),
-            mb_strtolower($type) === Carbon::class => $value->toDateTimeString(),
-            mb_strtolower($type) === 'libphonenumber\phonenumber'
+            is_string($type) && mb_strtolower($type) === Carbon::class => $value->toDateTimeString(),
+            is_string($type) && mb_strtolower($type) === 'libphonenumber\phonenumber'
             => 'libphonenumber\PhoneNumberUtil'::getInstance()
                 ->format($value, 'libphonenumber\PhoneNumberFormat'::E164),
             is_array($value) => array_map(fn ($item) => $this->serializeValue($key, $type, $item), $value),

@@ -288,7 +288,7 @@ trait DtoOverrideTrait
                 $messageItems['property'],
             ),
             'ArrayAccessDisabled' => sprintf(
-                $this->toBasename($this) . '->%s: доступ к свойству через массив отключен',
+                $this->toBasename($this) . '[%s]: доступ к DTO как ARRAY отключено',
                 $messageItems['property'],
             ),
             'CountableDisabled',
