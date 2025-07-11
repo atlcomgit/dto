@@ -318,8 +318,8 @@ trait DtoCastsTrait
                 $value->serializeKeys()->toArray(),
                 JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES
             ),
-            is_array($value), is_object($value)
-            => json_encode(
+            is_array($value) => json_encode($value, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES),
+            is_object($value) => json_encode(
                     match (true) {
                         method_exists($value, 'toArray') => $value->toArray(),
                         method_exists($value, 'all') => $value->all(),

@@ -2,6 +2,7 @@
 
 ## _Версия 2.75_
 - Обновлен метод castToObject
+- Обновлен метод castToString
 - Обновлен метод getPropertiesWithAllTypes
 - Обновлен метод serializeValue
 
