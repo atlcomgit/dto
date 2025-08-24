@@ -118,7 +118,7 @@ trait DtoCoreTrait
 
         foreach ($array as $key => $value) {
             if ($this->isOptionContainKey($serializeKeys, $key)) {
-                if (is_array($value)) {
+                if (false && is_array($value)) { // !todo remove block
                     array_walk_recursive(
                         $value,
                         fn (&$item) => $item = $this->serializeValue($key, $casts[$key] ?? null, $item)
