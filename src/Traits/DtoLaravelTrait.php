@@ -91,6 +91,8 @@ trait DtoLaravelTrait
         $rules = $this->rules();
         $dataNew = [];
 
+        $this->onValidating($rules, $data);
+
         if ($rules && class_exists($validator)) {
             try {
                 !$this->mappings() ?: $this->prepareMappings($data);
@@ -101,7 +103,7 @@ trait DtoLaravelTrait
                     ->validate();
             } catch (Throwable $exception) {
                 $this->onException(
-                    new DtoValidateException($exception->getMessage(), $exception->getCode() ?: 422, $exception)
+                    new DtoValidateException($exception->getMessage(), $exception->getCode() ?: 422, $exception),
                 );
             }
         } else {
@@ -110,6 +112,18 @@ trait DtoLaravelTrait
 
         return $this->fillFromArray($dataNew ?? []);
     }
+
+
+    /**
+     * @override
+     * Метод вызывается перед валидацией запроса
+     *
+     * @param array $rules
+     * @param array $array
+     * @return void
+     */
+    // #[Override()]
+    protected function onValidating(array &$rules, array &$array): void {}
 
 
     /**

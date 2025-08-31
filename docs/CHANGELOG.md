@@ -1,6 +1,7 @@
 # Changelog
 
 ## _Версия 2.75_
+- Добавлен метод onValidating
 - Обновлен метод castToObject
 - Обновлен метод castToString
 - Обновлен метод getPropertiesWithAllTypes
