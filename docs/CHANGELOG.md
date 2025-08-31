@@ -4,8 +4,10 @@
 - Обновлен метод castToObject
 - Обновлен метод castToString
 - Обновлен метод getPropertiesWithAllTypes
+- Обновлен метод prepareStyles
 - Обновлен метод serializeCasts
 - Обновлен метод serializeValue
+- Обновлен метод validateCasts
 
 ## _Версия 2.74_
 - Добавлен метод consts
