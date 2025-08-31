@@ -123,7 +123,22 @@ trait DtoLaravelTrait
      * @return void
      */
     // #[Override()]
-    protected function onValidating(array &$rules, array &$array): void {}
+    protected function onValidating(array &$rules, array &$array): void
+    {
+        if (function_exists('request')) {
+            $request = request();
+            $routeId = $request->route()?->parameter('id');
+
+            if (
+                $request
+                && $routeId
+                && !$request->input('id')
+                && ($request->isMethod('put') || $request->isMethod('patch'))
+            ) {
+                $array['id'] = (int)$routeId;
+            }
+        }
+    }
 
 
     /**
