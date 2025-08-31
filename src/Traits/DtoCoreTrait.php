@@ -88,13 +88,13 @@ trait DtoCoreTrait
             // }
 
             if (!$isCasted && $autoMappings) {
-                $keyCamelCase = $this->toCamelCase($key);
+                $keyCamelCase = $this->toCamelCase((string)$key);
                 if ($key !== $keyCamelCase && array_key_exists($keyCamelCase, $array)) {
                     $castedValue = $this->matchValue($key, $cast, $array[$keyCamelCase] ?? null);
                     $array[$keyCamelCase] = $castedValue;
                 }
 
-                $keySnakeCase = $this->toSnakeCase($key);
+                $keySnakeCase = $this->toSnakeCase((string)$key);
                 if ($key !== $keySnakeCase && array_key_exists($keySnakeCase, $array)) {
                     $castedValue = $this->matchValue($key, $cast, $array[$keySnakeCase] ?? null);
                     $array[$keySnakeCase] = $castedValue;
@@ -146,16 +146,16 @@ trait DtoCoreTrait
 
         if ($forceMappings || $autoMappings) {
             foreach ($array as $key => $value) {
-                $keyCamelCase = $this->toCamelCase($key);
+                $keyCamelCase = $this->toCamelCase((string)$key);
                 isset($array[$keyCamelCase]) ?: $array[$keyCamelCase] = $value;
 
-                $keySnakeCase = $this->toSnakeCase($key);
+                $keySnakeCase = $this->toSnakeCase((string)$key);
                 isset($array[$keySnakeCase]) ?: $array[$keySnakeCase] = $value;
 
-                $keyDotCamelCase = $this->toCamelCase(str_replace('.', '_', $key));
+                $keyDotCamelCase = $this->toCamelCase(str_replace('.', '_', (string)$key));
                 isset($array[$keyDotCamelCase]) ?: $array[$keyDotCamelCase] = $value;
 
-                $keyDotSnakeCase = $this->toSnakeCase(str_replace('.', '_', $key));
+                $keyDotSnakeCase = $this->toSnakeCase(str_replace('.', '_', (string)$key));
                 isset($array[$keyDotSnakeCase]) ?: $array[$keyDotSnakeCase] = $value;
             }
         }
