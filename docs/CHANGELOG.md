@@ -2,7 +2,7 @@
 
 ## _Версия 2.75_
 - Добавлен метод onValidating
-
+- Добавлен метод castToJson
 
 - Обновлен метод castToObject
 - Обновлен метод castToString
@@ -19,9 +19,7 @@
 - Добавлен метод hideProperties
 - Добавлен метод resolvePropertyName
 
-
 - Добавлена константа AUTO_EMPTY_STRING_TO_NULL_ENABLED
-
 
 - Обновлен метод __get
 - Обновлен метод __set
