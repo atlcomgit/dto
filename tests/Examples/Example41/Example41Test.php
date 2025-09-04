@@ -44,11 +44,13 @@ class CarDto1 extends \Atlcom\Dto
     public ?CarEnum $carEnum;
 
     public mixed $carMapping;
+    public mixed $json;
 
     protected function mappings(): array
     {
         return [
             'carMapping' => 'car_mapping',
+            'json' => 'json',
         ];
     }
 
@@ -111,6 +113,7 @@ final class Example41Test extends TestCase
         $this->assertContains('closure', $carProperties);
         $this->assertContains('carEnum', $carProperties);
         $this->assertContains('carMapping', $carProperties);
+        $this->assertContains('json', $carProperties);
 
         $carPropertiesWithType = CarDto1::getPropertiesWithFirstType();
         // var_dump($carPropertiesWithType);
@@ -132,6 +135,7 @@ final class Example41Test extends TestCase
         $this->assertTrue($carPropertiesWithType['closure'] === Closure::class);
         $this->assertTrue($carPropertiesWithType['carEnum'] === CarEnum::class);
         $this->assertTrue($carPropertiesWithType['carMapping'] === 'mixed');
+        $this->assertTrue($carPropertiesWithType['json'] === 'mixed');
 
         $carPropertiesWithType = CarDto1::getPropertiesWithFirstType(
             useCasts: true,
@@ -163,6 +167,7 @@ final class Example41Test extends TestCase
         $this->assertEquals($carPropertiesWithAllTypes['closure'], ['null', Closure::class]);
         $this->assertEquals($carPropertiesWithAllTypes['carEnum'], ['null', CarEnum::class]);
         $this->assertEquals($carPropertiesWithAllTypes['car_mapping'], ['integer']);
+        $this->assertEquals($carPropertiesWithAllTypes['json'], ['mixed']);
 
         $carDto3 = CarDto3::create(id: '123', name: 456);
 

@@ -34,6 +34,7 @@ class CarDto extends \Atlcom\Dto
     public ?Carbon $carbonNull;
     public Exception $exception;
     public ?Exception $exceptionNull;
+    public mixed $mixed;
 
     protected function casts(): array
     {
@@ -68,6 +69,7 @@ final class Example63Test extends TestCase
             carbonNull: '',
             exception: '',
             exceptionNull: '',
+            mixed: '',
         );
 
         $this->assertSame(0, $carDto->int);
@@ -86,6 +88,7 @@ final class Example63Test extends TestCase
         $this->assertSame(null, $carDto->carbonNull);
         $this->assertInstanceOf(Exception::class, $carDto->exception);
         $this->assertSame(null, $carDto->exceptionNull);
+        $this->assertSame('', $carDto->mixed);
     }
 
 
@@ -109,6 +112,7 @@ final class Example63Test extends TestCase
             carbonNull: null,
             exception: null,
             exceptionNull: null,
+            mixed: null,
         );
 
         $this->assertSame(0, $carDto->int);
@@ -127,6 +131,7 @@ final class Example63Test extends TestCase
         $this->assertSame(null, $carDto->carbonNull);
         $this->assertInstanceOf(Exception::class, $carDto->exception);
         $this->assertSame(null, $carDto->exceptionNull);
+        $this->assertSame(null, $carDto->mixed);
     }
 
 
@@ -152,6 +157,7 @@ final class Example63Test extends TestCase
                 'carbonNull' => '',
                 'exception' => '',
                 'exceptionNull' => '',
+                'mixed' => '',
             ]);
 
         $this->assertSame(0, $carDto->int);
@@ -170,5 +176,6 @@ final class Example63Test extends TestCase
         $this->assertInstanceOf(Carbon::class, $carDto->carbonNull);
         $this->assertInstanceOf(Exception::class, $carDto->exception);
         $this->assertInstanceOf(Exception::class, $carDto->exceptionNull);
+        $this->assertSame('', $carDto->mixed);
     }
 }

@@ -16,6 +16,7 @@ class CarDto extends \Atlcom\Dto
     public string $markName;
     public string $modelName;
     public int $year;
+    public mixed $data;
 
     protected function mappings(): array
     {
@@ -30,6 +31,7 @@ class CarDto extends \Atlcom\Dto
     {
         return [
             'year' => 'integer',
+            'data' => 'json',
         ];
     }
 }
@@ -67,6 +69,7 @@ final class Example06Test extends TestCase
             'params' => [
                 'year' => '2024',
             ],
+            'data' => 123,
         ]);
 
         $this->assertObjectHasProperty('markName', $carDto);
@@ -75,6 +78,7 @@ final class Example06Test extends TestCase
         $this->assertEquals('Lexus', $carDto->markName);
         $this->assertEquals('RX500', $carDto->modelName);
         $this->assertTrue($carDto->year === 2024);
+        $this->assertTrue($carDto->data === '123');
 
         $carDto2 = CarDto2::create([
             'mark_name' => 'Lexus',

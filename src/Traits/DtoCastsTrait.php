@@ -65,6 +65,7 @@ trait DtoCastsTrait
                         'object', 'obj' => $this->castToObject($key, stdClass::class, $value, $canNull),
                         'datetime', 'date' => $this->castToDateTime($value, $type, $canNull),
                         'positive' => $this->castToPositive($value, $canNull),
+                        'json' => $this->castToJson($value, $canNull),
                         'mixed', 'any' => $value,
 
                         default =>
@@ -189,10 +190,10 @@ trait DtoCastsTrait
                             })($class, $key, $value),
 
                         default => $value,
-                        // default => throw new DtoException(
-                        //     $this->exceptions('ScalarForCastNeed', ['property' => $key]),
-                        //     409,
-                        // ),
+                    // default => throw new DtoException(
+                    //     $this->exceptions('ScalarForCastNeed', ['property' => $key]),
+                    //     409,
+                    // ),
                     };
 
                 default:
@@ -249,7 +250,7 @@ trait DtoCastsTrait
                                     break;
                                 }
                             }
-                            
+
                             try {
                                 !is_null($object) ?: $object = new $class();
                             } catch (Throwable $exception) {
@@ -345,7 +346,6 @@ trait DtoCastsTrait
      */
     protected function castToInt(mixed $value, bool $canNull = false): mixed
     {
-        $a = $this->consts('AUTO_EMPTY_STRING_TO_NULL_ENABLED');
         return match (true) {
             is_null($value) => $canNull ? null : 0,
             is_integer($value) => $value,
@@ -591,6 +591,25 @@ trait DtoCastsTrait
             is_bool($value) => (int)$this->castToBoolean($value, $canNull),
 
             default => $value,
+        };
+    }
+
+
+    /**
+     * @internal
+     * Преобразование значения к типу: json
+     *
+     * @param mixed $value
+     * @param bool $canNull
+     * @return mixed
+     */
+    protected function castToJson(mixed $value, bool $canNull = false): mixed
+    {
+        return match (true) {
+            is_null($value) => $canNull ? null : '',
+            $value === '' => ($canNull && $this->consts('AUTO_EMPTY_STRING_TO_NULL_ENABLED')) ? null : '',
+
+            default => json_encode($value, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES),
         };
     }
 
