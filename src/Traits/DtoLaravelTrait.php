@@ -45,11 +45,11 @@ trait DtoLaravelTrait
                     default => null,
                 };
 
-                !$type ?: $rules[] = match (true) {
-                    $request->isMethod('put'), $request->isMethod('patch') => ['required', $type],
-                    $request->isMethod('post') => ['prohibited'],
+                !$type ?: match (true) {
+                    $request->isMethod('put'), $request->isMethod('patch') => $rules = [...$rules, 'required', $type],
+                    $request->isMethod('post') => $rules[] = 'prohibited',
 
-                    default => ['nullable', $type],
+                    default => $rules = [...$rules, 'nullable', $type],
                 };
             }
 
@@ -80,6 +80,8 @@ trait DtoLaravelTrait
             }
 
             (in_array('null', $types) || !empty($defaults[$key])) ?: $rules[] = 'required';
+            (in_array('required', $rules) && in_array('nullable', $rules))
+                ?: $rules = array_filter($rules, static fn ($v) => $v !== 'nullable');
 
             // Свое правило валидации
             // $rules[] = function (string $attribute, mixed $value, Closure $fail) {
