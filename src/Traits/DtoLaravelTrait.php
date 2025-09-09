@@ -5,11 +5,9 @@ declare(strict_types=1);
 namespace Atlcom\Traits;
 
 use Atlcom\Exceptions\DtoException;
-use Atlcom\Exceptions\DtoRequestException;
 use Atlcom\Exceptions\DtoValidateException;
 use BackedEnum;
 use Carbon\Carbon;
-use Closure;
 use DateTime;
 use Throwable;
 use UnitEnum;
@@ -35,6 +33,26 @@ trait DtoLaravelTrait
 
         foreach (static::getPropertiesWithAllTypes() as $key => $types) {
             $rules = [];
+
+            if (in_array($key, ['id', 'uuid']) && function_exists('request')) {
+                $request = request();
+
+                $type = match (true) {
+                    in_array('int', $types) => 'integer',
+                    in_array('integer', $types) => 'integer',
+                    in_array('string', $types) => 'string',
+
+                    default => null,
+                };
+
+                !$type ?: $rules[] = match (true) {
+                    $request->isMethod('put'), $request->isMethod('patch') => ['required', $type],
+                    $request->isMethod('post') => ['prohibited'],
+
+                    default => ['nullable', $type],
+                };
+            }
+
 
             foreach ($types as $type) {
                 $rules[] = match ($type) {

@@ -1,13 +1,14 @@
 # Changelog
 
 ## _Версия 2.75_
-- Добавлен метод onValidating
 - Добавлен метод castToJson
+- Добавлен метод onValidating
 
 - Обновлен метод castToObject
 - Обновлен метод castToString
 - Обновлен метод getPropertiesWithAllTypes
 - Обновлен метод prepareStyles
+- Обновлен метод rules
 - Обновлен метод serializeCasts
 - Обновлен метод serializeValue
 - Обновлен метод validateCasts
