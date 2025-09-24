@@ -80,7 +80,7 @@ trait DtoLaravelTrait
             }
 
             (in_array('null', $types) || !empty($defaults[$key])) ?: $rules[] = 'required';
-            (in_array('required', $rules) && in_array('nullable', $rules))
+            !(in_array('required', $rules) && in_array('nullable', $rules))
                 ?: $rules = array_filter($rules, static fn ($v) => $v !== 'nullable');
 
             // Свое правило валидации
