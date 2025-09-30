@@ -22,6 +22,7 @@ use Atlcom\Traits\DtoLaravelTrait;
 use Atlcom\Traits\DtoSerializeTrait;
 use Atlcom\Traits\DtoStringable;
 use Atlcom\Traits\DtoStrTrait;
+use Atlcom\Traits\DtoTrait;
 use Countable;
 use IteratorAggregate;
 use JsonSerializable;
@@ -102,6 +103,7 @@ abstract class Dto implements
     JsonSerializable,
     Stringable
 {
+    use DtoTrait;
     use DtoArrayAccess;
     use DtoCastsTrait;
     use DtoConstsTrait;

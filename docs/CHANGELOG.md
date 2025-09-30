@@ -1,6 +1,8 @@
 # Changelog
 
 ## _Версия 2.75_
+- Добавлен трейт DtoTrait
+
 - Добавлен метод castToJson
 - Добавлен метод onValidating
 

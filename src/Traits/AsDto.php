@@ -62,6 +62,7 @@ namespace Atlcom\Traits;
  */
 trait AsDto
 {
+    use DtoTrait;
     use DtoCastsTrait;
     use DtoConstsTrait;
     use DtoConvertTrait;

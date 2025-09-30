@@ -14,33 +14,6 @@ use Throwable;
 trait DtoMagicTrait
 {
     /**
-     * Магический метод вызывается при создании Dto
-     * @see ../../tests/Examples/Example21/Example21Test.php
-     * @see ../../tests/Examples/Example39/Example39Test.php
-     * @see ../../tests/Examples/Example44/Example44Test.php
-     *
-     * @param array|object|string|null $data
-     */
-    public function __construct(array|object|string|null $constructData = null)
-    {
-        $this->onCreating($constructData);
-
-        is_null($constructData) ?: $this->fillFromArray(static::convertDataToArray($constructData));
-
-        $this->onCreated($constructData);
-    }
-
-
-    /**
-     * destruct dto
-     */
-    public function __destruct()
-    {
-        $this->reset();
-    }
-
-
-    /**
      * Магический метод присвоения свойствам
      * - При заданном массиве mappings происходит поиск свойства согласно маппингу
      * - При включенной опции autoMappings или AUTO_MAPPINGS_ENABLED, поиск подменяет стили переменной camel, snake
