@@ -3,8 +3,6 @@
 namespace Atlcom\Tests\Other;
 
 use Atlcom\Dto;
-use Faker\Factory;
-use Faker\Generator;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 

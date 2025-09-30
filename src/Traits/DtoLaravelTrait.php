@@ -21,6 +21,7 @@ trait DtoLaravelTrait
     /**
      * @override
      * Возвращает массив правил валидации при использовании Dto вместо FormRequest в Laravel
+     * @see ../../tests/Other/RulesDtoTest.php
      * @see ../../docs/LARAVEL.md
      *
      * @return array
@@ -38,9 +39,13 @@ trait DtoLaravelTrait
                 $request = request();
 
                 $type = match (true) {
+                    in_array('mixed', $types) => 'mixed',
                     in_array('int', $types) => 'integer',
                     in_array('integer', $types) => 'integer',
                     in_array('string', $types) => 'string',
+                    in_array('any', $types) => 'mixed',
+                    in_array('true', $types) => 'boolean',
+                    in_array('false', $types) => 'boolean',
 
                     default => null,
                 };
@@ -60,7 +65,10 @@ trait DtoLaravelTrait
                     'int' => 'numeric',
                     'string' => 'string',
                     'bool' => 'boolean',
+                    'true' => 'boolean',
+                    'false' => 'boolean',
                     'array' => 'array',
+                    'mixed' => 'nullable',
 
                     default =>
                         match (true) {
@@ -79,7 +87,7 @@ trait DtoLaravelTrait
                 };
             }
 
-            (in_array('null', $types) || !empty($defaults[$key])) ?: $rules[] = 'required';
+            (in_array('null', $types) || in_array('mixed', $types) || !empty($defaults[$key])) ?: $rules[] = 'required';
             !(in_array('required', $rules) && in_array('nullable', $rules))
                 ?: $rules = array_filter($rules, static fn ($v) => $v !== 'nullable');
 
