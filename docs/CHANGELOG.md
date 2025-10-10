@@ -14,6 +14,7 @@
 - Обновлен метод serializeCasts
 - Обновлен метод serializeValue
 - Обновлен метод validateCasts
+- Обновлен метод validatorMessages
 
 ## _Версия 2.74_
 - Добавлен метод consts
