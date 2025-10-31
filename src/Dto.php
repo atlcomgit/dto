@@ -30,67 +30,70 @@ use Stringable;
 
 /**
  * Абстрактный класс Dto
+ * 
  * @abstract
- * @version 2.75
+ * @version 2.76
  * 
- * @static   @see self::create()
- * @static   @see self::fill()
- * @static   @see self::collect()
+ * static   @see self::create()
+ *          @see self::fill()
+ *          @see self::collect()
  * 
- *           @see self::merge()
- *           @see self::clear()
- *           @see self::clone()
- *           @see self::transformToDto()
- *           @see self::toArray()
- *           @see self::toJson()
- *           @see self::getHash()
+ * method   @see self::merge()
+ *          @see self::clear()
+ *          @see self::clone()
+ *          @see self::transformToDto()
+ *          @see self::toArray()
+ *          @see self::toJson()
+ *          @see self::getHash()
  * 
- * @static   @see self::toArrayBlank()
- * @static   @see self::toArrayBlankRecursive()
+ *          @see self::toArrayBlank()
+ *          @see self::toArrayBlankRecursive()
  * 
- *           @see self::for()
- *           @see self::autoCasts()
- *           @see self::autoMappings()
- *           @see self::onlyFilled()
- *           @see self::onlyNotNull()
- *           @see self::onlyKeys()
- *           @see self::includeStyles()
- *           @see self::includeArray()
- *           @see self::excludeKeys()
- *           @see self::mappingKeys()
- *           @see self::serializeKeys()
- *           @see self::withProtectedKeys()
- *           @see self::withPrivateKeys()
- *           @see self::setCustomOption()
- *           @see self::getCustomOption()
- *           @see self::withCustomOptions()
+ *          @see self::for()
+ *          @see self::autoCasts()
+ *          @see self::autoMappings()
+ *          @see self::onlyFilled()
+ *          @see self::onlyNotNull()
+ *          @see self::onlyKeys()
+ *          @see self::includeStyles()
+ *          @see self::includeArray()
+ *          @see self::excludeKeys()
+ *          @see self::mappingKeys()
+ *          @see self::serializeKeys()
+ *          @see self::withProtectedKeys()
+ *          @see self::withPrivateKeys()
+ *          @see self::setCustomOption()
+ *          @see self::getCustomOption()
+ *          @see self::withCustomOptions()
  * 
- * @override @see self::rules()
- * @override @see self::casts()
- * @override @see self::defaults()
- * @override @see self::mappings()
- * @override @see self::exceptions()
+ * override @see self::rules()
+ *          @see self::casts()
+ *          @see self::defaults()
+ *          @see self::mappings()
+ *          @see self::exceptions()
  * 
- * @override @see self::onCreating()
- * @override @see self::onCreated()
- * @override @see self::onFilling()
- * @override @see self::onFilled()
- * @override @see self::onMerging()
- * @override @see self::onMerged()
- * @override @see self::onSerializing()
- * @override @see self::onSerialized()
- * @override @see self::onAssigning()
- * @override @see self::onAssigned()
- * @override @see self::onException()
+ *          @see self::onCreating()
+ *          @see self::onCreated()
+ *          @see self::onFilling()
+ *          @see self::onFilled()
+ *          @see self::onMerging()
+ *          @see self::onMerged()
+ *          @see self::onSerializing()
+ *          @see self::onSerialized()
+ *          @see self::onAssigning()
+ *          @see self::onAssigned()
+ *          @see self::onException()
+ * 
+ * const    @see self::AUTO_CASTS_ENABLED
+ *          @see self::AUTO_CASTS_OBJECTS_ENABLED
+ *          @see self::AUTO_MAPPINGS_ENABLED
+ *          @see self::AUTO_SERIALIZE_ENABLED
+ *          @see self::AUTO_DYNAMIC_PROPERTIES_ENABLED
+ *          @see self::AUTO_PROPERTIES_AS_METHODS_ENABLED
+ *          @see self::AUTO_EMPTY_STRING_TO_NULL_ENABLED
  * 
  * @example
- * ExampleDto::create()
- *      ->onlyNotNull()
- *      ->onlyKeys([])
- *      ->excludeKeys([])
- *      ->mappingKeys([])
- *      ->serializeKeys(true)
- *      ->toArray();
+ * ExampleDto::create()->onlyNotNull()->onlyKeys([])->excludeKeys([])->mappingKeys([])->serializeKeys(true)->toArray();
  * 
  * @see ../README.md
  * @see ../docs/OVERRIDES.md

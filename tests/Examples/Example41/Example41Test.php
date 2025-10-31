@@ -153,7 +153,7 @@ final class Example41Test extends TestCase
         $this->assertEquals($carPropertiesWithAllTypes['public'], ['mixed']);
         $this->assertEquals($carPropertiesWithAllTypes['none'], ['mixed']);
         $this->assertEquals($carPropertiesWithAllTypes['mixed'], ['mixed']);
-        $this->assertEquals($carPropertiesWithAllTypes['any'], ['object', 'array', 'string', 'int', 'bool', 'null']);
+        $this->assertEquals($carPropertiesWithAllTypes['any'], ['object', 'array', 'int', 'string', 'bool', 'null']);
         $this->assertEquals($carPropertiesWithAllTypes['null'], ['null']);
         $this->assertEquals($carPropertiesWithAllTypes['id'], ['null', 'int']);
         $this->assertEquals($carPropertiesWithAllTypes['name'], ['null', 'string']);

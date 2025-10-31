@@ -5,5 +5,7 @@
 /.phpunit.result.cache
 /.idea
 /.vscode
-.qodo
-.github
+/.qodo
+/.github
+/junit.xml
+/junit*.xml

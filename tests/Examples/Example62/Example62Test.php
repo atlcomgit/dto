@@ -56,7 +56,7 @@ final class Example62Test extends TestCase
 
         $this->assertSame(['mixed'], $carDto->getPropertyTypes('none'));
         $this->assertSame(['mixed'], $carDto->getPropertyTypes('mixed'));
-        $this->assertSame(['object', 'array', 'string', 'int', 'bool', 'null'], $carDto->getPropertyTypes('any'));
+        $this->assertSame(['object', 'array', 'int', 'string', 'bool', 'null'], $carDto->getPropertyTypes('any'));
         $this->assertSame(['null'], $carDto->getPropertyTypes('null'));
         $this->assertSame(['null', 'false'], $carDto->getPropertyTypes('false'));
         $this->assertSame(['null', 'true'], $carDto->getPropertyTypes('true'));
