@@ -341,6 +341,46 @@ trait DtoPropertiesTrait
                 return static::parseAllPropertiesViaReflection();
             }
 
+            // Добавляем свойства из родительских классов, которых нет в текущем файле
+            $allProperties = static::getProperties();
+            foreach ($allProperties as $propName) {
+                if (!isset($result[$propName]) && property_exists(static::class, $propName)) {
+                    $property = new ReflectionProperty(static::class, $propName);
+                    $type = $property->getType();
+
+                    if (!$type) {
+                        $result[$propName] = ['mixed'];
+                        continue;
+                    }
+
+                    $types = [];
+
+                    // UnionType
+                    if ($type instanceof ReflectionUnionType) {
+                        foreach ($type->getTypes() as $unionType) {
+                            if ($unionType instanceof ReflectionNamedType) {
+                                $types[] = $unionType->getName();
+                            }
+                        }
+                    } // IntersectionType
+                    elseif ($type instanceof ReflectionIntersectionType) {
+                        foreach ($type->getTypes() as $intersectionType) {
+                            if ($intersectionType instanceof ReflectionNamedType) {
+                                $types[] = $intersectionType->getName();
+                            }
+                        }
+                    } // NamedType
+                    elseif ($type instanceof ReflectionNamedType) {
+                        if ($type->allowsNull() && $type->getName() !== 'mixed') {
+                            $types[] = 'null';
+                        }
+                        $types[] = $type->getName();
+                    }
+
+                    $result[$propName] = $types ?: ['mixed'];
+                }
+            }
+
             return $result;
 
         } catch (Throwable $e) {
