@@ -48,9 +48,9 @@ final class Example20Test extends TestCase
         $this->assertArrayHasKey('date', $carArray);
         $this->assertIsString($carArray['markName']);
         $this->assertIsString($carArray['type']);
-        $this->assertIsInt($carArray['date']);
+        $this->assertIsString($carArray['date']);
         $this->assertEquals('Lexus', $carArray['markName']);
         $this->assertEquals('new', $carArray['type']);
-        $this->assertEquals(1704067200, $carArray['date']);
+        $this->assertEquals('2024-01-01 00:00:00', $carArray['date']);
     }
 }

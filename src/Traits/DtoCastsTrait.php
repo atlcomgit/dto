@@ -117,10 +117,13 @@ trait DtoCastsTrait
                     'serializeKeys',
                 ],
             )->toArray(),
-            $value instanceof DateTimeInterface => $value->getTimestamp(),
             $value instanceof BackedEnum => $value->value,
+            $value instanceof DateTimeInterface => ($value instanceof Carbon)
+            ? $value->toDateTimeString()
+            : $value->format('Y-m-d H:i:s'),
             is_null($type) => $value,
             is_callable($type) => $type($value, $key),
+            // Даты сериализуем в строку (в БД в postgres не всегда работает unix timestamp)
             is_string($type) && mb_strtolower($type) === Carbon::class => $value->toDateTimeString(),
             is_string($type) && mb_strtolower($type) === 'libphonenumber\phonenumber'
             => 'libphonenumber\PhoneNumberUtil'::getInstance()

@@ -14,11 +14,11 @@ use stdClass;
 
 class CarDto extends \Atlcom\Dto
 {
-    public ?string $markName;
-    public ?array $array;
-    public ?object $object;
+    public ?string      $markName;
+    public ?array       $array;
+    public ?object      $object;
     public ?\Atlcom\Dto $dto;
-    public ?bool $boolean;
+    public ?bool        $boolean;
 }
 
 /**
@@ -33,10 +33,10 @@ final class Example39Test extends TestCase
     {
         $carDto = CarDto::create();
         $this->assertTrue($carDto->isEmpty());
-        
+
         $carDto = new CarDto();
         $this->assertTrue($carDto->isEmpty());
-        
+
         $carDto = CarDto::create(array: []);
         $this->assertTrue($carDto->isEmpty());
 
@@ -46,6 +46,9 @@ final class Example39Test extends TestCase
         $carDto = CarDto::create(dto: CarDto::create());
         $this->assertTrue($carDto->isEmpty());
 
+
+        $carDto = CarDto::create(markName: '');
+        $this->assertFalse($carDto->isEmpty());
 
         $carDto = CarDto::create(markName: 'Lexus');
         $this->assertFalse($carDto->isEmpty());
@@ -67,5 +70,14 @@ final class Example39Test extends TestCase
 
         $carDto = CarDto::create(boolean: false);
         $this->assertFalse($carDto->isEmpty());
+
+        $carDto = CarDto::create(
+            markName: null,
+            array: [],
+            object: new stdClass(),
+            dto: CarDto::create(),
+            boolean: null,
+        );
+        $this->assertTrue($carDto->isEmpty());
     }
 }
