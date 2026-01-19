@@ -10,3 +10,4 @@
 /junit.xml
 /junit*.xml
 .github
+.env

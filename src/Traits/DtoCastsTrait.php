@@ -97,10 +97,12 @@ trait DtoCastsTrait
     /**
      * @internal
      * Сериализация значения для массива
+     * @see ../../tests/Other/CastDateDtoTest.php
+     * @see ../../tests/Other/OnSerializingCastDtoTest.php
      *
      * @param string $key
      * @param string|array|callable|null $type
-     * @param mixed|\Atlcom\Dto $value
+     * @param mixed|\Atlcom\Dto|DateTimeInterface $value
      * @return mixed
      */
     protected function serializeValue(string $key, string|array|callable|null $type, mixed $value): mixed
@@ -122,9 +124,17 @@ trait DtoCastsTrait
             ? $value->toDateTimeString()
             : $value->format('Y-m-d H:i:s'),
             is_null($type) => $value,
+            is_string($type) && mb_strtolower($type) === 'date' => match (true) {
+                    is_null($value) => null,
+                    $value instanceof DateTimeInterface => ($value instanceof Carbon)
+                    ? $value->toDateString()
+                    : $value->format('Y-m-d'),
+
+                    default => $value,
+                },
             is_callable($type) => $type($value, $key),
             // Даты сериализуем в строку (в БД в postgres не всегда работает unix timestamp)
-            is_string($type) && mb_strtolower($type) === Carbon::class => $value->toDateTimeString(),
+            is_string($type) && mb_strtolower($type) === Carbon::class => $value?->toDateTimeString(),
             is_string($type) && mb_strtolower($type) === 'libphonenumber\phonenumber'
             => 'libphonenumber\PhoneNumberUtil'::getInstance()
                 ->format($value, 'libphonenumber\PhoneNumberFormat'::E164),
